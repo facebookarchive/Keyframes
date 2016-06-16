@@ -1,0 +1,28 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
+package com.facebook.keyframes.data;
+
+import android.graphics.Color;
+
+import com.facebook.proguard.annotations.DoNotStrip;
+
+public class ReactionsColorFrame implements HasKeyFrame {
+
+  @DoNotStrip
+  private int mStartFrame;
+
+  @DoNotStrip
+  private String mColor;
+
+  @Override
+  public int getKeyFrame() {
+    return mStartFrame;
+  }
+
+  public int getColor() {
+    if (mColor == null) {
+      return Color.TRANSPARENT;
+    }
+    return Color.parseColor(mColor);
+  }
+}

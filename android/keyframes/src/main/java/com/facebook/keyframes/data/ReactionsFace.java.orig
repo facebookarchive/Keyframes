@@ -1,0 +1,107 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
+package com.facebook.keyframes.data;
+
+import java.util.List;
+
+import android.graphics.Matrix;
+import android.util.SparseArray;
+
+import com.facebook.proguard.annotations.DoNotStrip;
+
+/**
+ * The top level model object for one entire animated image.  Global information such as frame rate
+ * it was exported as, frame count, and canvas size are included here for renderers.
+ */
+public class ReactionsFace {
+
+  /**
+   * TODO: markpeng take this out of model class it doesn't belong here.  Includes cached
+   * information for just one frame.
+   */
+  private final SparseArray<Matrix> mAnimationGroupMatrices = new SparseArray<>();
+
+  /**
+   * The frame rate that this animation was exported at.  This is needed to play back the animation
+   * at the correct speed.  It does not limit the playback to discrete frames per second.
+   */
+  @DoNotStrip
+  private int mFrameRate;
+
+  /**
+   * The total number of frames for this animation.
+   */
+  @DoNotStrip
+  private int mFrameCount;
+
+  /**
+   * A list of all the shape layers for this image.
+   */
+  @DoNotStrip
+  private List<ReactionsFeature> mFeatures;
+
+  /**
+   * A list of all the animation layers for this image.
+   */
+  @DoNotStrip
+  private List<ReactionsAnimationGroup> mAnimationGroups;
+
+  /**
+   * The canvas size that this image was initially exported as.
+   */
+  @DoNotStrip
+  private float[] mCanvasSize;
+
+  /**
+   * An optional identification key for this image.
+   */
+  @DoNotStrip
+  private int mKey;
+
+  public int getFrameRate() {
+    return mFrameRate;
+  }
+
+  public int getFrameCount() {
+    return mFrameCount;
+  }
+
+  public List<ReactionsFeature> getFeatures() {
+    return mFeatures;
+  }
+
+  /**
+   * TODO: markpeng take this out of model class it doesn't belong here.
+   */
+  public void buildAnimationMatrices(float frameProgress) {
+    Matrix matrix;
+    for (ReactionsAnimationGroup group : mAnimationGroups) {
+      if (mAnimationGroupMatrices.indexOfKey(group.getGroupId()) < 0) {
+        mAnimationGroupMatrices.put(group.getGroupId(), new Matrix());
+      }
+      matrix = mAnimationGroupMatrices.get(group.getGroupId());
+      matrix.reset();
+      for (ReactionsAnimation animation : group.getAnimations()) {
+        if (animation == null) {
+          continue;
+        }
+        animation.getAnimation().apply(frameProgress, matrix);
+      }
+      if (group.getParentGroup() > 0) {
+        matrix.preConcat(mAnimationGroupMatrices.get(group.getParentGroup()));
+      }
+    }
+  }
+
+  public Matrix getAnimationMatrix(int groupId) {
+    return mAnimationGroupMatrices.get(groupId);
+  }
+
+  public float[] getCanvasSize() {
+    return mCanvasSize;
+  }
+
+  public int getKey() {
+    return mKey;
+  }
+}

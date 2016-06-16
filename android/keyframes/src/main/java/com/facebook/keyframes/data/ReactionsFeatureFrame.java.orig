@@ -1,0 +1,63 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
+package com.facebook.keyframes.data;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import android.graphics.Path;
+
+import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.keyframes.VectorCommand;
+
+public class ReactionsFeatureFrame implements HasKeyFrame {
+
+  @DoNotStrip
+  private int mStartFrame;
+
+  @DoNotStrip
+  private List<String> mData;
+
+  private FeatureData mFeatureData;
+
+  public interface FeatureData {
+    void applyFeature(Path path);
+  }
+
+  @Override
+  public int getKeyFrame() {
+    return mStartFrame;
+  }
+
+  public FeatureData getFeatureData() {
+    if (mFeatureData == null) {
+      mFeatureData = new MoveListFeature(mData);
+    }
+    return mFeatureData;
+  }
+
+  public class MoveListFeature implements FeatureData {
+
+    private final List<VectorCommand> mVectorCommands;
+
+    public MoveListFeature(List<String> data) {
+      List<VectorCommand> vectorCommandList = new ArrayList<>();
+      for (String move : data) {
+        vectorCommandList.add(VectorCommand.createVectorCommand(move));
+      }
+      mVectorCommands = ImmutableListHelper.immutableOrEmpty(vectorCommandList);
+    }
+
+    @Override
+    public void applyFeature(Path path) {
+      for (VectorCommand command : mVectorCommands) {
+        command.apply(path);
+      }
+    }
+
+    public List<VectorCommand> getVectorCommands() {
+      return mVectorCommands;
+    }
+  }
+}

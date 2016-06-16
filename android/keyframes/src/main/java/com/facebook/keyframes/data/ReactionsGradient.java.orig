@@ -1,0 +1,78 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
+package com.facebook.keyframes.data;
+
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+
+import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.keyframes.KeyFramedGradient;
+
+import static com.facebook.keyframes.KeyFramedGradient.Position.*;
+
+public class ReactionsGradient {
+
+  private static final float GRADIENT_PRECISION_PER_SECOND = 30;
+
+  @DoNotStrip
+  private ReactionsGradientColor mColorStart;
+
+  @DoNotStrip
+  private ReactionsGradientColor mColorEnd;
+
+  private KeyFramedGradient mStartGradient;
+  private KeyFramedGradient mEndGradient;
+
+  private LinearGradient[] mShaders;
+  private int mTotalFrames;
+
+  /**
+   * Prepares and allocates the shaders needed for this gradient ahead of time.
+   * @param canvasHeight The height of the canvas from the corresponding ReactionsFace.
+   * @param frameRate The framerate from the corresponding ReactionsFace
+   * @param numFrames The number of total frames from the corresponding ReactionsFace.
+   */
+  public void prepareShaders(float canvasHeight, int frameRate, int numFrames) {
+    if (mShaders != null) {
+      return;
+    }
+
+    int precision = Math.round(GRADIENT_PRECISION_PER_SECOND * numFrames / frameRate);
+    mShaders = new LinearGradient[precision + 1];
+    mTotalFrames = numFrames;
+    float progress;
+    KeyFramedGradient.GradientColorPair colorPair = new KeyFramedGradient.GradientColorPair();
+    for (int i = 0; i < precision; i++) {
+      progress = i / (float) (precision) * numFrames;
+      getStartGradient().apply(progress, colorPair);
+      getEndGradient().apply(progress, colorPair);
+      mShaders[i] = new LinearGradient(
+          0,
+          0,
+          0,
+          canvasHeight,
+          colorPair.getStartColor(),
+          colorPair.getEndColor(),
+          Shader.TileMode.CLAMP);
+    }
+  }
+
+  public Shader getNearestShaderForFrame(float frameProgress) {
+    int shaderIndex = (int) ((frameProgress / mTotalFrames) * (mShaders.length - 1));
+    return mShaders[shaderIndex];
+  }
+
+  private KeyFramedGradient getStartGradient() {
+    if (mStartGradient == null) {
+      mStartGradient = KeyFramedGradient.fromGradient(mColorStart, START);
+    }
+    return mStartGradient;
+  }
+
+  private KeyFramedGradient getEndGradient() {
+    if (mEndGradient == null) {
+      mEndGradient = KeyFramedGradient.fromGradient(mColorEnd, END);
+    }
+    return mEndGradient;
+  }
+}

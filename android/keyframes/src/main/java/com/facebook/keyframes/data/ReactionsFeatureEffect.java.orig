@@ -1,0 +1,15 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
+package com.facebook.keyframes.data;
+
+import com.facebook.proguard.annotations.DoNotStrip;
+
+public class ReactionsFeatureEffect {
+
+  @DoNotStrip
+  private ReactionsGradient mGradient;
+
+  public ReactionsGradient getGradient() {
+    return mGradient;
+  }
+}
