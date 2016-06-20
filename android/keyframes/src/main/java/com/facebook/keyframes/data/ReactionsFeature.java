@@ -21,13 +21,6 @@ import static com.facebook.keyframes.data.keyframedmodels.KeyFramedStrokeWidth.N
 public class ReactionsFeature {
 
   /**
-   * TODO: markpeng model state cleanup
-   */
-  private final Matrix mFeatureMatrix = new Matrix();
-  private final KeyFramedStrokeWidth.StrokeWidth mCalculatedStrokeWidth =
-      new KeyFramedStrokeWidth.StrokeWidth();
-
-  /**
    * The name of this shape, for ease of identification.
    */
   public static final String NAME_JSON_FIELD = "name";
@@ -165,15 +158,10 @@ public class ReactionsFeature {
     return Color.parseColor(colorString);
   }
 
-  public float getStrokeWidth() {
-    return mCalculatedStrokeWidth.getStrokeWidth();
-  }
-
-  /**
-   * TODO: markpeng model state cleanup
-   */
-  public void calculateStrokeWidth(float frameProgress) {
-    mCalculatedStrokeWidth.setStrokeWidth(mStrokeWidth);
+  public void calculateStrokeWidth(
+      KeyFramedStrokeWidth.StrokeWidth strokeWidth,
+      float frameProgress) {
+    strokeWidth.setStrokeWidth(mStrokeWidth);
     if (mFeatureAnimations == null ||
         mKeyFramedStrokeWidth == NO_STROKE_WIDTH_ANIMATION_SENTINEL) {
       return;
@@ -190,7 +178,7 @@ public class ReactionsFeature {
         return;
       }
     }
-    mKeyFramedStrokeWidth.apply(frameProgress, mCalculatedStrokeWidth);
+    mKeyFramedStrokeWidth.apply(frameProgress, strokeWidth);
   }
 
   public List<ReactionsFeatureFrame> getKeyFrames() {
@@ -209,18 +197,17 @@ public class ReactionsFeature {
     return mAnimationGroup;
   }
 
-  public Matrix getAnimationMatrix(float frameProgress) {
-    mFeatureMatrix.reset();
+  public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
+    featureMatrix.reset();
     if (mFeatureAnimations == null) {
-      return mFeatureMatrix;
+      return;
     }
     for (ReactionsAnimation animation : mFeatureAnimations) {
       if (!animation.getPropertyType().isMatrixBased()) {
         continue;
       }
-      animation.getAnimation().apply(frameProgress, mFeatureMatrix);
+      animation.getAnimation().apply(frameProgress, featureMatrix);
     }
-    return mFeatureMatrix;
   }
 
   public ReactionsFeatureEffect getEffect() {

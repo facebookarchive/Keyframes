@@ -14,11 +14,6 @@ import android.util.SparseArray;
 public class ReactionsFace {
 
   /**
-   * TODO: markpeng model state cleanup
-   */
-  private final SparseArray<Matrix> mAnimationGroupMatrices = new SparseArray<>();
-
-  /**
    * The frame rate that this animation was exported at.  This is needed to play back the animation
    * at the correct speed.  It does not limit the playback to discrete frames per second.
    */
@@ -95,16 +90,20 @@ public class ReactionsFace {
     return mFeatures;
   }
 
+  public List<ReactionsAnimationGroup> getAnimationGroups() {
+    return mAnimationGroups;
+  }
+
   /**
-   * TODO: markpeng take this out of model class it doesn't belong here.
+   * Given a map of group id and corresponding matrices, apply the current matrix state calculated
+   * from progress in the animation to the matrix in the map.
+   * @param matrixMap A prefilled map of animation group id -> matrix
+   * @param frameProgress The progress in animation, given as a frame value
    */
-  public void buildAnimationMatrices(float frameProgress) {
+  public void setAnimationMatrices(SparseArray<Matrix> matrixMap, float frameProgress) {
     Matrix matrix;
     for (ReactionsAnimationGroup group : mAnimationGroups) {
-      if (mAnimationGroupMatrices.indexOfKey(group.getGroupId()) < 0) {
-        mAnimationGroupMatrices.put(group.getGroupId(), new Matrix());
-      }
-      matrix = mAnimationGroupMatrices.get(group.getGroupId());
+      matrix = matrixMap.get(group.getGroupId());
       matrix.reset();
       for (ReactionsAnimation animation : group.getAnimations()) {
         if (!animation.getPropertyType().isMatrixBased()) {
@@ -113,13 +112,9 @@ public class ReactionsFace {
         animation.getAnimation().apply(frameProgress, matrix);
       }
       if (group.getParentGroup() > 0) {
-        matrix.preConcat(mAnimationGroupMatrices.get(group.getParentGroup()));
+        matrix.preConcat(matrixMap.get(group.getParentGroup()));
       }
     }
-  }
-
-  public Matrix getAnimationMatrix(int groupId) {
-    return mAnimationGroupMatrices.get(groupId);
   }
 
   public float[] getCanvasSize() {

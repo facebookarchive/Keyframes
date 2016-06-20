@@ -49,7 +49,7 @@ public class ReactionsFeatureFrame implements HasKeyFrame {
     return mShapeData;
   }
 
-  public class ShapeMoveListData {
+  public static class ShapeMoveListData {
 
     private final List<VectorCommand> mVectorCommands;
 
