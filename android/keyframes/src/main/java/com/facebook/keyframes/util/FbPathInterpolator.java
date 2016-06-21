@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.keyframes.path;
+package com.facebook.keyframes.util;
 
 import android.graphics.Path;
 import android.graphics.PathMeasure;
