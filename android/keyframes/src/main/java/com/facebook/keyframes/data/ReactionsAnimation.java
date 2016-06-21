@@ -32,6 +32,10 @@ public class ReactionsAnimation {
     POSITION (true),
     STROKE_WIDTH (false);
 
+    /**
+     * Whether this animation is matrix based or not.  Currently, the only non-matrix based
+     * animation is stroke width, which is specific to {@link ReactionsFeature}.
+     */
     final boolean mIsMatrixBased;
 
     PropertyType(boolean isMatrixBased) {
@@ -39,7 +43,8 @@ public class ReactionsAnimation {
     }
 
     /**
-     * True if this animation can be applied via matrix transforms, false otherwise.
+     * Returns whether this animation is matrix based or not.  Currently, the only non-matrix based
+     * animation is stroke width, which is specific to {@link ReactionsFeature}.
      */
     public boolean isMatrixBased() {
       return mIsMatrixBased;

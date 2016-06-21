@@ -2,7 +2,6 @@
 
 package com.facebook.keyframes.data;
 
-
 import java.util.List;
 
 import android.graphics.Color;
@@ -70,7 +69,14 @@ public class ReactionsFeature {
    * A list of animations to apply to just this shape layer.
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
-  private final List<ReactionsAnimation> mFeatureAnimations;
+  /**
+   * A post-processed object containing cached information for this path stroke width, if keyframed.
+   */
+  private final KeyFramedStrokeWidth mKeyFramedStrokeWidth;
+  /**
+   * The remaining, matrix based animations from the feature animations set.
+   */
+  private final List<ReactionsAnimation> mFeatureMatrixAnimations;
 
   /**
    * An optional effect that this shape layer can have.  Currently, only a simple linear gradient
@@ -82,13 +88,8 @@ public class ReactionsFeature {
   /**
    * A post-processed object containing cached information for this path, if keyframed.
    */
-  private KeyFramedPath mKeyFramedPath;
+  private final KeyFramedPath mKeyFramedPath;
 
-  /**
-   * A post-processed object containing cached information for this path stroke width, if keyframed.
-   * TODO: markpeng model state cleanup
-   */
-  private KeyFramedStrokeWidth mKeyFramedStrokeWidth;
 
   public static class Builder {
     public String name;
@@ -132,11 +133,39 @@ public class ReactionsFeature {
     mKeyFrames = ListHelper.immutableOrEmpty(keyFrames);
     mTimingCurves = timingCurves;
     mAnimationGroup = animationGroup;
+
+    mKeyFramedStrokeWidth = extractKeyFramedStrokeWidthFromAnimationSet(featureAnimations);
     ListHelper.sort(featureAnimations, ReactionsAnimation.ANIMATION_PROPERTY_COMPARATOR);
-    mFeatureAnimations = ListHelper.immutableOrEmpty(featureAnimations);
+    mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
 
     mKeyFramedPath = KeyFramedPath.fromFeature(this);
+  }
+
+  /**
+   * Returns a KeyFramedStrokeWidth, if available.  This method modifies the list passed in by
+   * removing the stroke width entry from the list.
+   * @param animations The complete list of feature animations to extract stroke width from
+   * @return a valid KeyFramedStrokeWidth, if found, or a no animation sentinel otherwise
+   */
+  private KeyFramedStrokeWidth extractKeyFramedStrokeWidthFromAnimationSet(
+      List<ReactionsAnimation> animations) {
+    if (animations == null) {
+      return NO_STROKE_WIDTH_ANIMATION_SENTINEL;
+    }
+    int strokeWidthAnimationIndex = -1;
+    for (int i = 0, len = animations.size(); i < len; i++) {
+      if (!animations.get(i).getPropertyType().isMatrixBased()) {
+        // Only case is a stroke width animation, special to feature animation set.  Remove from the
+        // set of matrix based animations and remember the index.
+        strokeWidthAnimationIndex = i;
+        break;
+      }
+    }
+    if (strokeWidthAnimationIndex == -1) {
+      return NO_STROKE_WIDTH_ANIMATION_SENTINEL;
+    }
+    return KeyFramedStrokeWidth.fromAnimation(animations.remove(strokeWidthAnimationIndex));
   }
 
   public String getName() {
@@ -158,25 +187,12 @@ public class ReactionsFeature {
     return Color.parseColor(colorString);
   }
 
-  public void calculateStrokeWidth(
+  public void setStrokeWidth(
       KeyFramedStrokeWidth.StrokeWidth strokeWidth,
       float frameProgress) {
     strokeWidth.setStrokeWidth(mStrokeWidth);
-    if (mFeatureAnimations == null ||
-        mKeyFramedStrokeWidth == NO_STROKE_WIDTH_ANIMATION_SENTINEL) {
+    if (mKeyFramedStrokeWidth == NO_STROKE_WIDTH_ANIMATION_SENTINEL) {
       return;
-    }
-
-    if (mKeyFramedStrokeWidth == null) {
-      for (ReactionsAnimation animation : mFeatureAnimations) {
-        if (animation.getPropertyType() == ReactionsAnimation.PropertyType.STROKE_WIDTH) {
-          mKeyFramedStrokeWidth = KeyFramedStrokeWidth.fromAnimation(animation);
-        }
-      }
-      if (mKeyFramedStrokeWidth == null) {
-        mKeyFramedStrokeWidth = NO_STROKE_WIDTH_ANIMATION_SENTINEL;
-        return;
-      }
     }
     mKeyFramedStrokeWidth.apply(frameProgress, strokeWidth);
   }
@@ -199,13 +215,10 @@ public class ReactionsFeature {
 
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
     featureMatrix.reset();
-    if (mFeatureAnimations == null) {
+    if (mFeatureMatrixAnimations == null) {
       return;
     }
-    for (ReactionsAnimation animation : mFeatureAnimations) {
-      if (!animation.getPropertyType().isMatrixBased()) {
-        continue;
-      }
+    for (ReactionsAnimation animation : mFeatureMatrixAnimations) {
       animation.getAnimation().apply(frameProgress, featureMatrix);
     }
   }

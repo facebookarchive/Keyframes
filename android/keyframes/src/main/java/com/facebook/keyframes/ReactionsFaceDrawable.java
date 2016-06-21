@@ -60,14 +60,12 @@ public class ReactionsFaceDrawable extends Drawable
    */
   private final ReactionsFaceAnimationCallback mReactionsFaceAnimationCallback;
   /**
-   * A recyclable matrix that can be used to transform paths.
+   * A recyclable matrix that can be reused.
    */
   private final Matrix mRecyclableTransformMatrix;
+
   /**
    * The scale matrix to be applied for the final size of this drawable.
-   * TODO: markpeng this probably needs to be converted to a new helper "setBoundsF" method, since
-   * currently it draws outside of set bounds which isn't really conforming to Android API.  This
-   * should get rid of mInverseScaleMatrix and setScaleForDrawing.
    */
   private final Matrix mScaleMatrix;
   private final Matrix mInverseScaleMatrix;
@@ -129,11 +127,8 @@ public class ReactionsFaceDrawable extends Drawable
     calculateScaleMatrix(1, 1, ScaleDirection.UP);
   }
 
-  /**
-   * TODO: markpeng probably remove this and replace with a setBoundsF
-   */
   @Override
-  public void setScaleForDrawing(
+  public void setDirectionalScale(
           float scaleFromCenter,
           float scaleFromEnd,
           ScaleDirection direction) {
@@ -240,9 +235,6 @@ public class ReactionsFaceDrawable extends Drawable
     invalidateSelf();
   }
 
-  /**
-   * TODO markpeng maybe remove this and replace with setBoundsF
-   */
   private void calculateScaleMatrix(
           float scaleFromCenter,
           float scaleFromEnd,
@@ -296,7 +288,7 @@ public class ReactionsFaceDrawable extends Drawable
       mFeature.getPath().apply(frameProgress, mPath);
       mPath.transform(mRecyclableTransformMatrix);
 
-      mFeature.calculateStrokeWidth(mStrokeWidth, frameProgress);
+      mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
       if (mFeature.getEffect() != null) {
         prepareShadersForFeature(mFeature);
       }
@@ -324,9 +316,6 @@ public class ReactionsFaceDrawable extends Drawable
     }
 
     private void prepareShadersForFeature(ReactionsFeature feature) {
-      /**
-       * TODO: markpeng we can eliminate shaders needed by capping the ends
-       */
       if (mCachedShaders != null) {
         return;
       }
