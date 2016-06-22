@@ -26,3 +26,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
 }
+
+task createJar(type: Copy) {
+    from('build/intermediates/bundles/release')
+    into('libs/')
+    include('classes.jar')
+    rename('classes.jar', 'keyframes-' + VERSION_NAME + '.jar')
+}
