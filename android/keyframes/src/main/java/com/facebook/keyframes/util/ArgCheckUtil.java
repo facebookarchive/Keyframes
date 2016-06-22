@@ -1,6 +1,13 @@
+/* Copyright (c) 2016, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+
 package com.facebook.keyframes.util;
 
-import com.facebook.keyframes.data.ReactionsAnimationGroup;
+import com.facebook.keyframes.model.KFAnimationGroup;
 
 import java.util.HashSet;
 import java.util.List;
@@ -58,11 +65,11 @@ public class ArgCheckUtil {
   }
 
   /**
-   * Checks that the list of {@link ReactionsAnimationGroup} all contain unique IDs.
-   * @param groups the list of {@link ReactionsAnimationGroup}
+   * Checks that the list of {@link KFAnimationGroup} all contain unique IDs.
+   * @param groups the list of {@link KFAnimationGroup}
    * @return true if all IDs are unique, false otherwise
    */
-  public static boolean checkAnimationGroupIdUniqueness(List<ReactionsAnimationGroup> groups) {
+  public static boolean checkAnimationGroupIdUniqueness(List<KFAnimationGroup> groups) {
     if (groups == null || groups.size() == 0) {
       return true;
     }
