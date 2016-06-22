@@ -75,11 +75,11 @@ public class KFShape {
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
   /**
-   * A post-processed object containing cached information for this path stroke width, if keyframed.
+   * A KFAnimation just for the special cased stroke width animation.
    */
   private final KFAnimation mStrokeWidthAnimation;
   /**
-   * The remaining, matrix based animations from the feature animations set.
+   * The remaining, matrix based animations from the feature_animations set.
    */
   private final List<KFAnimation> mFeatureMatrixAnimations;
 
