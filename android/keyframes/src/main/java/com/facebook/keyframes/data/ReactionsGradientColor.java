@@ -2,6 +2,9 @@
 
 package com.facebook.keyframes.data;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+import com.facebook.keyframes.util.ListHelper;
+
 import java.util.List;
 
 /**
@@ -34,7 +37,10 @@ public class ReactionsGradientColor {
 
   public ReactionsGradientColor(List<ReactionsColorFrame> keyValues, float[][][] timingCurves) {
     mKeyValues = ListHelper.immutableOrEmpty(keyValues);
-    mTimingCurves = timingCurves;
+    mTimingCurves = ArgCheckUtil.checkArg(
+        timingCurves,
+        ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mKeyValues.size()),
+        TIMING_CURVES_JSON_FIELD);
   }
 
   public List<ReactionsColorFrame> getKeyValues() {

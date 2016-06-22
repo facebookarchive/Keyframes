@@ -7,6 +7,9 @@ import java.util.List;
 import android.graphics.Matrix;
 import android.util.SparseArray;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+import com.facebook.keyframes.util.ListHelper;
+
 /**
  * The top level model object for one entire animated image.  Global information such as frame rate
  * it was exported as, frame count, and canvas size are included here for renderers.
@@ -70,11 +73,27 @@ public class ReactionsFace {
       List<ReactionsAnimationGroup> animationGroups,
       float[] canvasSize,
       int key) {
-    mFrameRate = frameRate;
-    mFrameCount = frameCount;
-    mFeatures = ListHelper.immutableOrEmpty(features);
-    mAnimationGroups = ListHelper.immutableOrEmpty(animationGroups);
-    mCanvasSize = canvasSize;
+    mFrameRate = ArgCheckUtil.checkArg(
+        frameRate,
+        frameRate > 0,
+        FRAME_RATE_JSON_FIELD);
+    mFrameCount = ArgCheckUtil.checkArg(
+        frameCount,
+        frameCount > 0,
+        FRAME_COUNT_JSON_FIELD);
+    mFeatures = ArgCheckUtil.checkArg(
+        ListHelper.immutableOrEmpty(features),
+        features.size() > 0,
+        FEATURES_JSON_FIELD);
+    mAnimationGroups =
+        ArgCheckUtil.checkArg(
+            ListHelper.immutableOrEmpty(animationGroups),
+            ArgCheckUtil.checkAnimationGroupIdUniqueness(animationGroups),
+            ANIMATION_GROUPS_JSON_FIELD);
+    mCanvasSize = ArgCheckUtil.checkArg(
+        canvasSize,
+        canvasSize.length == 2 && canvasSize[0] > 0 && canvasSize[1] > 0,
+        CANVAS_SIZE_JSON_FIELD);
     mKey = key;
   }
 
@@ -102,14 +121,16 @@ public class ReactionsFace {
    */
   public void setAnimationMatrices(SparseArray<Matrix> matrixMap, float frameProgress) {
     Matrix matrix;
-    for (ReactionsAnimationGroup group : mAnimationGroups) {
+    for (int groupIndex = 0, groupsLen = mAnimationGroups.size();
+         groupIndex < groupsLen;
+         groupIndex++) {
+      ReactionsAnimationGroup group = mAnimationGroups.get(groupIndex);
       matrix = matrixMap.get(group.getGroupId());
       matrix.reset();
-      for (ReactionsAnimation animation : group.getAnimations()) {
-        if (!animation.getPropertyType().isMatrixBased()) {
-          continue;
-        }
-        animation.getAnimation().apply(frameProgress, matrix);
+      for (int animationIndex = 0, animationsLen = group.getAnimations().size();
+           animationIndex < animationsLen;
+           animationIndex++) {
+        group.getAnimations().get(animationIndex).getAnimation().apply(frameProgress, matrix);
       }
       if (group.getParentGroup() > 0) {
         matrix.preConcat(matrixMap.get(group.getParentGroup()));

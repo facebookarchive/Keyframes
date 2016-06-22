@@ -4,6 +4,8 @@ package com.facebook.keyframes.data;
 
 import android.graphics.Color;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+
 /**
  * A simple class which wraps a color value needed for one key frame.
  */

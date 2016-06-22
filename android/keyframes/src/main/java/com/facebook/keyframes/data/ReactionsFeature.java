@@ -9,6 +9,8 @@ import android.graphics.Matrix;
 
 import com.facebook.keyframes.data.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.data.keyframedmodels.KeyFramedStrokeWidth;
+import com.facebook.keyframes.util.ArgCheckUtil;
+import com.facebook.keyframes.util.ListHelper;
 
 import static com.facebook.keyframes.data.keyframedmodels.KeyFramedStrokeWidth.NO_STROKE_WIDTH_ANIMATION_SENTINEL;
 
@@ -131,7 +133,10 @@ public class ReactionsFeature {
     mStrokeColor = strokeColor;
     mStrokeWidth = strokeWidth;
     mKeyFrames = ListHelper.immutableOrEmpty(keyFrames);
-    mTimingCurves = timingCurves;
+    mTimingCurves = ArgCheckUtil.checkArg(
+        timingCurves,
+        ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mKeyFrames.size()),
+        TIMING_CURVES_JSON_FIELD);
     mAnimationGroup = animationGroup;
 
     mKeyFramedStrokeWidth = extractKeyFramedStrokeWidthFromAnimationSet(featureAnimations);
@@ -218,8 +223,8 @@ public class ReactionsFeature {
     if (mFeatureMatrixAnimations == null) {
       return;
     }
-    for (ReactionsAnimation animation : mFeatureMatrixAnimations) {
-      animation.getAnimation().apply(frameProgress, featureMatrix);
+    for (int i = 0, len = mFeatureMatrixAnimations.size(); i < len; i++) {
+      mFeatureMatrixAnimations.get(i).getAnimation().apply(frameProgress, featureMatrix);
     }
   }
 

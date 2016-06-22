@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.facebook.keyframes.data.keyframedmodels.KeyFramedAnimation;
+import com.facebook.keyframes.util.ArgCheckUtil;
+import com.facebook.keyframes.util.ListHelper;
 
 /**
  * The base class for describing an animated property.  This can range from matrix based properties
@@ -99,10 +101,22 @@ public class ReactionsAnimation {
       List<ReactionsAnimationFrame> animationFrames,
       float[][][] timingCurves,
       float[] anchor) {
-    mPropertyType = propertyType;
-    mAnimationFrames = ListHelper.immutableOrEmpty(animationFrames);
-    mTimingCurves = timingCurves;
-    mAnchor = anchor;
+    mPropertyType = ArgCheckUtil.checkArg(
+        propertyType,
+        propertyType != null,
+        PROPERTY_TYPE_JSON_FIELD);
+    mAnimationFrames = ArgCheckUtil.checkArg(
+        ListHelper.immutableOrEmpty(animationFrames),
+        animationFrames != null && animationFrames.size() > 1,
+        ANIMATION_FRAMES_JSON_FIELD);
+    mTimingCurves = ArgCheckUtil.checkArg(
+        timingCurves,
+        ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mAnimationFrames.size()),
+        TIMING_CURVES_JSON_FIELD);
+    mAnchor = ArgCheckUtil.checkArg(
+        anchor,
+        anchor == null || anchor.length == 2,
+        ANCHOR_JSON_FIELD);
     mKeyFramedAnimation = KeyFramedAnimation.fromAnimation(this);
   }
 

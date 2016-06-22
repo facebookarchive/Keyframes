@@ -2,6 +2,8 @@
 
 package com.facebook.keyframes.data;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+
 /**
  * A simple class which wraps a float[] needed for one key frame.
  */
@@ -30,7 +32,10 @@ public class ReactionsAnimationFrame implements HasKeyFrame {
 
   private ReactionsAnimationFrame(int startFrame, float[] data) {
     mStartFrame = startFrame;
-    mData = data;
+    mData = ArgCheckUtil.checkArg(
+        data,
+        data.length > 0,
+        DATA_JSON_FIELD);
   }
 
   @Override

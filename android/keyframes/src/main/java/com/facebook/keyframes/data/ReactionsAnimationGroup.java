@@ -2,6 +2,9 @@
 
 package com.facebook.keyframes.data;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+import com.facebook.keyframes.util.ListHelper;
+
 import java.util.List;
 
 /**
@@ -42,10 +45,16 @@ public class ReactionsAnimationGroup {
       int groupId,
       int parentGroup,
       List<ReactionsAnimation> animations) {
-    mGroupId = groupId;
+    mGroupId = ArgCheckUtil.checkArg(
+        groupId,
+        groupId > 0,
+        GROUP_ID_JSON_FIELD);
     mParentGroup = parentGroup;
     ListHelper.sort(animations, ReactionsAnimation.ANIMATION_PROPERTY_COMPARATOR);
-    mAnimations = ListHelper.immutableOrEmpty(animations);
+    mAnimations = ArgCheckUtil.checkArg(
+        ListHelper.immutableOrEmpty(animations),
+        animations.size() > 0,
+        ANIMATIONS_JSON_FIELD);
   }
 
   public int getGroupId() {

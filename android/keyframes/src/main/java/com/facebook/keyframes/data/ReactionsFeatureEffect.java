@@ -2,6 +2,8 @@
 
 package com.facebook.keyframes.data;
 
+import com.facebook.keyframes.util.ArgCheckUtil;
+
 /**
  * Describes an effect that can be applied to a shape layer.  Currently, only a simple linear
  * gradient effect is supported.
@@ -23,7 +25,10 @@ public class ReactionsFeatureEffect {
   }
 
   private ReactionsFeatureEffect(ReactionsGradient gradient) {
-    mGradient = gradient;
+    mGradient = ArgCheckUtil.checkArg(
+        gradient,
+        gradient != null,
+        GRADIENT_JSON_FIELD);
   }
 
   public ReactionsGradient getGradient() {

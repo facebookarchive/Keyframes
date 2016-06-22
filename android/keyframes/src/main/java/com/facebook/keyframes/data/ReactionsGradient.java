@@ -6,6 +6,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Shader;
 
 import com.facebook.keyframes.data.keyframedmodels.KeyFramedGradient;
+import com.facebook.keyframes.util.ArgCheckUtil;
 
 import static com.facebook.keyframes.data.keyframedmodels.KeyFramedGradient.Position.*;
 
@@ -43,8 +44,18 @@ public class ReactionsGradient {
   }
 
   public ReactionsGradient(ReactionsGradientColor colorStart, ReactionsGradientColor colorEnd) {
-    mStartGradient = KeyFramedGradient.fromGradient(colorStart, START);
-    mEndGradient = KeyFramedGradient.fromGradient(colorEnd, END);
+    mStartGradient = KeyFramedGradient.fromGradient(
+        ArgCheckUtil.checkArg(
+            colorStart,
+            colorStart != null,
+            COLOR_START_JSON_FIELD),
+        START);
+    mEndGradient = KeyFramedGradient.fromGradient(
+        ArgCheckUtil.checkArg(
+            colorEnd,
+            colorEnd != null,
+            COLOR_END_JSON_FIELD),
+        END);
   }
 
   public KeyFramedGradient getStartGradient() {

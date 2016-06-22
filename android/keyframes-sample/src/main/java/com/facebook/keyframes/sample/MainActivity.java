@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ReactionsFace getSampleLike() {
         InputStream stream = null;
         try {
-            stream = getResources().getAssets().open("sample_anger_temp");
+            stream = getResources().getAssets().open("sample_haha");
             ReactionsFace likeImage = ReactionsFaceDeserializer.deserialize(stream);
             return likeImage;
         } catch (IOException e) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 import android.view.animation.Interpolator;
 
-import com.facebook.keyframes.path.FbPathInterpolator;
+import com.facebook.keyframes.util.FbPathInterpolator;
 
 /**
  * A helper class to build a list of interpolators corresponding to a list of timing curves, for use

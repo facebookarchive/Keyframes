@@ -1,6 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-package com.facebook.keyframes;
+package com.facebook.keyframes.util;
 
 
 import java.util.Locale;
@@ -145,7 +145,7 @@ public abstract class VectorCommand {
     return mRecyclableArgArray;
   }
 
-  private static class MoveToCommand extends VectorCommand {
+  public static class MoveToCommand extends VectorCommand {
 
     public MoveToCommand(ArgFormat argFormat, float[] args) {
       super(argFormat, args);
@@ -177,7 +177,7 @@ public abstract class VectorCommand {
     }
   }
 
-  private static class QuadraticToCommand extends VectorCommand {
+  public static class QuadraticToCommand extends VectorCommand {
 
     public QuadraticToCommand(ArgFormat argFormat, float[] args) {
       super(argFormat, args);
@@ -217,7 +217,7 @@ public abstract class VectorCommand {
     }
   }
 
-  private static class CubicToCommand extends VectorCommand {
+  public static class CubicToCommand extends VectorCommand {
 
     public CubicToCommand(ArgFormat argFormat, float[] args) {
       super(argFormat, args);
@@ -261,7 +261,7 @@ public abstract class VectorCommand {
     }
   }
 
-  private static class LineToCommand extends VectorCommand {
+  public static class LineToCommand extends VectorCommand {
 
     public LineToCommand(ArgFormat argFormat, float[] args) {
       super(argFormat, args);
