@@ -17,8 +17,6 @@ import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
-import static com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth.NO_STROKE_WIDTH_ANIMATION_SENTINEL;
-
 /**
  * An object which describes one shape layer to be drawn.  This includes color, stroke, and
  * animation information for just this shape.  The shape is backed by a series of vector commands
@@ -79,7 +77,7 @@ public class KFShape {
   /**
    * A post-processed object containing cached information for this path stroke width, if keyframed.
    */
-  private final KeyFramedStrokeWidth mKeyFramedStrokeWidth;
+  private final KFAnimation mStrokeWidthAnimation;
   /**
    * The remaining, matrix based animations from the feature animations set.
    */
@@ -144,7 +142,7 @@ public class KFShape {
         TIMING_CURVES_JSON_FIELD);
     mAnimationGroup = animationGroup;
 
-    mKeyFramedStrokeWidth = extractKeyFramedStrokeWidthFromAnimationSet(featureAnimations);
+    mStrokeWidthAnimation = extractStrokeWidthFromAnimationSet(featureAnimations);
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
@@ -158,14 +156,14 @@ public class KFShape {
    * @param animations The complete list of feature animations to extract stroke width from
    * @return a valid KeyFramedStrokeWidth, if found, or a no animation sentinel otherwise
    */
-  private KeyFramedStrokeWidth extractKeyFramedStrokeWidthFromAnimationSet(
+  private KFAnimation extractStrokeWidthFromAnimationSet(
       List<KFAnimation> animations) {
     if (animations == null) {
-      return NO_STROKE_WIDTH_ANIMATION_SENTINEL;
+      return null;
     }
     int strokeWidthAnimationIndex = -1;
     for (int i = 0, len = animations.size(); i < len; i++) {
-      if (!animations.get(i).getPropertyType().isMatrixBased()) {
+      if (animations.get(i).getPropertyType() == KFAnimation.PropertyType.STROKE_WIDTH) {
         // Only case is a stroke width animation, special to feature animation set.  Remove from the
         // set of matrix based animations and remember the index.
         strokeWidthAnimationIndex = i;
@@ -173,9 +171,9 @@ public class KFShape {
       }
     }
     if (strokeWidthAnimationIndex == -1) {
-      return NO_STROKE_WIDTH_ANIMATION_SENTINEL;
+      return null;
     }
-    return KeyFramedStrokeWidth.fromAnimation(animations.remove(strokeWidthAnimationIndex));
+    return animations.remove(strokeWidthAnimationIndex);
   }
 
   public String getName() {
@@ -188,23 +186,6 @@ public class KFShape {
 
   public int getStrokeColor() {
     return mStrokeColor;
-  }
-
-  private static int parseColor(String colorString) {
-    if (colorString == null) {
-      return Color.TRANSPARENT;
-    }
-    return Color.parseColor(colorString);
-  }
-
-  public void setStrokeWidth(
-      KeyFramedStrokeWidth.StrokeWidth strokeWidth,
-      float frameProgress) {
-    strokeWidth.setStrokeWidth(mStrokeWidth);
-    if (mKeyFramedStrokeWidth == NO_STROKE_WIDTH_ANIMATION_SENTINEL) {
-      return;
-    }
-    mKeyFramedStrokeWidth.apply(frameProgress, strokeWidth);
   }
 
   public List<KFShapeFrame> getKeyFrames() {
@@ -221,6 +202,16 @@ public class KFShape {
 
   public int getAnimationGroup() {
     return mAnimationGroup;
+  }
+
+  public void setStrokeWidth(
+      KeyFramedStrokeWidth.StrokeWidth strokeWidth,
+      float frameProgress) {
+    strokeWidth.setStrokeWidth(mStrokeWidth);
+    if (mStrokeWidthAnimation == null) {
+      return;
+    }
+    mStrokeWidthAnimation.getAnimation().apply(frameProgress, strokeWidth);
   }
 
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {

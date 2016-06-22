@@ -23,9 +23,6 @@ import com.facebook.keyframes.model.KFAnimationFrame;
 public class KeyFramedStrokeWidth
     extends KeyFramedObject<KFAnimationFrame, KeyFramedStrokeWidth.StrokeWidth> {
 
-  public static final KeyFramedStrokeWidth NO_STROKE_WIDTH_ANIMATION_SENTINEL =
-      new KeyFramedStrokeWidth();
-
   /**
    * A container object so that this class can set values on an object which on a common reference.
    */

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
   private KFImage getSampleLike() {
     InputStream stream = null;
     try {
-      stream = getResources().getAssets().open("sample_like");
+      stream = getResources().getAssets().open("sample_anger_temp");
       KFImage likeImage = KFImageDeserializer.deserialize(stream);
       return likeImage;
     } catch (IOException e) {

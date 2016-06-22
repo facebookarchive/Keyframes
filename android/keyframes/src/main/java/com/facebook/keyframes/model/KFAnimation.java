@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedMatrixAnimation;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
@@ -88,7 +90,7 @@ public class KFAnimation {
   /**
    * A post-processed data structure containing cached information for this key frame animation.
    */
-  private final KeyFramedMatrixAnimation mKeyFramedAnimation;
+  private final KeyFramedObject mKeyFramedAnimation;
 
   public static class Builder {
     public PropertyType propertyType;
@@ -124,8 +126,11 @@ public class KFAnimation {
         ANCHOR_JSON_FIELD);
     if (mPropertyType.isMatrixBased()) {
       mKeyFramedAnimation = KeyFramedMatrixAnimation.fromAnimation(this);
+    } else if (mPropertyType == PropertyType.STROKE_WIDTH){
+      mKeyFramedAnimation = KeyFramedStrokeWidth.fromAnimation(this);
     } else {
-      mKeyFramedAnimation = null;
+      throw new IllegalArgumentException(
+          "Unknown property type for animation post processing: " + mPropertyType);
     }
   }
 
@@ -145,7 +150,7 @@ public class KFAnimation {
     return mAnchor;
   }
 
-  public KeyFramedMatrixAnimation getAnimation() {
+  public KeyFramedObject getAnimation() {
     return mKeyFramedAnimation;
   }
 }
