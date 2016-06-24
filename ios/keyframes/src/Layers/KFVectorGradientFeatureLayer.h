@@ -2,7 +2,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import <KFVectorDrawingKit/KFVectorFeatureLayerInterface.h>
+#import <keyframes/KFVectorFeatureLayerInterface.h>
 
 /**
  * @discussion Use this class to draw each feature of the face.

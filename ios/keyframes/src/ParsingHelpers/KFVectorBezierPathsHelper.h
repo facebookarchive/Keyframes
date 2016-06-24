@@ -2,7 +2,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import <KFVectorDrawingKit/KFUtilities.h>
+#import <keyframes/KFUtilities.h>
 
 KF_EXTERN_C_BEGIN
 

@@ -4,7 +4,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <KFVectorDrawingKit/KFVectorAnimation.h>
+#import <keyframes/KFVectorAnimation.h>
 #import "KFVectorAnimation.h"
 
 @interface KFVectorGradientEffect : NSObject <NSCopying, NSCoding>

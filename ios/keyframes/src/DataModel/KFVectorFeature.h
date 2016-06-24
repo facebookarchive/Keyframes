@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIColor.h>
 #import <CoreGraphics/CGBase.h>
-#import <KFVectorDrawingKit/KFVectorGradientEffect.h>
+#import <keyframes/KFVectorGradientEffect.h>
 
 @interface KFVectorFeature : NSObject <NSCopying, NSCoding>
 
