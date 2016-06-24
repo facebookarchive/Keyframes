@@ -1,0 +1,5 @@
+KFVectorFeatureKeyFrame includes(RMBuilder, RMCoding) {
+   NSString *type;
+   NSArray *paths;
+   NSInteger startFrame;
+}

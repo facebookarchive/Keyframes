@@ -1,0 +1,9 @@
+KFVector includes(RMCoding) {
+   CGSize canvasSize;
+   NSString *name;
+   NSInteger key;
+   NSUInteger frameRate;
+   NSUInteger animationFrameCount;
+   NSArray *features;
+   NSArray *animationGroups;
+}

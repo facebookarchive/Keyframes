@@ -1,0 +1,4 @@
+KFVectorAnimationKeyValue includes(RMBuilder, RMCoding) {
+   id keyValue;
+   NSInteger startFrame;
+}

@@ -1,0 +1,8 @@
+KFVectorAnimation includes(RMCoding) {
+   NSString *property;
+   CGPoint anchor;
+   NSUInteger frameRate;
+   NSUInteger animationFrameCount;
+   NSArray *keyValues;
+   NSArray *timingCurves;
+}

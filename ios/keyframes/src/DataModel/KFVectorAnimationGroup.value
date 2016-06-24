@@ -1,0 +1,6 @@
+KFVectorAnimationGroup includes(RMCoding) {
+   NSString *groupName;
+   NSInteger groupId;
+   NSUInteger parentGroupId;
+   NSArray *animations;
+}

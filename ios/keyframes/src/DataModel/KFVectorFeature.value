@@ -1,0 +1,16 @@
+KFVectorFeature includes(RMCoding) {
+   NSString *name;
+   NSInteger animationGroupId;
+   NSUInteger frameRate;
+   NSUInteger animationFrameCount;
+   %import library=UIKit name=UIColor
+   UIColor *fillColor;
+   %import library=UIKit name=UIColor
+   UIColor *strokeColor;
+   CGFloat strokeWidth;
+   NSArray *keyFrames;
+   NSArray *timingCurves;
+   NSArray *featureAnimations;
+   %import library=KFVectorDrawingKit name=KFVectorGradientEffect
+   KFVectorGradientEffect *gradientEffect;
+}
