@@ -128,7 +128,7 @@ public class KeyframesDrawable extends Drawable
 
     mXScale = (float) mSetWidth / mKFImage.getCanvasSize()[0];
     mYScale = (float) mSetWidth / mKFImage.getCanvasSize()[1];
-    calculatePathsForProgress(0);
+    setFrameProgress(0);
     calculateScaleMatrix(1, 1, ScaleDirection.UP);
   }
 
@@ -223,7 +223,7 @@ public class KeyframesDrawable extends Drawable
    * Given a progress in terms of frames, calculates each of the paths needed to be drawn in
    * {@link #draw(Canvas)}.
    */
-  private void calculatePathsForProgress(float frameProgress) {
+  public void setFrameProgress(float frameProgress) {
     mKFImage.setAnimationMatrices(mAnimationGroupMatrices, frameProgress);
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       mFeatureStateList.get(i).setupFeatureStateForProgress(frameProgress);
@@ -236,7 +236,7 @@ public class KeyframesDrawable extends Drawable
    */
   @Override
   public void onProgressUpdate(float frameProgress) {
-    calculatePathsForProgress(frameProgress);
+    setFrameProgress(frameProgress);
     invalidateSelf();
   }
 

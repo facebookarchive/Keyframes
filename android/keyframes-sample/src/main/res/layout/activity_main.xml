@@ -14,4 +14,14 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/dev_generate_stills_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Development: Generate Test Still Images"
+        android:layout_below="@id/sample_image_view"
+        android:layout_centerHorizontal="true"
+        android:onClick="generateNewTestStills"
+        />
 </RelativeLayout>
