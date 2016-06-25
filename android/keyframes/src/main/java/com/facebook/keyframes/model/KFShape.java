@@ -75,13 +75,14 @@ public class KFShape {
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
   /**
-   * A KFAnimation just for the special cased stroke width animation.
+   * A KFAnimation just for the special cased stroke width animation.  Package private for testing.
    */
-  private final KFAnimation mStrokeWidthAnimation;
+  final KFAnimation mStrokeWidthAnimation;
   /**
-   * The remaining, matrix based animations from the feature_animations set.
+   * The remaining, matrix based animations from the feature_animations set.  Package private for
+   * testing.
    */
-  private final List<KFAnimation> mFeatureMatrixAnimations;
+  final List<KFAnimation> mFeatureMatrixAnimations;
 
   /**
    * An optional effect that this shape layer can have.  Currently, only a simple linear gradient
