@@ -33,7 +33,7 @@ public abstract class VectorCommand {
     }
   }
 
-  private enum ArgFormat {
+  enum ArgFormat {
     RELATIVE,
     ABSOLUTE
   }
@@ -96,7 +96,7 @@ public abstract class VectorCommand {
       default: {
         throw new IllegalArgumentException(String.format(
             Locale.US,
-            "Unrecognized vector command: %s",
+            "Unhandled vector command: %s",
             svgCommandString));
       }
     }
@@ -106,8 +106,8 @@ public abstract class VectorCommand {
     return command.argCount == args.length;
   }
 
-  protected final ArgFormat mArgFormat;
-  protected final float[] mArgs;
+  final ArgFormat mArgFormat;
+  final float[] mArgs;
 
   private float[] mRecyclableArgArray;
 
