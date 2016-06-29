@@ -35,10 +35,10 @@ public class KFImage {
   private final int mFrameCount;
 
   /**
-   * A list of all the shape layers for this image.
+   * A list of all the feature layers for this image.
    */
   public static final String FEATURES_JSON_FIELD = "features";
-  private final List<KFShape> mFeatures;
+  private final List<KFFeature> mFeatures;
 
   /**
    * A list of all the animation layers for this image.
@@ -61,7 +61,7 @@ public class KFImage {
   public static class Builder {
     public int frameRate;
     public int frameCount;
-    public List<KFShape> features;
+    public List<KFFeature> features;
     public List<KFAnimationGroup> animationGroups;
     public float[] canvasSize;
     public int key;
@@ -74,7 +74,7 @@ public class KFImage {
   private KFImage(
       int frameRate,
       int frameCount,
-      List<KFShape> features,
+      List<KFFeature> features,
       List<KFAnimationGroup> animationGroups,
       float[] canvasSize,
       int key) {
@@ -110,7 +110,7 @@ public class KFImage {
     return mFrameCount;
   }
 
-  public List<KFShape> getFeatures() {
+  public List<KFFeature> getFeatures() {
     return mFeatures;
   }
 

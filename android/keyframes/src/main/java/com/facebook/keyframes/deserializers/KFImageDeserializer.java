@@ -47,7 +47,7 @@ public class KFImageDeserializer {
           break;
         case KFImage.FEATURES_JSON_FIELD:
           builder.features =
-              KFShapeDeserializer.LIST_DESERIALIZER.readList(reader);
+              KFFeatureDeserializer.LIST_DESERIALIZER.readList(reader);
           break;
         case KFImage.ANIMATION_GROUPS_JSON_FIELD:
           builder.animationGroups =

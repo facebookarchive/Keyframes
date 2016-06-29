@@ -17,7 +17,7 @@ import com.facebook.keyframes.model.KFAnimationFrame;
 /**
  * A {@link KeyFramedObject} which houses information for a matrix based animation.  This includes
  * rotation, scale, and translation (position) information which can be applied to other animation
- * layers or shape layers.  This is a post-process object used for {@link KFAnimation}.
+ * layers or feature layers.  This is a post-process object used for {@link KFAnimation}.
  */
 public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, Matrix> {
 

@@ -34,7 +34,7 @@ public class ModelTests {
   public void testFeatureAnimationOrderingAndExtraction() {
     // Test transform matrix ordering is correct, as well as filtering out stroke_width from matrix
     // based animations.
-    KFShape.Builder builder = new KFShape.Builder();
+    KFFeature.Builder builder = new KFFeature.Builder();
     KFAnimation dummyStrokeWidth =
         createDummyAnimationOfType(KFAnimation.PropertyType.STROKE_WIDTH);
     builder.featureAnimations = new ArrayList<>(Arrays.asList(
@@ -42,21 +42,21 @@ public class ModelTests {
         dummyStrokeWidth,
         createDummyAnimationOfType(KFAnimation.PropertyType.POSITION),
         createDummyAnimationOfType(KFAnimation.PropertyType.SCALE)));
-    KFShape shape = builder.build();
+    KFFeature feature = builder.build();
 
-    Assert.assertEquals(3, shape.mFeatureMatrixAnimations.size(), 0);
+    Assert.assertEquals(3, feature.mFeatureMatrixAnimations.size(), 0);
     Assert.assertEquals(
         KFAnimation.PropertyType.SCALE,
-        shape.mFeatureMatrixAnimations.get(0).getPropertyType());
+        feature.mFeatureMatrixAnimations.get(0).getPropertyType());
     Assert.assertEquals(
         KFAnimation.PropertyType.ROTATION,
-        shape.mFeatureMatrixAnimations.get(1).getPropertyType());
+        feature.mFeatureMatrixAnimations.get(1).getPropertyType());
     Assert.assertEquals(
         KFAnimation.PropertyType.POSITION,
-        shape.mFeatureMatrixAnimations.get(2).getPropertyType());
+        feature.mFeatureMatrixAnimations.get(2).getPropertyType());
     Assert.assertEquals(
         dummyStrokeWidth,
-        shape.mStrokeWidthAnimation);
+        feature.mStrokeWidthAnimation);
   }
 
   private KFAnimation createDummyAnimationOfType(KFAnimation.PropertyType type) {

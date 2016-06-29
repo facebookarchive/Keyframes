@@ -25,8 +25,8 @@ import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
+import com.facebook.keyframes.model.KFFeature;
 import com.facebook.keyframes.model.KFImage;
-import com.facebook.keyframes.model.KFShape;
 import com.facebook.keyframes.model.KFGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -48,7 +48,7 @@ public class KeyframesDrawable extends Drawable
    */
   private final KFImage mKFImage;
   /**
-   * A recyclable {@link Paint} object used to draw all of the shapes.
+   * A recyclable {@link Paint} object used to draw all of the features.
    */
   private final Paint mDrawingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
   /**
@@ -142,7 +142,7 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Iterates over the current state of mPathsForDrawing and draws each path, applying properties
-   * of the shape to a recycled Paint object.
+   * of the feature to a recycled Paint object.
    */
   @Override
   public void draw(Canvas canvas) {
@@ -267,7 +267,7 @@ public class KeyframesDrawable extends Drawable
   }
 
   private class FeatureState {
-    private final KFShape mFeature;
+    private final KFFeature mFeature;
 
     // Reuseable modifiable objects for drawing
     private final Path mPath = new Path();
@@ -278,7 +278,7 @@ public class KeyframesDrawable extends Drawable
     private Shader[] mCachedShaders;
     private Shader mCurrentShader;
 
-    public FeatureState(KFShape feature) {
+    public FeatureState(KFFeature feature) {
       mFeature = feature;
     }
 
@@ -320,7 +320,7 @@ public class KeyframesDrawable extends Drawable
       return mFeature.getFillColor();
     }
 
-    private void prepareShadersForFeature(KFShape feature) {
+    private void prepareShadersForFeature(KFFeature feature) {
       if (mCachedShaders != null) {
         return;
       }

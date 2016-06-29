@@ -10,10 +10,10 @@ package com.facebook.keyframes.model;
 import com.facebook.keyframes.util.ArgCheckUtil;
 
 /**
- * Describes an effect that can be applied to a shape layer.  Currently, only a simple linear
+ * Describes an effect that can be applied to a feature layer.  Currently, only a simple linear
  * gradient effect is supported.
  */
-public class KFShapeEffect {
+public class KFFeatureEffect {
 
   /**
    * The object containing gradient and gradient animation information.
@@ -24,12 +24,12 @@ public class KFShapeEffect {
   public static class Builder {
     public KFGradient gradient;
 
-    public KFShapeEffect build() {
-      return new KFShapeEffect(gradient);
+    public KFFeatureEffect build() {
+      return new KFFeatureEffect(gradient);
     }
   }
 
-  private KFShapeEffect(KFGradient gradient) {
+  private KFFeatureEffect(KFGradient gradient) {
     mGradient = ArgCheckUtil.checkArg(
         gradient,
         gradient != null,

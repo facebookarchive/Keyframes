@@ -12,56 +12,56 @@ import java.io.IOException;
 import android.graphics.Color;
 import android.util.JsonReader;
 
-import com.facebook.keyframes.model.KFShape;
+import com.facebook.keyframes.model.KFFeature;
 
 /**
- * Deserializer for {@link KFShape}.
+ * Deserializer for {@link KFFeature}.
  *
  * Root deserializer starts at {@link KFImageDeserializer}.
  */
-public class KFShapeDeserializer {
+public class KFFeatureDeserializer {
 
-  static final AbstractListDeserializer<KFShape> LIST_DESERIALIZER =
-      new AbstractListDeserializer<KFShape>() {
+  static final AbstractListDeserializer<KFFeature> LIST_DESERIALIZER =
+      new AbstractListDeserializer<KFFeature>() {
         @Override
-        KFShape readObjectImpl(JsonReader reader) throws IOException {
+        KFFeature readObjectImpl(JsonReader reader) throws IOException {
           return readObject(reader);
         }
       };
 
-  public static KFShape readObject(JsonReader reader) throws IOException {
+  public static KFFeature readObject(JsonReader reader) throws IOException {
     reader.beginObject();
-    KFShape.Builder builder = new KFShape.Builder();
+    KFFeature.Builder builder = new KFFeature.Builder();
     while (reader.hasNext()) {
       String name = reader.nextName();
       switch (name) {
-        case KFShape.NAME_JSON_FIELD:
+        case KFFeature.NAME_JSON_FIELD:
           builder.name = reader.nextString();
           break;
-        case KFShape.FILL_COLOR_JSON_FIELD:
+        case KFFeature.FILL_COLOR_JSON_FIELD:
           builder.fillColor = Color.parseColor(reader.nextString());
           break;
-        case KFShape.STROKE_COLOR_JSON_FIELD:
+        case KFFeature.STROKE_COLOR_JSON_FIELD:
           builder.strokeColor = Color.parseColor(reader.nextString());
           break;
-        case KFShape.STROKE_WIDTH_JSON_FIELD:
+        case KFFeature.STROKE_WIDTH_JSON_FIELD:
           builder.strokeWidth= (float) reader.nextDouble();
           break;
-        case KFShape.KEY_FRAMES_JSON_FIELD:
-          builder.keyFrames = KFShapeFrameDeserializer.LIST_DESERIALIZER.readList(reader);
+        case KFFeature.KEY_FRAMES_JSON_FIELD:
+          builder.keyFrames = KFFeatureFrameDeserializer.LIST_DESERIALIZER.readList(reader);
           break;
-        case KFShape.TIMING_CURVES_JSON_FIELD:
+        case KFFeature.TIMING_CURVES_JSON_FIELD:
           builder.timingCurves = CommonDeserializerHelper.read3DFloatArray(reader);
           break;
-        case KFShape.ANIMATION_GROUP_JSON_FIELD:
+        case KFFeature.ANIMATION_GROUP_JSON_FIELD:
           builder.animationGroup = reader.nextInt();
           break;
-        case KFShape.FEATURE_ANIMATIONS_JSON_FIELD:
+        case KFFeature.FEATURE_ANIMATIONS_JSON_FIELD:
           builder.featureAnimations =
               KFAnimationDeserializer.LIST_DESERIALIZER.readList(reader);
           break;
-        case KFShape.EFFECT_JSON_FIELD:
-          builder.effect = KFShapeEffectDeserializer.readObject(reader);
+        case KFFeature.EFFECT_JSON_FIELD:
+          builder.effect = KFFeatureEffectDeserializer.readObject(reader);
           break;
         default:
           reader.skipValue();

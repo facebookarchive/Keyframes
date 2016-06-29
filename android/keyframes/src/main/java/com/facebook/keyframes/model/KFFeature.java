@@ -9,7 +9,6 @@ package com.facebook.keyframes.model;
 
 import java.util.List;
 
-import android.graphics.Color;
 import android.graphics.Matrix;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
@@ -18,26 +17,26 @@ import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
 /**
- * An object which describes one shape layer to be drawn.  This includes color, stroke, and
- * animation information for just this shape.  The shape is backed by a series of vector commands
- * that describe how to draw the shape as a path.
+ * An object which describes one feature layer to be drawn.  This includes color, stroke, and
+ * animation information for just this feature.  The shape is backed by a series of vector commands
+ * that describe how to draw the feature as a path.
  */
-public class KFShape {
+public class KFFeature {
 
   /**
-   * The name of this shape, for ease of identification.
+   * The name of this feature, for ease of identification.
    */
   public static final String NAME_JSON_FIELD = "name";
   private final String mName;
 
   /**
-   * The fill color to use for this shape.
+   * The fill color to use for this feature.
    */
   public static final String FILL_COLOR_JSON_FIELD = "fill_color";
   private final int mFillColor;
 
   /**
-   * The stroke color to use for this shape.
+   * The stroke color to use for this feature.
    */
   public static final String STROKE_COLOR_JSON_FIELD = "stroke_color";
   private final int mStrokeColor;
@@ -49,11 +48,11 @@ public class KFShape {
   private final float mStrokeWidth;
 
   /**
-   * A list of {@link KFShapeFrame}s which holds information about how the path of this
-   * shape changes throughout the duration of the animation.
+   * A list of {@link KFFeatureFrame}s which holds information about how the path of this
+   * feature changes throughout the duration of the animation.
    */
   public static final String KEY_FRAMES_JSON_FIELD = "key_frames";
-  private final List<KFShapeFrame> mKeyFrames;
+  private final List<KFFeatureFrame> mKeyFrames;
 
   /**
    * Timing curves needed if mKeyFrames is present to describe how to animate between each key
@@ -63,7 +62,7 @@ public class KFShape {
   private final float[][][] mTimingCurves;
 
   /**
-   * The animation layer that this shape belongs to.  The final animation matrix of the group will
+   * The animation layer that this feature belongs to.  The final animation matrix of the group will
    * be applied to this feature, and any animations belonging to the feature will be nested within
    * this group.
    */
@@ -71,7 +70,7 @@ public class KFShape {
   private final int mAnimationGroup;
 
   /**
-   * A list of animations to apply to just this shape layer.
+   * A list of animations to apply to just this feature layer.
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
   /**
@@ -85,11 +84,11 @@ public class KFShape {
   final List<KFAnimation> mFeatureMatrixAnimations;
 
   /**
-   * An optional effect that this shape layer can have.  Currently, only a simple linear gradient
+   * An optional effect that this feature layer can have.  Currently, only a simple linear gradient
    * is supported.
    */
   public static final String EFFECT_JSON_FIELD = "effects";
-  private final KFShapeEffect mEffect;
+  private final KFFeatureEffect mEffect;
 
   /**
    * A post-processed object containing cached information for this path, if keyframed.
@@ -102,14 +101,14 @@ public class KFShape {
     public int fillColor;
     public int strokeColor;
     public float strokeWidth;
-    public List<KFShapeFrame> keyFrames;
+    public List<KFFeatureFrame> keyFrames;
     public float[][][] timingCurves;
     public int animationGroup;
     public List<KFAnimation> featureAnimations;
-    public KFShapeEffect effect;
+    public KFFeatureEffect effect;
 
-    public KFShape build() {
-      return new KFShape(
+    public KFFeature build() {
+      return new KFFeature(
           name,
           fillColor,
           strokeColor,
@@ -122,16 +121,16 @@ public class KFShape {
     }
   }
 
-  public KFShape(
+  public KFFeature(
       String name,
       int fillColor,
       int strokeColor,
       float strokeWidth,
-      List<KFShapeFrame> keyFrames,
+      List<KFFeatureFrame> keyFrames,
       float[][][] timingCurves,
       int animationGroup,
       List<KFAnimation> featureAnimations,
-      KFShapeEffect effect) {
+      KFFeatureEffect effect) {
     mName = name;
     mFillColor = fillColor;
     mStrokeColor = strokeColor;
@@ -189,7 +188,7 @@ public class KFShape {
     return mStrokeColor;
   }
 
-  public List<KFShapeFrame> getKeyFrames() {
+  public List<KFFeatureFrame> getKeyFrames() {
     return mKeyFrames;
   }
 
@@ -225,7 +224,7 @@ public class KFShape {
     }
   }
 
-  public KFShapeEffect getEffect() {
+  public KFFeatureEffect getEffect() {
     return mEffect;
   }
 }

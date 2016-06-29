@@ -43,7 +43,7 @@ public class KFAnimation {
 
     /**
      * Whether this animation is matrix based or not.  Currently, the only non-matrix based
-     * animation is stroke width, which is specific to {@link KFShape}.
+     * animation is stroke width, which is specific to {@link KFFeature}.
      */
     final boolean mIsMatrixBased;
 
@@ -53,7 +53,7 @@ public class KFAnimation {
 
     /**
      * Returns whether this animation is matrix based or not.  Currently, the only non-matrix based
-     * animation is stroke width, which is specific to {@link KFShape}.
+     * animation is stroke width, which is specific to {@link KFFeature}.
      */
     public boolean isMatrixBased() {
       return mIsMatrixBased;

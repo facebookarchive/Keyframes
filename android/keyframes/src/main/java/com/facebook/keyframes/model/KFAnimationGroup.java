@@ -31,7 +31,7 @@ public class KFAnimationGroup {
 
   /**
    * The different animations which are part of this layer.  This should only include matrix based
-   * animations since there are no shapes in this layer.
+   * animations since there are no features in this layer.
    */
   public static final String ANIMATIONS_JSON_FIELD = "animations";
   private final List<KFAnimation> mAnimations;

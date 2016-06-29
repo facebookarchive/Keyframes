@@ -18,7 +18,7 @@ import com.facebook.keyframes.util.ListHelper;
 /**
  * A simple class which wraps path command information needed for one key frame.
  */
-public class KFShapeFrame implements HasKeyFrame {
+public class KFFeatureFrame implements HasKeyFrame {
 
   /**
    * The key frame # in the animation sequence.
@@ -27,7 +27,7 @@ public class KFShapeFrame implements HasKeyFrame {
   private final int mStartFrame;
 
   /**
-   * The raw string commands for this shape in one key frame.
+   * The raw string commands for this feature in one key frame.
    */
   public static final String DATA_JSON_FIELD = "data";
   private final ShapeMoveListData mShapeData;
@@ -36,12 +36,12 @@ public class KFShapeFrame implements HasKeyFrame {
     public int startFrame;
     public List<String> data;
 
-    public KFShapeFrame build() {
-      return new KFShapeFrame(startFrame, data);
+    public KFFeatureFrame build() {
+      return new KFFeatureFrame(startFrame, data);
     }
   }
 
-  public KFShapeFrame(int startFrame, List<String> data) {
+  public KFFeatureFrame(int startFrame, List<String> data) {
     mStartFrame = startFrame;
     mShapeData = new ShapeMoveListData(data);
   }

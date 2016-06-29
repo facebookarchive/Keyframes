@@ -11,24 +11,24 @@ import java.util.List;
 
 import android.graphics.Path;
 
-import com.facebook.keyframes.model.KFShape;
-import com.facebook.keyframes.model.KFShapeFrame;
+import com.facebook.keyframes.model.KFFeature;
+import com.facebook.keyframes.model.KFFeatureFrame;
 
 /**
- * A {@link KeyFramedObject} which houses information for a key framed shape object.  This includes
- * the commands to draw a shape at each given key frame.  This is a post-process object used for
- * KFShape.
+ * A {@link KeyFramedObject} which houses information for a key framed feature object.  This
+ * includes the commands to draw a shape at each given key frame.  This is a post-process object
+ * used for KFFeature.
  */
-public class KeyFramedPath extends KeyFramedObject<KFShapeFrame, Path> {
+public class KeyFramedPath extends KeyFramedObject<KFFeatureFrame, Path> {
 
   /**
-   * Constructs a KeyFramedPath from a {@link KFShape}.
+   * Constructs a KeyFramedPath from a {@link KFFeature}.
    */
-  public static KeyFramedPath fromFeature(KFShape feature) {
+  public static KeyFramedPath fromFeature(KFFeature feature) {
     return new KeyFramedPath(feature.getKeyFrames(), feature.getTimingCurves());
   }
 
-  private KeyFramedPath(List<KFShapeFrame> featureFrames, float[][][] timingCurves) {
+  private KeyFramedPath(List<KFFeatureFrame> featureFrames, float[][][] timingCurves) {
     super(featureFrames, timingCurves);
   }
 
@@ -41,16 +41,16 @@ public class KeyFramedPath extends KeyFramedObject<KFShapeFrame, Path> {
    */
   @Override
   protected void applyImpl(
-      KFShapeFrame stateA,
-      KFShapeFrame stateB,
+      KFFeatureFrame stateA,
+      KFFeatureFrame stateB,
       float interpolationValue,
       Path modifiable) {
     if (stateB == null || interpolationValue == 0) {
       stateA.getShapeData().applyFeature(modifiable);
       return;
     }
-    KFShapeFrame.ShapeMoveListData thisMoveList = stateA.getShapeData();
-    KFShapeFrame.ShapeMoveListData nextMoveList = stateB.getShapeData();
+    KFFeatureFrame.ShapeMoveListData thisMoveList = stateA.getShapeData();
+    KFFeatureFrame.ShapeMoveListData nextMoveList = stateB.getShapeData();
     for (int i = 0, len = thisMoveList.getVectorCommands().size(); i < len; i++) {
       thisMoveList.getVectorCommands().get(i).interpolate(
           nextMoveList.getVectorCommands().get(i),

@@ -11,22 +11,22 @@ import java.io.IOException;
 
 import android.util.JsonReader;
 
-import com.facebook.keyframes.model.KFShapeEffect;
+import com.facebook.keyframes.model.KFFeatureEffect;
 
 /**
- * Deserializer for {@link KFShapeEffect}.
+ * Deserializer for {@link KFFeatureEffect}.
  *
  * Root deserializer starts at {@link KFImageDeserializer}.
  */
-public class KFShapeEffectDeserializer {
+public class KFFeatureEffectDeserializer {
 
-  public static KFShapeEffect readObject(JsonReader reader) throws IOException {
+  public static KFFeatureEffect readObject(JsonReader reader) throws IOException {
     reader.beginObject();
-    KFShapeEffect.Builder builder = new KFShapeEffect.Builder();
+    KFFeatureEffect.Builder builder = new KFFeatureEffect.Builder();
     while (reader.hasNext()) {
       String name = reader.nextName();
       switch (name) {
-        case KFShapeEffect.GRADIENT_JSON_FIELD:
+        case KFFeatureEffect.GRADIENT_JSON_FIELD:
           builder.gradient = KFGradientDeserializer.readObject(reader);
           break;
         default:
