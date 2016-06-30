@@ -62,7 +62,10 @@ kfDrawable.stopAnimationAtLoopEnd();
 
 An `Image` in Keyframes consists of a number of important fields, which together, describe an animated and scalable image.  At the top level, an image contains information about how to scale (`canvas_size`) an image, as well as how to play back an animation at the correct speed (`frame_rate`, `frame_count`).  The animation itself is not bound to the discrete `frame_rate` that the image was extracted at, as the Keyframes rendering library supports fractional frames.  In addition to these global parameters of an `Image`, an `Image` also contains a number of `Feature`s, which describe different shapes to be drawn, as well as `Animation Group`s, which describe transforms that can be applied to multiple `Feature`s or even other `Animation Group`s at once.
 
-[should introduce an animated image here that we can break down below, circle background with triangle scaling up/down]
+Let's break down this simple image of a star against a circle scaling up and down.  The animation was exported at 24FPS, and the frame number is shown in the top left corner as well as the scale of the star on the bottom.
+![Star, Real Time][https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-realtime.gif]
+Let's slow that down a bit, frame by frame.
+![Star, Slowwwww][https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-slow.gif]
 
 ### **Features**
 
