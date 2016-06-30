@@ -63,12 +63,11 @@ kfDrawable.stopAnimationAtLoopEnd();
 An `Image` in Keyframes consists of a number of important fields, which together, describe an animated and scalable image.  At the top level, an image contains information about how to scale (`canvas_size`) an image, as well as how to play back an animation at the correct speed (`frame_rate`, `frame_count`).  The animation itself is not bound to the discrete `frame_rate` that the image was extracted at, as the Keyframes rendering library supports fractional frames.  In addition to these global parameters of an `Image`, an `Image` also contains a number of `Feature`s, which describe different shapes to be drawn, as well as `Animation Group`s, which describe transforms that can be applied to multiple `Feature`s or even other `Animation Group`s at once.
 
 Let's break down this simple image of a star against a circle scaling up and down.  The animation was exported at 24FPS, and the frame number is shown in the top left corner as well as the scale of the star on the bottom.
-![Star, Real Time](https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-realtime.gif)
+![Star, Real Time](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-realtime.gif)
 
 Let's slow that down a bit, frame by frame.
 
-
-![Star, Slowwwww](https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-slow.gif)
+![Star, Slowwwww](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-slow.gif)
 
 ### **Features**
 
@@ -78,7 +77,10 @@ A `Feature` is any independent visual object of the image.  Most important, it i
 
 A shape is any list of line drawing commands, which strung together, describe a continuous line or closed shape that can be filled or stroked.  The commands are given as a series of `Move`, `Line`, `Quadratic`, and `Cubic` commands, one after another.
 
-[image showing circle shape, triangle shape w/ vertices]
+Here are the important shapes for the above image, along with vertices (squares) and control points (circles), if relevant.
+
+![Circle Shape](https://github.com/facebook/keyframes/raw/master/docs/images/doc-circle-shape.png)
+![Star Shape](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-shape.png)
 
 ### **Animations**
 
@@ -94,7 +96,9 @@ The values of a transform of an animation and how they change during the playbac
 
 **Timing Curves** describe the pace with which a transform changes between each keyframe.  Each timing curve is modeled as a cubic bezier curve from point `[0, 0]` to `[1, 1]`, where the X value is the progression in time from the origin keyframe to the destination keyframe, and the Y value describes the amount of change in the value at a given time: `origValue + (destValue - origValue) * Y`.
 
-[Image showing animation curve of example above]
+For our scaling star image, the graph of scale change over time looks like this, with vertices and timing curve in/out values shown.
+
+![Scale Animation Curve](https://github.com/facebook/keyframes/raw/master/docs/images/doc-scale-curve.png)
 
 ### **Tying it all together**
 
