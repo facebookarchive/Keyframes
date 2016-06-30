@@ -64,7 +64,10 @@ An `Image` in Keyframes consists of a number of important fields, which together
 
 Let's break down this simple image of a star against a circle scaling up and down.  The animation was exported at 24FPS, and the frame number is shown in the top left corner as well as the scale of the star on the bottom.
 ![Star, Real Time](https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-realtime.gif)
+
 Let's slow that down a bit, frame by frame.
+
+
 ![Star, Slowwwww](https://github.com/facebook/keyframes/raw/master/docs/images/keyframes-star-slow.gif)
 
 ### **Features**
