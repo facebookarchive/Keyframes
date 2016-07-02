@@ -22,7 +22,7 @@ static const CGFloat kInititialFaceSize = 64;
 - (instancetype)initWithFrame:(CGRect)frame
                    faceVector:(KFVector *)faceVector
 {
-  if (self = [self initWithFrame:frame]) {
+  if (self = [super initWithFrame:frame]) {
     // It needs to be a non-zero size so we don't divide by zero in layoutSubviews.
     CGRect arbitraryNonZeroFrame = CGRectMake(0.0,
                                               0.0,
