@@ -56,6 +56,7 @@
     keyFrameAnimation.values = _keyFramePaths;
     keyFrameAnimation.keyTimes = _keyTimes;
     keyFrameAnimation.timingFunctions = KFVectorLayerMediaTimingFunction(_feature.timingCurves);
+    keyFrameAnimation.fillMode = kCAFillModeBoth;
     [self addAnimation:keyFrameAnimation forKey:@"path key frame animation"];
   }
 }

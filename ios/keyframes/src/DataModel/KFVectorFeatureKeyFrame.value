@@ -1,4 +1,4 @@
-KFVectorFeatureKeyFrame includes(RMBuilder, RMCoding) {
+KFVectorFeatureKeyFrame includes(RMCoding) {
    NSString *type;
    NSArray *paths;
    NSInteger startFrame;

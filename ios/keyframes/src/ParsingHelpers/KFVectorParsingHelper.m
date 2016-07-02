@@ -6,11 +6,9 @@
 #import "KFVectorAnimation.h"
 #import "KFVectorAnimationGroup.h"
 #import "KFVectorAnimationKeyValue.h"
-#import "KFVectorAnimationKeyValueBuilder.h"
 #import "KFVectorBezierPathsHelper.h"
 #import "KFVectorFeature.h"
 #import "KFVectorFeatureKeyFrame.h"
-#import "KFVectorFeatureKeyFrameBuilder.h"
 #import "KFVectorGradientEffect.h"
 
 #pragma mark - Internal structure helpers
@@ -59,38 +57,6 @@ static KFVectorAnimation *_buildAnimationModelFromDictionary(NSDictionary *anima
   }).mutableCopy;
   NSMutableArray *timingCurves = _buildTimingCurvesArrayFromDictionary(animationDictionary[@"timing_curves"]).mutableCopy;
 
-  KFVectorAnimationKeyValue *firstAnimationKeyValue = [keyValues firstObject];
-  KFVectorAnimationKeyValue *lastAnimationKeyValue = [keyValues lastObject];
-
-  if (firstAnimationKeyValue.startFrame < 0) {
-    [keyValues removeFirstObject];
-    [timingCurves removeLastObject];
-  }
-  if (lastAnimationKeyValue.startFrame > animationFrameCount) {
-    [keyValues removeLastObject];
-    [timingCurves removeLastObject];
-  }
-
-  if (keyValues.count > 0) {
-    if (firstAnimationKeyValue.startFrame != 0) {
-      // Left extend the first animation key value to start frame 0
-      KFVectorAnimationKeyValue *zeroFrameKeyValue =
-      [[[KFVectorAnimationKeyValueBuilder
-         vectorAnimationKeyValueFromExistingVectorAnimationKeyValue:firstAnimationKeyValue] withStartFrame:0] build];
-      [keyValues insertObject:zeroFrameKeyValue atIndex:0];
-      [timingCurves insertObject:@[[NSValue valueWithCGPoint:CGPointZero], [NSValue valueWithCGPoint:CGPointMake(1, 1)]] atIndex:0];
-    }
-
-    if (lastAnimationKeyValue.startFrame != animationFrameCount) {
-      // Right extend the last animation key value to last frame
-      KFVectorAnimationKeyValue *endFrameKeyValue =
-      [[[KFVectorAnimationKeyValueBuilder
-         vectorAnimationKeyValueFromExistingVectorAnimationKeyValue:lastAnimationKeyValue] withStartFrame:animationFrameCount] build];
-      [keyValues addObject:endFrameKeyValue];
-      [timingCurves addObject:@[[NSValue valueWithCGPoint:CGPointZero], [NSValue valueWithCGPoint:CGPointMake(1, 1)]]];
-    }
-  }
-
   return [[KFVectorAnimation alloc]
           initWithProperty:animationDictionary[@"property"]
           anchor:anchor
@@ -126,39 +92,6 @@ static KFVectorFeature *_buildFeatureModelFromDictionary(NSDictionary *featureDi
   NSArray *featureAnimations = KFMapArray(featureDictionary[@"feature_animations"], ^id(NSDictionary *featureAnimationDictionary) {
     return _buildAnimationModelFromDictionary(featureAnimationDictionary, frameRate, animationFrameCount, canvasSize);
   });
-
-  KFVectorFeatureKeyFrame *firstKeyFrame = [keyFrames firstObject];
-  KFVectorFeatureKeyFrame *lastKeyFrame = [keyFrames lastObject];
-
-  if (firstKeyFrame.startFrame < 0) {
-    [keyFrames removeFirstObject];
-    [timingCurves removeLastObject];
-  }
-  if (lastKeyFrame.startFrame > animationFrameCount) {
-    [keyFrames removeLastObject];
-    [timingCurves removeLastObject];
-  }
-
-  if (keyFrames.count > 0) {
-    if (firstKeyFrame.startFrame != 0) {
-      // Left extend the first animation key value to start frame 0
-      KFVectorFeatureKeyFrame *zeroKeyFrame =
-      [[[KFVectorFeatureKeyFrameBuilder
-         vectorFeatureKeyFrameFromExistingVectorFeatureKeyFrame:firstKeyFrame] withStartFrame:0] build];
-      [keyFrames insertObject:zeroKeyFrame atIndex:0];
-      [timingCurves insertObject:@[[NSValue valueWithCGPoint:CGPointZero], [NSValue valueWithCGPoint:CGPointMake(1, 1)]] atIndex:0];
-    }
-
-    if (keyFrames.count > 1 &&
-        lastKeyFrame.startFrame != animationFrameCount) {
-      // Left extend the first animation key value to start frame 0
-      KFVectorFeatureKeyFrame *endKeyFrame =
-      [[[KFVectorFeatureKeyFrameBuilder
-         vectorFeatureKeyFrameFromExistingVectorFeatureKeyFrame:lastKeyFrame] withStartFrame:animationFrameCount] build];
-      [keyFrames addObject:endKeyFrame];
-      [timingCurves addObject:@[[NSValue valueWithCGPoint:CGPointZero], [NSValue valueWithCGPoint:CGPointMake(1, 1)]]];
-    }
-  }
 
   return [[KFVectorFeature alloc]
           initWithName:featureDictionary[@"name"]

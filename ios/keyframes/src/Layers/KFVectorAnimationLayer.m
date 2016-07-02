@@ -69,6 +69,7 @@
   scaleXAnim.values = xValues;
   scaleXAnim.keyTimes = keyTimes;
   scaleXAnim.timingFunctions = timingFunctions;
+  scaleXAnim.fillMode = kCAFillModeBoth;
   [self addAnimation:scaleXAnim forKey:@"scale x animation"];
 
   CAKeyframeAnimation *scaleYAnim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale.y"];
@@ -77,7 +78,14 @@
   scaleYAnim.values = yValues;
   scaleYAnim.keyTimes = keyTimes;
   scaleYAnim.timingFunctions = timingFunctions;
+  scaleYAnim.fillMode = kCAFillModeBoth;
   [self addAnimation:scaleYAnim forKey:@"scale y animation"];
+  
+  // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
+  self.transform = CATransform3DScale(self.transform,
+                                      [[xValues firstObject] floatValue],
+                                      [[yValues firstObject] floatValue],
+                                      0.0);
 }
 
 - (void)_applyPositionAnimation:(KFVectorAnimation *)positionAnimation
@@ -99,6 +107,7 @@
     return @(keyFrame.startFrame * 1.0 / positionAnimation.animationFrameCount);
   });
   anim.timingFunctions = KFVectorLayerMediaTimingFunction(positionAnimation.timingCurves);
+  anim.fillMode = kCAFillModeBoth;
   [self addAnimation:anim forKey:@"position animation"];
 }
 
@@ -115,7 +124,15 @@
     return @(keyFrame.startFrame * 1.0 / rotationAnimation.animationFrameCount);
   });
   anim.timingFunctions = KFVectorLayerMediaTimingFunction(rotationAnimation.timingCurves);
+  anim.fillMode = kCAFillModeBoth;
   [self addAnimation:anim forKey:@"rotation animation"];
+  
+  // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
+  self.transform = CATransform3DRotate(self.transform,
+                                       [[anim.values firstObject] floatValue],
+                                       0.0,
+                                       0.0,
+                                       0.0);
 }
 
 - (void)_applyStrokeWidthAnimation:(KFVectorAnimation *)strokeWidthAnimation

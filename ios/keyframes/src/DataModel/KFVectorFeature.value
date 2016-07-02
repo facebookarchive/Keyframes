@@ -11,6 +11,6 @@ KFVectorFeature includes(RMCoding) {
    NSArray *keyFrames;
    NSArray *timingCurves;
    NSArray *featureAnimations;
-   %import library=KFVectorDrawingKit name=KFVectorGradientEffect
+   %import library=keyframes name=KFVectorGradientEffect
    KFVectorGradientEffect *gradientEffect;
 }

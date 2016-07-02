@@ -1,6 +1,6 @@
 KFVectorGradientEffect includes(RMCoding) {
   NSString *gradientTypeString;
-  %import library=KFVectorDrawingKit name=KFVectorAnimation
+  %import library=keyframes name=KFVectorAnimation
   KFVectorAnimation *colorStart;
   KFVectorAnimation *colorEnd;
 }
