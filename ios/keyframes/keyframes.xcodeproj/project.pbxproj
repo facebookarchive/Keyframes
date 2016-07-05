@@ -10,7 +10,7 @@
 		AD205EB11D2C5A2100AE89A1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD205EB01D2C5A2100AE89A1 /* Info.plist */; };
 		AD205EB31D2C5B5E00AE89A1 /* keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = AD205EB21D2C5B5E00AE89A1 /* keyframes.h */; };
 		AD8E72781D2C3DB100E3BA9D /* .valueObjectConfig in Resources */ = {isa = PBXBuildFile; fileRef = AD8E724B1D2C3DB100E3BA9D /* .valueObjectConfig */; };
-		AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E724C1D2C3DB100E3BA9D /* KFVector.h */; };
+		AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E724C1D2C3DB100E3BA9D /* KFVector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD8E727A1D2C3DB100E3BA9D /* KFVector.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E724D1D2C3DB100E3BA9D /* KFVector.m */; };
 		AD8E727B1D2C3DB100E3BA9D /* KFVector.value in Resources */ = {isa = PBXBuildFile; fileRef = AD8E724E1D2C3DB100E3BA9D /* KFVector.value */; };
 		AD8E727C1D2C3DB100E3BA9D /* KFVectorAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E724F1D2C3DB100E3BA9D /* KFVectorAnimation.h */; };
@@ -31,7 +31,7 @@
 		AD8E728B1D2C3DB100E3BA9D /* KFVectorGradientEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E725E1D2C3DB100E3BA9D /* KFVectorGradientEffect.h */; };
 		AD8E728C1D2C3DB100E3BA9D /* KFVectorGradientEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E725F1D2C3DB100E3BA9D /* KFVectorGradientEffect.m */; };
 		AD8E728D1D2C3DB100E3BA9D /* KFVectorGradientEffect.value in Resources */ = {isa = PBXBuildFile; fileRef = AD8E72601D2C3DB100E3BA9D /* KFVectorGradientEffect.value */; };
-		AD8E728E1D2C3DB100E3BA9D /* KFUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72621D2C3DB100E3BA9D /* KFUtilities.h */; };
+		AD8E728E1D2C3DB100E3BA9D /* KFUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72621D2C3DB100E3BA9D /* KFUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD8E728F1D2C3DB100E3BA9D /* KFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E72631D2C3DB100E3BA9D /* KFUtilities.m */; };
 		AD8E72901D2C3DB100E3BA9D /* KFVectorAnimationLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72651D2C3DB100E3BA9D /* KFVectorAnimationLayer.h */; };
 		AD8E72911D2C3DB100E3BA9D /* KFVectorAnimationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E72661D2C3DB100E3BA9D /* KFVectorAnimationLayer.m */; };
@@ -46,7 +46,7 @@
 		AD8E729A1D2C3DB100E3BA9D /* KFVectorLayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E726F1D2C3DB100E3BA9D /* KFVectorLayerHelper.m */; };
 		AD8E729B1D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72711D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.h */; };
 		AD8E729C1D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E72721D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.m */; };
-		AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72731D2C3DB100E3BA9D /* KFVectorParsingHelper.h */; };
+		AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72731D2C3DB100E3BA9D /* KFVectorParsingHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD8E729E1D2C3DB100E3BA9D /* KFVectorParsingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E72741D2C3DB100E3BA9D /* KFVectorParsingHelper.m */; };
 		AD8E729F1D2C3DB100E3BA9D /* KFVectorView.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E72761D2C3DB100E3BA9D /* KFVectorView.h */; };
 		AD8E72A01D2C3DB100E3BA9D /* KFVectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E72771D2C3DB100E3BA9D /* KFVectorView.m */; };
@@ -231,9 +231,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD8E72971D2C3DB100E3BA9D /* KFVectorLayer.h in Headers */,
-				AD8E72991D2C3DB100E3BA9D /* KFVectorLayerHelper.h in Headers */,
+				AD8E728E1D2C3DB100E3BA9D /* KFUtilities.h in Headers */,
 				AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */,
+				AD8E72971D2C3DB100E3BA9D /* KFVectorLayer.h in Headers */,
+				AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */,
+				AD8E72991D2C3DB100E3BA9D /* KFVectorLayerHelper.h in Headers */,
 				AD8E72901D2C3DB100E3BA9D /* KFVectorAnimationLayer.h in Headers */,
 				AD205EB31D2C5B5E00AE89A1 /* keyframes.h in Headers */,
 				AD8E72921D2C3DB100E3BA9D /* KFVectorFeatureLayer.h in Headers */,
@@ -244,8 +246,6 @@
 				AD8E72951D2C3DB100E3BA9D /* KFVectorGradientFeatureLayer.h in Headers */,
 				AD8E72941D2C3DB100E3BA9D /* KFVectorFeatureLayerInterface.h in Headers */,
 				AD8E728B1D2C3DB100E3BA9D /* KFVectorGradientEffect.h in Headers */,
-				AD8E728E1D2C3DB100E3BA9D /* KFUtilities.h in Headers */,
-				AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */,
 				AD8E729F1D2C3DB100E3BA9D /* KFVectorView.h in Headers */,
 				AD8E727F1D2C3DB100E3BA9D /* KFVectorAnimationGroup.h in Headers */,
 				AD8E72881D2C3DB100E3BA9D /* KFVectorFeatureKeyFrame.h in Headers */,

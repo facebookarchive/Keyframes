@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AD205EB51D2C5E1400AE89A1 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD8E72481D2C3CDD00E3BA9D /* keyframes.framework */; };
+		AD52E92E1D2C607900034F71 /* sample_like.json in Resources */ = {isa = PBXBuildFile; fileRef = AD52E92D1D2C607900034F71 /* sample_like.json */; };
 		ADBA23D31D2C2A9200D2549E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D21D2C2A9200D2549E /* main.m */; };
 		ADBA23D61D2C2A9200D2549E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D51D2C2A9200D2549E /* AppDelegate.m */; };
 		ADBA23D91D2C2A9200D2549E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D81D2C2A9200D2549E /* ViewController.m */; };
@@ -47,6 +48,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AD52E92D1D2C607900034F71 /* sample_like.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = sample_like.json; path = Assets/sample_like.json; sourceTree = "<group>"; };
 		AD8E72431D2C3CDD00E3BA9D /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
 		ADBA23CE1D2C2A9200D2549E /* keyframes-sample-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBA23D21D2C2A9200D2549E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 		ADBA23D11D2C2A9200D2549E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AD52E92D1D2C607900034F71 /* sample_like.json */,
 				ADBA23D21D2C2A9200D2549E /* main.m */,
 			);
 			name = "Supporting Files";
@@ -198,6 +201,7 @@
 			files = (
 				ADBA23E11D2C2A9200D2549E /* LaunchScreen.storyboard in Resources */,
 				ADBA23DE1D2C2A9200D2549E /* Assets.xcassets in Resources */,
+				AD52E92E1D2C607900034F71 /* sample_like.json in Resources */,
 				ADBA23DC1D2C2A9200D2549E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
