@@ -12,7 +12,17 @@ Simply have the project open in After Effects, open the extraction script provid
 
 ### iOS Rendering
 
-*Halp, Sean!*
+#### Cocoapods
+keyframes is available on [CocoaPods](link to edit later once it's published!). Just add the following to your project Profile:
+pod 'keyframes', '~> 1.0'
+
+#### Framework (manual)
+Check out keyframes-sample-ios project to find out how to add sources manually into your project.
+
+#### Rendering Setup
+To-be-filled-in
+#### Play!
+To-be-filled-in
 
 ### Android Rendering
 
