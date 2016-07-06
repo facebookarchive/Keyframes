@@ -37,7 +37,6 @@
   // Do any additional setup after loading the view, typically from a nib.
   
   KFVector *likeVector = [self loadLikeVectorFromDisk];
-  NSLog(@"faces %@", likeVector);
   
   KFVectorLayer *likeVectorLayer = [KFVectorLayer new];
   const CGFloat shortSide = MIN(CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds));
