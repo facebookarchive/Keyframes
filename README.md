@@ -28,6 +28,8 @@ To-be-filled-in
 
 ### Android Rendering
 
+It's important to note that **Keyframes for Android** is only supported for **API 18 (Jellybean MR2) and above**.
+
 #### Download
 
 Download [the latest JAR](link to github releases) or grab via Gradle:
