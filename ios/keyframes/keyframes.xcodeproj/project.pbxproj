@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		AD205EB11D2C5A2100AE89A1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD205EB01D2C5A2100AE89A1 /* Info.plist */; };
-		AD205EB31D2C5B5E00AE89A1 /* keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = AD205EB21D2C5B5E00AE89A1 /* keyframes.h */; };
 		AD8E72781D2C3DB100E3BA9D /* .valueObjectConfig in Resources */ = {isa = PBXBuildFile; fileRef = AD8E724B1D2C3DB100E3BA9D /* .valueObjectConfig */; };
 		AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E724C1D2C3DB100E3BA9D /* KFVector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD8E727A1D2C3DB100E3BA9D /* KFVector.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E724D1D2C3DB100E3BA9D /* KFVector.m */; };
@@ -54,7 +53,6 @@
 
 /* Begin PBXFileReference section */
 		AD205EB01D2C5A2100AE89A1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
-		AD205EB21D2C5B5E00AE89A1 /* keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyframes.h; sourceTree = SOURCE_ROOT; };
 		AD8E724B1D2C3DB100E3BA9D /* .valueObjectConfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .valueObjectConfig; sourceTree = "<group>"; };
 		AD8E724C1D2C3DB100E3BA9D /* KFVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVector.h; sourceTree = "<group>"; };
 		AD8E724D1D2C3DB100E3BA9D /* KFVector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVector.m; sourceTree = "<group>"; };
@@ -217,7 +215,6 @@
 		ADBA24B21D2C3C9400D2549E /* keyframes */ = {
 			isa = PBXGroup;
 			children = (
-				AD205EB21D2C5B5E00AE89A1 /* keyframes.h */,
 				AD205EB01D2C5A2100AE89A1 /* Info.plist */,
 				AD8E72491D2C3DB100E3BA9D /* src */,
 			);
@@ -237,7 +234,6 @@
 				AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */,
 				AD8E72991D2C3DB100E3BA9D /* KFVectorLayerHelper.h in Headers */,
 				AD8E72901D2C3DB100E3BA9D /* KFVectorAnimationLayer.h in Headers */,
-				AD205EB31D2C5B5E00AE89A1 /* keyframes.h in Headers */,
 				AD8E72921D2C3DB100E3BA9D /* KFVectorFeatureLayer.h in Headers */,
 				AD8E72851D2C3DB100E3BA9D /* KFVectorFeature.h in Headers */,
 				AD8E729B1D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.h in Headers */,
