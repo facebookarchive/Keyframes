@@ -22,9 +22,23 @@ pod 'keyframes', '~> 1.0'
 Check out keyframes-sample-ios project to find out how to add sources manually into your project.
 
 #### Rendering Setup
-To-be-filled-in
+Parse json blob into a container, then create KFVector instance with it.
+```
+NSString *filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"sample_like" ofType:@"json" inDirectory:nil];
+NSData *data = [NSData dataWithContentsOfFile:filePath];
+NSDictionary *likeVectorDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+KFVector *likeVector = KFVectorFromDictionary(likeVectorDictionary);
+```
+
 #### Play!
-To-be-filled-in
+Once KFVector is ready, create KFVectorLayer, add it to layer hierarchy, then play the animation.
+```
+  KFVectorLayer *likeVectorLayer = [KFVectorLayer new];
+  likeVectorLayer.frame = ...
+  likeVectorLayer.faceModel = likeVector;
+  [self.view.layer addSublayer:likeVectorLayer];
+  [likeVectorLayer startAnimation];
+```
 
 ### Android Rendering
 
