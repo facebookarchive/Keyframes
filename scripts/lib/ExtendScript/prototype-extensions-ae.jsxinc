@@ -227,6 +227,7 @@ copyProperties(Project.prototype, HasItemsMixin.prototype)
 copyProperties(FolderItem.prototype, HasItemsMixin.prototype)
 
 ////////////////////////////////////////////////////////////////////////////////
+exports.VirtualTween = VirtualTween;
 VirtualTween.FPS = 120;
 VirtualTween.FRAME_TIME = 1 / VirtualTween.FPS;
 function VirtualTween(property, previousKeyframe, nextKeyframe){
