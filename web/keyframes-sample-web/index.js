@@ -13,6 +13,79 @@ import ReactDOM from 'react-dom';
 import {Surface, Group, Shape, Transform} from 'react-art';
 
 class KeyframesSample extends React.Component {
+type KfDocument = {
+  key: number,
+  name: string,
+  canvas_size: KfPoint,
+  frame_rate: number,
+  animation_frame_count: number,
+  features: Array<KfFeature>,
+  animation_groups: Array<KfAnimationGroup>,
+};
+
+type KfAnimationGroup = {
+  group_id: number,
+  group_name: string,
+  parent_group?: number,
+  animations: Array<KfProperty>,
+};
+
+type KfFeature = {
+  name: string,
+  fill_color?: string,
+  stroke_color?: string,
+  stroke_width?: number,
+  effects?: {
+    gradient?: KfGradient,
+  },
+  animation_group?: number,
+  feature_animations?: Array<KfProperty>,
+
+  timing_curves?: Array<KfTimingCurve>,
+  key_frames: Array<KfValue<Array<string>>>,
+}
+
+type KfValue<T> = {
+  start_frame: number,
+  data: T,
+};
+
+type KfAnimatable<T> = {
+  timing_curves: Array<KfTimingCurve>,
+  key_values: Array<KfValue<T>>,
+};
+
+type KfPoint = [number, number];
+
+type KfProperty = KfPropertyPosition | KfPropertyRotation | KfPropertyScale | KfPropertyStrokeWidth;
+
+type KfPropertyPosition = KfAnimatable<KfPoint> & {
+  property: 'POSITION',
+  anchor?: KfPoint,
+};
+type KfPropertyRotation = KfAnimatable<[number] | [number, number, number]> & {
+  property: 'ROTATION',
+  anchor?: KfPoint,
+};
+type KfPropertyScale = KfAnimatable<[number, number]> & {
+  property: 'SCALE',
+  anchor?: KfPoint,
+};
+type KfPropertyStrokeWidth = KfAnimatable<[number]> & {
+  property: 'STROKE_WIDTH',
+};
+
+type KfTimingCurve = [KfPoint, KfPoint];
+
+type KfGradientStop = KfAnimatable<KfValue<string>>;
+
+type KfGradient = {
+  gradient_type: 'linear' | 'radial',
+  color_start?: KfGradientStop,
+  color_end?: KfGradientStop,
+  ramp_start?: KfGradientStop,
+  ramp_end?: KfGradientStop,
+};
   constructor(props, ...args) {
     super(props, ...args);
     this.handleRAF = this.handleRAF.bind(this);
