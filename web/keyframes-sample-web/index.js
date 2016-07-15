@@ -156,10 +156,14 @@ class KfSample extends React.Component {
   // blendShapesCache: {[key:string]:{}};
   // blendShapes: (a: Path, b: Path, curve: KfTimingCurve, progress: number) => Path;
   blendShapes(a: Array<string>, b: Array<string>, curve: KfTimingCurve, progress: number): string {
+    // TODO(aylott): Cache Path and Tween objects instead of recreating them constantly
     const aPath = Morph.Path(a.join(' '));
     const bPath = Morph.Path(b.join(' '));
     const tween = Morph.Tween(aPath, bPath);
-    tween.tween(progress);
+    // TODO(aylott): Cache BezierEasing objects instead of recreating them constantly
+    const [[curveA, curveB], [curveC, curveD]] = curve;
+    const easing = BezierEasing(curveA, curveB, curveC, curveD);
+    tween.tween(easing(progress));
     return tween;
   }
 
