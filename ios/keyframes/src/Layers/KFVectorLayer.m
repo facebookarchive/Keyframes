@@ -134,6 +134,11 @@
   self.timeOffset = pausedTime;
 }
 
+- (void)seekToProgress:(CGFloat)progress
+{
+  self.timeOffset = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+}
+
 - (void)layoutSublayers
 {
   [super layoutSublayers];

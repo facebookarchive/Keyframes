@@ -24,4 +24,9 @@
  */
 - (void)pauseAnimation;
 
+/**
+ * Call this method seek the animation to a given progress, progress is in range of [0, 1].
+ */
+- (void)seekToProgress:(CGFloat)progress;
+
 @end
