@@ -15,7 +15,7 @@ import {Surface, Group, Shape, Transform} from 'react-art';
 import BezierEasing from 'bezier-easing';
 import Morph from 'art/morph/path';
 
-require('art/modes/current').setCurrent(require('art/modes/dom'));
+// require('art/modes/current').setCurrent(require('art/modes/dom'));
 
 type KfDocument = {
   key: number,
@@ -23,15 +23,15 @@ type KfDocument = {
   canvas_size: KfPoint,
   frame_rate: number,
   animation_frame_count: number,
-  features: Array<KfFeature>,
-  animation_groups: Array<KfAnimationGroup>,
+  features: KfFeature[],
+  animation_groups: KfAnimationGroup[],
 };
 
 type KfAnimationGroup = {
   group_id: number,
   group_name: string,
   parent_group?: number,
-  animations: Array<KfProperty>,
+  animations: KfProperty[],
 };
 
 type KfFeature = {
@@ -43,10 +43,10 @@ type KfFeature = {
     gradient?: KfGradient,
   },
   animation_group?: number,
-  feature_animations?: Array<KfProperty>,
+  feature_animations?: KfProperty[],
 
-  timing_curves?: Array<KfTimingCurve>,
-  key_frames: Array<KfValue<Array<string>>>,
+  timing_curves?: KfTimingCurve[],
+  key_frames: KfValue<string[]>[],
 }
 
 type KfValue<T> = {
@@ -55,8 +55,8 @@ type KfValue<T> = {
 };
 
 type KfAnimatable<T> = {
-  timing_curves: Array<KfTimingCurve>,
-  key_values: Array<KfValue<T>>,
+  timing_curves: KfTimingCurve[],
+  key_values: KfValue<T>[],
 };
 
 type KfPoint = [number, number];
@@ -69,9 +69,9 @@ type KfPropertyPosition = KfAnimatable<KfPoint> & {
 };
 type KfPropertyRotation = KfAnimatable<[number] | [number, number, number]> & {
   property: 'ROTATION',
-  anchor?: KfPoint,
+  anchor: KfPoint,
 };
-type KfPropertyScale = KfAnimatable<[number, number]> & {
+type KfPropertyScale = KfAnimatable<KfPoint> & {
   property: 'SCALE',
   anchor?: KfPoint,
 };
@@ -111,8 +111,6 @@ class KfImage extends React.Component {
     super(props, ...args);
     const {currentFrameNumber} = props;
     this.state = {currentFrameNumber};
-    this.handleRAF = this.handleRAF.bind(this);
-    console.log(props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,13 +121,13 @@ class KfImage extends React.Component {
   nextFrameStartTime: number;
   _rafTimer: number;
   handleRAF: Function;
-  handleRAF() {
+  handleRAF = () => {
     const now = Date.now();
     if (!(now < this.nextFrameStartTime)) {
       let currentFrameNumber = this.state.currentFrameNumber || 0;
       currentFrameNumber ++;
       const {frame_rate, animation_frame_count} = this.props.doc;
-      const frameTime = 1000 / frame_rate
+      const frameTime = 1000 / frame_rate;
       this.nextFrameStartTime = now + frameTime;
       
       if (currentFrameNumber > animation_frame_count) {
@@ -153,54 +151,71 @@ class KfImage extends React.Component {
     window.cancelAnimationFrame(this._rafTimer);
   }
 
-  // blendShapesCache: {[key:string]:{}};
-  // blendShapes: (a: Path, b: Path, curve: KfTimingCurve, progress: number) => Path;
-  blendShapes(a: Array<string>, b: Array<string>, curve: KfTimingCurve, progress: number): any {
-    // TODO(aylott): Cache BezierEasing objects instead of recreating them constantly
-    const [[curveA, curveB], [curveC, curveD]] = curve;
-    const easing = BezierEasing(curveA, curveB, curveC, curveD);
-    // TODO(aylott): Cache Path and Tween objects instead of recreating them constantly
-    const aPath = Morph.Path(a.join(' '));
-    const bPath = Morph.Path(b.join(' '));
-    const tween = Morph.Tween(aPath, bPath);
+  _easingCache = new WeakMap();
+  _easingForCurve(curve: KfTimingCurve): BezierEasing {
+    let easing = this._easingCache.get(curve);
+    if (easing == null) {
+      const [[curveA, curveB], [curveC, curveD]] = curve;
+      easing = BezierEasing(curveA, curveB, curveC, curveD);
+      this._easingCache.set(curve, easing);
+    }
+    return easing;
+  }
+
+  _tweenCache = new WeakMap();
+  _tweenForCurve(curve: KfTimingCurve, a: string[], b: string[]): Morph.Tween {
+    let tween = this._tweenCache.get(curve);
+    if (tween == null) {
+      tween = Morph.Tween(
+        Morph.Path(a.join(' ')),
+        Morph.Path(b.join(' ')),
+      );
+      this._tweenCache.set(curve, tween);
+    }
+    return tween;
+  }
+
+  blendShapes = (a: string[], b: string[], curve: KfTimingCurve, progress: number): any => {
+    const easing = this._easingForCurve(curve);
+    const tween = this._tweenForCurve(curve, a, b);
     tween.tween(easing(progress));
     return tween;
   }
-  blendNumbers(aNums: Array<number>, bNums: Array<number>, curve: KfTimingCurve, progress: number): Array<number> {
-    // TODO(aylott): Cache BezierEasing objects instead of recreating them constantly
-    const [[curveA, curveB], [curveC, curveD]] = curve;
-    const easing = BezierEasing(curveA, curveB, curveC, curveD);
+  blendNumbers = (aNums: number[], bNums: number[], curve: KfTimingCurve, progress: number): number[] => {
+    const easing = this._easingForCurve(curve);
     const easedProgress = easing(progress);
     const blendedNums = new Array(aNums.length);
     for (let index = aNums.length; --index >= 0;){
       blendedNums[index] = blendNumbersLinear(aNums[index], bNums[index], easedProgress);
     }
-    // if (blendedNums[1] < 0) debugger;
     return blendedNums;
   }
 
   render() {
-    // console.log(this.props.doc);
     const {
       name,
       canvas_size: [canvasWidth, canvasHeight],
       features,
     } = this.props.doc;
     const {currentFrameNumber} = this.state;
-    // console.log({name, currentFrameNumber})
     return (
       <Surface key={name} width={canvasWidth} height={canvasHeight}>
         {features.map((feature, index) => {
           const {name, fill_color, stroke_color, feature_animations, key_frames, timing_curves, } = feature;
           const shapeData = getValueForCurrentFrame(key_frames, timing_curves, currentFrameNumber, this.blendShapes);
+
+          // TODO(aylot): Add support for gradients
+          // new ReactART.LinearGradient(["black", "white"])
+
           let {stroke_width} = feature;
           feature_animations && feature_animations.filter(filterToStroke).forEach(({property, timing_curves, key_values}) => {
-            const values: Array<number> = getValueForCurrentFrame(key_values, timing_curves, currentFrameNumber, this.blendNumbers);
-            stroke_width = values[0];
+            const values: ?number[] = getValueForCurrentFrame(key_values, timing_curves, currentFrameNumber, this.blendNumbers);
+            if (values) {
+              stroke_width = values[0];
+            }
           });
-          
-          // new ReactART.LinearGradient(["black", "white"])
-          let transform = transformFromAnimations(feature_animations, currentFrameNumber, this.blendNumbers);
+
+          let transform = feature_animations && transformFromAnimations(feature_animations, currentFrameNumber, this.blendNumbers);
           if (feature.animation_group) {
             const groupTransform = transformUsingAnimationGroups(this.props.doc, feature.animation_group, currentFrameNumber, this.blendNumbers);
             if (transform) {
@@ -209,7 +224,7 @@ class KfImage extends React.Component {
               transform = groupTransform;
             }
           }
-          
+
           const shapeElement = shapeData && (
             <Shape key={name}
               fill={hexColorSwapAlphaPosition(fill_color)}
@@ -236,34 +251,31 @@ function blendNumbersLinear(aNum: number, bNum: number, progress: number): numbe
   return delta * progress + aNum;
 }
 
-function testEqual(testEqualFn, expected){
-  const result = testEqualFn();
-  if (!(result === expected)) {
-    console.error({testEqualFn, result, expected});
+if (typeof __DEV__ !== 'undefined' && __DEV__) {
+  function testEqual(testEqualFn, expected){
+    const result = testEqualFn();
+    if (!(result === expected)) {
+      console.error({testEqualFn, result, expected});
+    }
   }
+
+  testEqual(() => blendNumbersLinear(0, 1, 0), 0);
+  testEqual(() => blendNumbersLinear(0, 1, 1), 1);
+  testEqual(() => blendNumbersLinear(0, 1, 0.5), 0.5);
+  testEqual(() => blendNumbersLinear(-99, 99, 0.5), 0);
+  testEqual(() => blendNumbersLinear(-99, 99, 0.75), 49.5);
 }
-
-testEqual(() => blendNumbersLinear(0, 1, 0), 0)
-testEqual(() => blendNumbersLinear(0, 1, 1), 1)
-testEqual(() => blendNumbersLinear(0, 1, 0.5), 0.5)
-testEqual(() => blendNumbersLinear(-99, 99, 0.5), 0)
-testEqual(() => blendNumbersLinear(-99, 99, 0.75), 49.5)
-
-
-// function convertKfDocToNestedLayers(kfDoc: KfDocument): KfArtTree {
-//
-// }
 
 function filterGroupsByThisId({group_id}: KfAnimationGroup): boolean {
   const targetID: number = this;
   return group_id === targetID;
 }
 
-function transformUsingAnimationGroups(
+function transformUsingAnimationGroups<T>(
   doc: KfDocument,
   id: number,
   currentFrameNumber: number,
-  blend?: (a:T, b:T, curve: KfTimingCurve, progress: number) => T,
+  blend?: (a:number[], b:number[], curve: KfTimingCurve, progress: number) => number[],
 ): Transform {
   const group = doc.animation_groups.filter(filterGroupsByThisId, id)[0];
   if (!group) {
@@ -279,18 +291,23 @@ function transformUsingAnimationGroups(
 }
 
 
-function transformFromAnimations<T>(
-  animations: Array<KfProperty>,
+function transformFromAnimations(
+  animations: KfProperty[],
   currentFrameNumber: number,
-  blend?: (a:T, b:T, curve: KfTimingCurve, progress: number) => T,
+  blend?: (a:number[], b:number[], curve: KfTimingCurve, progress: number) => number[],
 ): ?Transform {
   if (!(animations && animations.length > 0)) {
     return;
   }
   const transform = new Transform();
-  animations.sort(sortAnimations).forEach(({property, anchor, timing_curves, key_values}) => {
-    const values: Array<number> = getValueForCurrentFrame(key_values, timing_curves, currentFrameNumber, blend);
-    switch (property) {
+  animations.sort(sortAnimations).forEach((anim: KfProperty) => {
+    const {property, timing_curves, key_values} = anim;
+    const {anchor} = (anim: any);
+    const values: ?number[] = getValueForCurrentFrame(key_values, timing_curves, currentFrameNumber, blend);
+    if (values == null) {
+      return;
+    }
+    switch (anim.property) {
     case 'STROKE_WIDTH':
       break;
     case 'POSITION':
@@ -301,7 +318,6 @@ function transformFromAnimations<T>(
         transform.translate(-defaultAnchor[0], -defaultAnchor[1]);
       }
       transform.translate(values[0], values[1]);
-      // anchor && transform.translate(anchor[0], anchor[1]);
       break;
     case 'SCALE':
       anchor && transform.translate(anchor[0], anchor[1]);
@@ -309,7 +325,11 @@ function transformFromAnimations<T>(
       anchor && transform.translate(-anchor[0], -anchor[1]);
       break;
     case 'ROTATION':
-      transform.rotate(values[0], anchor[0], anchor[1]);
+      if (!anchor) {
+        console.warn(`Skipping ${property} because anchor is missing`);
+      } else {
+        transform.rotate(values[0], anchor[0], anchor[1]);
+      }
       break;
     default:
       console.warn('Skipping unsupported property', property);
@@ -344,8 +364,8 @@ function hexColorSwapAlphaPosition(color: ?string): ?string {
 }
 
 function getValueForCurrentFrame<T>(
-  kfValues: Array<KfValue<T>>,
-  timing_curves?: Array<KfTimingCurve>,
+  kfValues: KfValue<T>[],
+  timing_curves?: KfTimingCurve[],
   targetFrame: number,
   blend?: (a:T, b:T, curve: KfTimingCurve, progress: number) => T,
 ): ?T {
@@ -407,7 +427,7 @@ class KfDemo extends React.Component {
         <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/sorry.json')} />
         <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/anger.json')} />
         <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/haha.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/sample_like.json')} />
+        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/like.json')} />
         <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/yay.json')} />
         <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/love.json')} />
       </div>
