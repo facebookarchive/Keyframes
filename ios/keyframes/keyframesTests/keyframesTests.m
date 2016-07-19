@@ -1,10 +1,9 @@
-//
-//  keyframesTests.m
-//  keyframesTests
-//
-//  Created by Sean Lee on 7/8/16.
-//  Copyright © 2016 facebook. All rights reserved.
-//
+/* Copyright (c) 2016, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 
 #import <XCTest/XCTest.h>
 
