@@ -10,6 +10,8 @@ Use of the extraction script requires an installation of **Adobe After Effects**
 
 Simply have the project open in After Effects, open the extraction script provided in `~/scripts` in ExtendScript, and run the script.  The script will iterate through the compositions in the project and output a JSON blob for each composition with the necessary metadata to reconstruct the images.
 
+For simplicity, the library currently supports a small subset of the features included in **Adobe After Effects** for animations.  This means that we only support path based shapes, and have no support for expressions.  See `~/CONTRIBUTING` for how to help us by improving this library!
+
 ### iOS Rendering
 
 #### Cocoapods
