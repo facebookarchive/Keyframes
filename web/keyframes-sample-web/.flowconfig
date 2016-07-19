@@ -5,3 +5,4 @@
 [libs]
 
 [options]
+esproposal.class_instance_fields=enable
