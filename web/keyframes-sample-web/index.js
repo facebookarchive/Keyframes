@@ -10,10 +10,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Surface, Group, Shape, Transform} from 'react-art';
+import {Surface, Group, Shape, Transform, LinearGradient} from 'react-art';
 
 import BezierEasing from 'bezier-easing';
 import Morph from 'art/morph/path';
+import Color from 'art/core/color';
 
 // require('art/modes/current').setCurrent(require('art/modes/dom'));
 
@@ -81,7 +82,7 @@ type KfPropertyStrokeWidth = KfAnimatable<[number]> & {
 
 type KfTimingCurve = [KfPoint, KfPoint];
 
-type KfGradientStop = KfAnimatable<KfValue<string>>;
+type KfGradientStop = KfAnimatable<string>;
 
 type KfGradient = {
   gradient_type: 'linear' | 'radial',
@@ -92,64 +93,15 @@ type KfGradient = {
 };
 
 const defaultProps = {
-  loop: false,
   progress: 0,
-  currentFrameNumber: 0,
 };
 
 class KfImage extends React.Component {
-  state: {
-    currentFrameNumber: number,
-  };
 
   static defaultProps: typeof defaultProps;
   props: {
     doc: KfDocument,
   } & typeof defaultProps;
-
-  constructor(props, ...args) {
-    super(props, ...args);
-    const {currentFrameNumber} = props;
-    this.state = {currentFrameNumber};
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {currentFrameNumber} = nextProps;
-    this.setState({currentFrameNumber});
-  }
-
-  nextFrameStartTime: number;
-  _rafTimer: number;
-  handleRAF: Function;
-  handleRAF = () => {
-    const now = Date.now();
-    if (!(now < this.nextFrameStartTime)) {
-      let currentFrameNumber = this.state.currentFrameNumber || 0;
-      currentFrameNumber ++;
-      const {frame_rate, animation_frame_count} = this.props.doc;
-      const frameTime = 1000 / frame_rate;
-      this.nextFrameStartTime = now + frameTime;
-      
-      if (currentFrameNumber > animation_frame_count) {
-        if (!this.props.loop) {
-          return;
-        }
-        currentFrameNumber = 0;
-      }
-      this.setState({currentFrameNumber});
-    }
-    this.tickRAF();
-  }
-
-  tickRAF() {
-    this._rafTimer = window.requestAnimationFrame(this.handleRAF);
-  }
-  componentDidMount() {
-    this.tickRAF();
-  }
-  componentWillUnmount() {
-    window.cancelAnimationFrame(this._rafTimer);
-  }
 
   _easingCache = new WeakMap();
   _easingForCurve(curve: KfTimingCurve): BezierEasing {
@@ -175,6 +127,16 @@ class KfImage extends React.Component {
     return tween;
   }
 
+  _gradientValuesCache = new WeakMap();
+  _gradientNumberValuesFromStrings(values: KfValue<string>[]): KfValue<number[]>[] {
+    let gradientValues = this._gradientValuesCache.get(values);
+    if (gradientValues == null) {
+      gradientValues = values.map(prepGradientValuesForBlending);
+      this._gradientValuesCache.set(values, gradientValues);
+    }
+    return gradientValues;
+  }
+
   blendShapes = (a: string[], b: string[], curve: KfTimingCurve, progress: number): any => {
     const easing = this._easingForCurve(curve);
     const tween = this._tweenForCurve(curve, a, b);
@@ -191,21 +153,48 @@ class KfImage extends React.Component {
     return blendedNums;
   }
 
+  getGradientColor({key_values, timing_curves}: KfGradientStop, currentFrameNumber: number): Color {
+    const values = this._gradientNumberValuesFromStrings(key_values);
+    const colorParts = getValueForCurrentFrame(values, timing_curves, currentFrameNumber, this.blendNumbers) || [];
+    const [alpha, red, green, blue] = colorParts;
+    return { alpha: Math.round(alpha), red: Math.round(red), green: Math.round(green), blue: Math.round(blue), isColor: true };
+  }
+
   render() {
+    const {progress} = this.props;
     const {
       name,
       canvas_size: [canvasWidth, canvasHeight],
       features,
+      animation_frame_count,
     } = this.props.doc;
-    const {currentFrameNumber} = this.state;
+    const currentFrameNumber = animation_frame_count * progress;
     return (
       <Surface key={name} width={canvasWidth} height={canvasHeight}>
         {features.map((feature, index) => {
-          const {name, fill_color, stroke_color, feature_animations, key_frames, timing_curves, } = feature;
-          const shapeData = getValueForCurrentFrame(key_frames, timing_curves, currentFrameNumber, this.blendShapes);
+          const {name, fill_color, stroke_color, feature_animations, key_frames, timing_curves, effects} = feature;
 
-          // TODO(aylot): Add support for gradients
-          // new ReactART.LinearGradient(["black", "white"])
+          let fill;
+          if (effects && effects.gradient) {
+            const {gradient} = effects;
+            switch (gradient.gradient_type) {
+            case 'linear':
+              const {color_start, color_end} = gradient;
+              if (color_start && color_end) {
+                // TODO(aylott): Gradient size should be sized to the shape, not the canvas!
+                fill = new LinearGradient([
+                  this.getGradientColor(color_start, currentFrameNumber),
+                  this.getGradientColor(color_end, currentFrameNumber),
+                ], 0, 0, 0, canvasHeight);
+              }
+              break;
+            // TODO(aylott): Support radial gradient_type
+            default:
+              console.warn(`Skipping unsupported gradient_type ${gradient.gradient_type}`);
+            }
+          }
+
+          const shapeData = getValueForCurrentFrame(key_frames, timing_curves, currentFrameNumber, this.blendShapes);
 
           let {stroke_width} = feature;
           feature_animations && feature_animations.filter(filterToStroke).forEach(({property, timing_curves, key_values}) => {
@@ -227,7 +216,7 @@ class KfImage extends React.Component {
 
           const shapeElement = shapeData && (
             <Shape key={name}
-              fill={hexColorSwapAlphaPosition(fill_color)}
+              fill={fill || hexColorSwapAlphaPosition(fill_color)}
               stroke={hexColorSwapAlphaPosition(stroke_color)}
               strokeWidth={stroke_width}
               d={shapeData.join && shapeData.join(' ') || shapeData}
@@ -245,6 +234,12 @@ class KfImage extends React.Component {
 KfImage.defaultProps = defaultProps;
 
 const filterToStroke = ({property}) => property === 'STROKE_WIDTH';
+
+const prepGradientValuesForBlending = (
+  {start_frame, data}: KfValue<string>
+): KfValue<number[]> => (
+  {start_frame, data: Color.parseHEX(data)}
+);
 
 function blendNumbersLinear(aNum: number, bNum: number, progress: number): number {
   const delta = bNum - aNum;
@@ -410,34 +405,109 @@ function getValueForCurrentFrame<T>(
 }
 
 
+function mapValueInRange(value: number, fromLow: number, fromHigh: number, toLow: number, toHigh: number): number {
+  const fromRangeSize = fromHigh - fromLow;
+  const toRangeSize = toHigh - toLow;
+  const valueScale = (value - fromLow) / fromRangeSize;
+  return toLow + (valueScale * toRangeSize);
+}
+
 class KfDemo extends React.Component {
-  state: {currentFrameNumber:number};
+  props: {
+    fps: number,
+    duration: number,
+  };
+  state: {
+    progress: number,
+    animating: boolean
+  };
+
   constructor(...args) {
     super(...args);
-    this.state = {currentFrameNumber:0};
+    this.state = {
+      progress: 0,
+      animating: false,
+    };
   }
+
+  _rafTimer: ?number;
+  animationStartTime: number;
+  animationEndTime: number;
+  nextFrameStartTime: number;
+  handleRAF = () => {
+    this._rafTimer = null;
+    if (!this.state.animating) {
+      return false;
+    }
+    const now = Date.now();
+    if (!(now < this.nextFrameStartTime)) {
+      let {progress} = this.state;
+      if (progress === 0) {
+        this.animationStartTime = now;
+        this.animationEndTime = now + this.props.duration;
+      }
+      const frameTime = 1000 / this.props.fps;
+      this.nextFrameStartTime = now + frameTime;
+      progress = mapValueInRange(
+        this.nextFrameStartTime,// value
+        this.animationStartTime,// fromLow
+        this.animationEndTime,// fromHigh
+        0,// toLow
+        1,// toHigh
+      );
+      
+      if (progress > 1) {
+        progress = 0;
+      }
+      this.setState({progress});
+    }
+    this.tickRAF();
+  }
+
+  tickRAF() {
+    if (this._rafTimer) {
+      return;
+    }
+    this._rafTimer = window.requestAnimationFrame(this.handleRAF);
+  }
+  componentDidMount() {
+    this.tickRAF();
+  }
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this._rafTimer);
+  }
+  componentWillUpdate(nextProps, nextState) {
+    this.tickRAF();
+  }
+
   render() {
-    const {currentFrameNumber} = this.state;
+    const {progress, animating} = this.state;
     return (
       <div>
-        <input style={{width:'100%'}} type="range" defaultValue={currentFrameNumber} min={0} max={100} step={0.01} onChange={
-          ({target:{valueAsNumber:currentFrameNumber}}) => this.setState({currentFrameNumber})
+        <input style={{width:'100%'}} type="range" value={progress} min={0} max={1} step={1/9999} onChange={
+          ({target:{valueAsNumber:progress}}) => this.setState({progress})
         } />
         <br />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/sorry.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/anger.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/haha.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/like.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/yay.json')} />
-        <KfImage currentFrameNumber={currentFrameNumber} doc={require('./assets/love.json')} />
+        <label>Animating? <input type="checkbox" checked={animating} onChange={
+          ({target:{checked: animating}}) => this.setState({animating})
+        } /></label>
+        <br />
+        <KfImage progress={progress} doc={require('./assets/sorry.json')} />
+        <KfImage progress={progress} doc={require('./assets/anger.json')} />
+        <KfImage progress={progress} doc={require('./assets/haha.json')} />
+        <KfImage progress={progress} doc={require('./assets/like.json')} />
+        <KfImage progress={progress} doc={require('./assets/yay.json')} />
+        <KfImage progress={progress} doc={require('./assets/love.json')} />
       </div>
     );
   }
 }
 
-document.write('<div id=KfImageRoot></div>');
+document.write('<div id=KfDemoRoot></div>');
 
 ReactDOM.render(
-  <KfDemo />,
-  document.getElementById('KfImageRoot')
+  <div>
+    <KfDemo fps={24} duration={4000} />
+  </div>,
+  document.getElementById('KfDemoRoot')
 );
