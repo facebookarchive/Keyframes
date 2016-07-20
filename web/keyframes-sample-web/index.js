@@ -10,7 +10,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Surface, Group, Shape, Transform, LinearGradient} from 'react-art';
+import {Surface, Group, Shape, Transform, LinearGradient, ClippingRectangle} from 'react-art';
 
 import BezierEasing from 'bezier-easing';
 import Morph from 'art/morph/path';
@@ -92,47 +92,48 @@ type KfGradient = {
   ramp_end?: KfGradientStop,
 };
 
-const defaultProps = {
-  progress: 0,
-};
-
-class KfImage extends React.Component {
-
-  static defaultProps: typeof defaultProps;
+class KfDrawable extends React.Component {
   props: {
+    visible: boolean,
     doc: KfDocument,
-  } & typeof defaultProps;
+    progress: number,
+    width?: number, height?: number,
+    x?: number, y?: number,
+  };
+  static defaultProps = {
+    visible: true,
+  };
 
-  _easingCache = new WeakMap();
+  static _easingCache = new WeakMap();
   _easingForCurve(curve: KfTimingCurve): BezierEasing {
-    let easing = this._easingCache.get(curve);
+    let easing = KfDrawable._easingCache.get(curve);
     if (easing == null) {
       const [[curveA, curveB], [curveC, curveD]] = curve;
       easing = BezierEasing(curveA, curveB, curveC, curveD);
-      this._easingCache.set(curve, easing);
+      KfDrawable._easingCache.set(curve, easing);
     }
     return easing;
   }
 
-  _tweenCache = new WeakMap();
+  static _tweenCache = new WeakMap();
   _tweenForCurve(curve: KfTimingCurve, a: string[], b: string[]): Morph.Tween {
-    let tween = this._tweenCache.get(curve);
+    let tween = KfDrawable._tweenCache.get(curve);
     if (tween == null) {
       tween = Morph.Tween(
         Morph.Path(a.join(' ')),
         Morph.Path(b.join(' ')),
       );
-      this._tweenCache.set(curve, tween);
+      KfDrawable._tweenCache.set(curve, tween);
     }
     return tween;
   }
 
-  _gradientValuesCache = new WeakMap();
+  static _gradientValuesCache = new WeakMap();
   _gradientNumberValuesFromStrings(values: KfValue<string>[]): KfValue<number[]>[] {
-    let gradientValues = this._gradientValuesCache.get(values);
+    let gradientValues = KfDrawable._gradientValuesCache.get(values);
     if (gradientValues == null) {
       gradientValues = values.map(prepGradientValuesForBlending);
-      this._gradientValuesCache.set(values, gradientValues);
+      KfDrawable._gradientValuesCache.set(values, gradientValues);
     }
     return gradientValues;
   }
@@ -161,16 +162,34 @@ class KfImage extends React.Component {
   }
 
   render() {
-    const {progress} = this.props;
+    let {visible} = this.props;
+    const {width, height, x, y, progress} = this.props;
     const {
       name,
-      canvas_size: [canvasWidth, canvasHeight],
+      canvas_size: [docWidth, docHeight],
       features,
       animation_frame_count,
     } = this.props.doc;
     const currentFrameNumber = animation_frame_count * progress;
+    let groupTransform = visible && (width || height) &&
+      new Transform().scale(
+        (width || height || docWidth) / docWidth,
+        (height || width || docHeight) / docHeight,
+      )
+    ;
+    if (x || y) {
+      if (!groupTransform) {
+        groupTransform = new Transform();
+      }
+      groupTransform.moveTo(x || 0, y || 0);
+    }
+    if (width === 0 || height === 0) {
+      visible = false;
+    }
     return (
-      <Surface key={name} width={canvasWidth} height={canvasHeight}>
+      <Group key={name} visible={visible}
+        width={docWidth} height={docHeight}
+        transform={groupTransform}>
         {features.map((feature, index) => {
           const {name, fill_color, stroke_color, feature_animations, key_frames, timing_curves, effects} = feature;
 
@@ -181,11 +200,11 @@ class KfImage extends React.Component {
             case 'linear':
               const {color_start, color_end} = gradient;
               if (color_start && color_end) {
-                // TODO(aylott): Gradient size should be sized to the shape, not the canvas!
+                // TODO(aylott): Gradient size should be sized to the shape, not the group!
                 fill = new LinearGradient([
                   this.getGradientColor(color_start, currentFrameNumber),
                   this.getGradientColor(color_end, currentFrameNumber),
-                ], 0, 0, 0, canvasHeight);
+                ], 0, 0, 0, docHeight);
               }
               break;
             // TODO(aylott): Support radial gradient_type
@@ -226,12 +245,10 @@ class KfImage extends React.Component {
           
           return shapeElement;
         })}
-      </Surface>
+      </Group>
     );
   }
 }
-
-KfImage.defaultProps = defaultProps;
 
 const filterToStroke = ({property}) => property === 'STROKE_WIDTH';
 
@@ -412,36 +429,185 @@ function mapValueInRange(value: number, fromLow: number, fromHigh: number, toLow
   return toLow + (valueScale * toRangeSize);
 }
 
+/*
+class KfImageSurfacePrecomputed extends React.Component {
+  props: {
+    frameCount: number,
+    Group: React.Component,
+    progress: number,
+    
+  },
+  render() {
+    const {Group, frameCount, ...otherProps} = this.props;
+    const frames = [];
+    for (let frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+      frames[frameIndex] = <KfImageSurface {...otherProps} />
+    }
+    return (
+      <Group>{frames}</Group>
+    );
+  }
+}
+*/
+
+class KfImageSurface extends React.Component {
+  props: {
+    doc: KfDocument,
+    progress: number,
+    width?: number,
+    height?: number,
+  };
+  render() {
+    const {
+      width, height,
+      doc: {
+        canvas_size: [docWidth, docHeight],
+      },
+    } = this.props;
+    return (
+      <Surface
+        width={width || height || docWidth}
+        height={height || width || docHeight}>
+        <KfDrawable {...this.props} />
+      </Surface>
+    );
+  }
+}
+
+class KfSpriteMapSurfaceAnimator extends React.Component {
+  props: {
+    progress: number,
+    doc: KfDocument,
+    width?: number,
+    height?: number,
+    style?: {[key:string]: any},
+  };
+  render() {
+    const {progress, ...otherProps} = this.props;
+    const {
+      style,
+      width, height,
+      doc: {
+        canvas_size: [docWidth, docHeight],
+        animation_frame_count,
+      },
+    } = this.props;
+
+    const finalWidth = width || height || docWidth;
+    const finalHeight = height || width || docHeight;
+    const frameCount = animation_frame_count;
+    const frameIndexMax = frameCount - 1;
+    const cols = Math.ceil(Math.sqrt(frameCount));
+    const rows = Math.ceil(frameCount / cols);
+    const frameIndex = Math.round(frameIndexMax * progress);
+    const currentRow = Math.floor(frameIndex / cols);
+    const currentCol = frameIndex % cols;
+    const x = finalWidth * currentCol;
+    const y = finalHeight * currentRow;
+
+    return (
+      <div style={{...style, width: finalWidth, height: finalHeight, display:'inline-block', position:'relative', overflow:'hidden', transform: `translate3d(0,0,0)`}}>
+        <div style={{position:'absolute', /*left: -x, top: -y,*/ transform: `translateX(${-x}px) translateY(${-y}px)`}}>
+          <KfSpriteMapSurface frameNum={frameIndex+1} frameIndex={frameIndex} currentRow={currentRow} currentCol={currentCol}
+          {...otherProps} />
+        </div>
+      </div>
+    );
+  }
+}
+
+class KfSpriteMapSurface extends React.Component {
+  props: {
+    doc: KfDocument,
+    width?: number,
+    height?: number,
+  };
+  shouldComponentUpdate({doc: docB, width: widthB, height: heightB}): boolean {
+    const {doc: docA, width: widthA, height: heightA} = this.props;
+    return !(
+      docA === docB &&
+      widthA === widthB &&
+      heightA === heightB
+    );
+  }
+  render() {
+    const {
+      width, height,
+      doc: {
+        canvas_size: [docWidth, docHeight],
+        animation_frame_count,
+      },
+    } = this.props;
+    
+    const finalWidth = width || height || docWidth;
+    const finalHeight = height || width || docHeight;
+    const frameCount = animation_frame_count;
+    const cols = Math.ceil(Math.sqrt(frameCount));
+    const rows = Math.ceil(frameCount / cols);
+    const frames = new Array(frameCount);
+    let frameIndex = -1;
+    let currentRow = 0;
+    let currentCol = 0;
+
+    while (++frameIndex < frameCount) {
+      const x = finalWidth * currentCol;
+      const y = finalHeight * currentRow;
+
+      frames[frameIndex] = (
+        <KfDrawable key={frameIndex} {...this.props} progress={frameIndex / frameCount} x={x} y={y} />
+      );
+
+      currentCol ++;
+      if (currentCol >= cols) {
+        currentRow ++;
+        currentCol = 0;
+      }
+      if (currentRow > rows) {
+        console.warn("sprite map not large enough :'(");
+      }
+    }
+
+    return (
+      <Surface
+        width={finalWidth * cols}
+        height={finalHeight * rows}>
+        {frames}
+      </Surface>
+    );
+  }
+}
+
 class KfDemo extends React.Component {
   props: {
     fps: number,
     duration: number,
+    renderWithProgressAndSize: (progress: number, size:number) => React.Element<*>,
   };
-  state: {
-    progress: number,
-    animating: boolean
+  state = {
+    progress: 0,
+    animating: false,
+    size: 64,
   };
-
-  constructor(...args) {
-    super(...args);
-    this.state = {
-      progress: 0,
-      animating: false,
-    };
-  }
 
   _rafTimer: ?number;
-  animationStartTime: number;
-  animationEndTime: number;
-  nextFrameStartTime: number;
+  animationStartTime: ?number;
+  animationEndTime: ?number;
+  nextFrameStartTime: ?number;
   handleRAF = () => {
     this._rafTimer = null;
     if (!this.state.animating) {
       return false;
     }
     const now = Date.now();
+    if (!(this.nextFrameStartTime && this.animationEndTime)) {
+      this.nextFrameStartTime = now;
+      this.animationEndTime = now + this.props.duration;
+    }
     if (!(now < this.nextFrameStartTime)) {
       let {progress} = this.state;
+      if (+progress !== +progress) {
+        progress = 0;
+      }
       if (progress === 0) {
         this.animationStartTime = now;
         this.animationEndTime = now + this.props.duration;
@@ -455,6 +621,10 @@ class KfDemo extends React.Component {
         0,// toLow
         1,// toHigh
       );
+      if (progress !== progress) {
+        console.error('progress NaN');
+        debugger;
+      }
       
       if (progress > 1) {
         progress = 0;
@@ -465,49 +635,134 @@ class KfDemo extends React.Component {
   }
 
   tickRAF() {
-    if (this._rafTimer) {
-      return;
-    }
+    this._rafTimer && window.cancelAnimationFrame(this._rafTimer);
     this._rafTimer = window.requestAnimationFrame(this.handleRAF);
   }
   componentDidMount() {
     this.tickRAF();
   }
   componentWillUnmount() {
-    window.cancelAnimationFrame(this._rafTimer);
+    this._rafTimer && window.cancelAnimationFrame(this._rafTimer);
   }
-  componentWillUpdate(nextProps, nextState) {
-    this.tickRAF();
+  componentWillUpdate(nextProps, {animating}) {
+    if (animating && !this.state.animating) {
+      this.tickRAF();
+    }
   }
 
   render() {
-    const {progress, animating} = this.state;
+    const {progress, animating, size} = this.state;
     return (
       <div>
-        <input style={{width:'100%'}} type="range" value={progress} min={0} max={1} step={1/9999} onChange={
-          ({target:{valueAsNumber:progress}}) => this.setState({progress})
-        } />
+        <table style={{width:'100%'}}><tbody>
+          <tr><th style={{width:1}}>Size</th>
+            <td>
+              <input style={{width:'100%'}} type="range" value={size} min={16} max={512} step={4} onChange={
+                ({target:{valueAsNumber:size}}) => this.setState({size})
+              } />
+            </td>
+            <td style={{width:1}}>
+              <input style={{width:'8ex'}} type="number" value={size} min={16} max={512} step={4} onChange={
+                ({target:{valueAsNumber:size}}) => this.setState({size})
+              } />
+            </td>
+          </tr>
+          {
+            this.props.hasProgress && (
+              <tr><th style={{width:1}}>Progress</th>
+                <td>
+                  <input style={{width:'100%'}} type="range" value={progress} min={0} max={1} step={1/9999} onChange={
+                    ({target:{valueAsNumber:progress}}) => this.setState({progress})
+                  } />
+                </td>
+                <td style={{width:1}}>
+                  <input style={{width:'8ex'}} type="number" value={progress} min={0} max={1} step={1/9999} onChange={
+                    ({target:{valueAsNumber:progress}}) => this.setState({progress})
+                  } />
+                </td>
+              </tr>
+            )
+          }
+          </tbody></table>
         <br />
-        <label>Animating? <input type="checkbox" checked={animating} onChange={
-          ({target:{checked: animating}}) => this.setState({animating})
-        } /></label>
+        {
+          this.props.hasProgress && (
+            <label><b>Animating?</b> <input type="checkbox" checked={animating} onChange={
+              ({target:{checked: animating}}) => this.setState({animating})
+            } /></label>
+          )
+        }
         <br />
-        <KfImage progress={progress} doc={require('./assets/sorry.json')} />
-        <KfImage progress={progress} doc={require('./assets/anger.json')} />
-        <KfImage progress={progress} doc={require('./assets/haha.json')} />
-        <KfImage progress={progress} doc={require('./assets/like.json')} />
-        <KfImage progress={progress} doc={require('./assets/yay.json')} />
-        <KfImage progress={progress} doc={require('./assets/love.json')} />
+        {(this.props.shouldRender || this.state.shouldRenderStuff) && this.props.renderWithProgressAndSize(progress, size) || (
+          <div>
+            <button onClick={e => this.setState({shouldRenderStuff:true})}>Initialize</button>
+          </div>
+        )}
       </div>
     );
   }
 }
 
-document.write('<div id=KfDemoRoot></div>');
+document.write(`
+  <div id=KfDemoRoot>
+    <button onclick="window.StartKfDemo()">Start!</button>
+  </div>
+`);
 
-ReactDOM.render(
-  <div>
-    <KfDemo fps={24} duration={4000} />
-  </div>,
-  document.getElementById('KfDemoRoot')
-);
+window.StartKfDemo = () => {
+  ReactDOM.render(
+    <div>
+    
+    
+      <h2>SpriteMapped fps capped</h2>
+      <KfDemo hasProgress fps={24} duration={4000} renderWithProgressAndSize={
+        (progress, size) => (
+          <div>
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/sorry.json')} />
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/anger.json')} />
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/haha.json')} />
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/like.json')} />
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/yay.json')} />
+            <KfSpriteMapSurfaceAnimator width={size} progress={progress} doc={require('./assets/love.json')} />
+          </div>
+        )
+      } />
+      
+      <hr />
+      
+      <h2>Render on demand</h2>
+      <KfDemo hasProgress fps={24} duration={4000} renderWithProgressAndSize={
+        (progress, size) => (
+          <div>
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/sorry.json')} />
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/anger.json')} />
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/haha.json')} />
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/like.json')} />
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/yay.json')} />
+            <KfImageSurface width={size} progress={progress} doc={require('./assets/love.json')} />
+          </div>
+        )
+      } />
+      <hr />
+      
+      <h2>SpriteMap</h2>
+      <KfDemo fps={24} duration={4000} renderWithProgressAndSize={
+        (progress, size) => (
+          <div>
+            <KfSpriteMapSurface width={size} doc={require('./assets/sorry.json')} />
+            <KfSpriteMapSurface width={size} doc={require('./assets/anger.json')} />
+            <KfSpriteMapSurface width={size} doc={require('./assets/haha.json')} />
+            <KfSpriteMapSurface width={size} doc={require('./assets/like.json')} />
+            <KfSpriteMapSurface width={size} doc={require('./assets/yay.json')} />
+            <KfSpriteMapSurface width={size} doc={require('./assets/love.json')} />
+          </div>
+        )
+      } />
+    </div>,
+    document.getElementById('KfDemoRoot')
+  );
+}
+
+window.StartKfDemo();
+
+// setTimeout(window.StartKfDemo, 10);
