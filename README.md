@@ -86,6 +86,15 @@ kfDrawable.startAnimation();
 kfDrawable.stopAnimationAtLoopEnd();
 ```
 
+#### Experiment!
+Preview your animation descriptor files in the sample app.
+
+1. Build & install the sample app
+2. Run `android/keyframes-sample/scripts/push-animation.sh $PATH_TO_YOUR_JSON_FILE`
+3. For all connected devices...
+  * The sample app will launch
+  * Your JSON fill will load and begin rendering
+
 ## Understanding Keyframes Model Objects
 
 ### **Image**
