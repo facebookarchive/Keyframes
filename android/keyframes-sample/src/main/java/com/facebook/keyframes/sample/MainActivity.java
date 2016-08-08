@@ -41,9 +41,9 @@ public class MainActivity extends Activity {
 
   private KeyframesDrawable mLikeImageDrawable;
 
-  private final IntentFilter previewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
+  private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
 
-  private BroadcastReceiver previewRenderReceiver = new BroadcastReceiver() {
+  private BroadcastReceiver mPreviewRenderReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
       Log.d(TAG, "received intent");
@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
     View generateStillsButton = findViewById(R.id.dev_generate_stills_button);
     generateStillsButton.setVisibility(View.GONE);
 
-    registerReceiver(previewRenderReceiver, previewKeyframesAnimation);
+    registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
   private void setKFImage(KFImage kfImage) {
@@ -141,14 +141,14 @@ public class MainActivity extends Activity {
   @Override
   public void onPause() {
     mLikeImageDrawable.stopAnimationAtLoopEnd();
-    unregisterReceiver(previewRenderReceiver);
+    unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    registerReceiver(previewRenderReceiver, previewKeyframesAnimation);
+    registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
     mLikeImageDrawable.startAnimation();
   }
 
