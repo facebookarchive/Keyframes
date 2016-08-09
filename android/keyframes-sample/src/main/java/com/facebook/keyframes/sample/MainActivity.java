@@ -10,45 +10,113 @@
  */
 package com.facebook.keyframes.sample;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-
 import com.facebook.keyframes.KeyframesDrawable;
-import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.deserializers.KFImageDeserializer;
+import com.facebook.keyframes.model.KFImage;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
+
+  private static final String TAG = "KeyframesSample";
 
   private static final int TEST_CANVAS_SIZE_PX = 500;
 
   private KeyframesDrawable mLikeImageDrawable;
+
+  private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
+
+  private BroadcastReceiver mPreviewRenderReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      Log.d(TAG, "received intent");
+
+      String descriptorPath = intent.getStringExtra("descriptorPath");
+      if (descriptorPath == null) {
+        Log.e(TAG, "intent missing 'descriptorPath'");
+        return;
+      }
+
+      requestPermission();
+      InputStream descriptorJSON;
+      try {
+        descriptorJSON = new FileInputStream(descriptorPath);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        return;
+      }
+
+      KFImage kfImage;
+      try {
+        kfImage = KFImageDeserializer.deserialize(descriptorJSON);
+      } catch (IOException e) {
+        e.printStackTrace();
+        return;
+      }
+      setKFImage(kfImage);
+    }
+
+  };
+
+  // Storage Permissions
+  private static final int REQUEST_EXTERNAL_STORAGE = 1;
+  private static final String[] PERMISSIONS_STORAGE = {
+          Manifest.permission.READ_EXTERNAL_STORAGE,
+          Manifest.permission.WRITE_EXTERNAL_STORAGE
+  };
+
+  private void requestPermission() {
+    // Check if we have write permission
+    int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+    if (permission != PackageManager.PERMISSION_GRANTED) {
+      // We don't have permission so prompt the user
+      ActivityCompat.requestPermissions(
+              this,
+              PERMISSIONS_STORAGE,
+              REQUEST_EXTERNAL_STORAGE
+      );
+    }
+  }
+
+  private String dexOutputDir;
+  private File dir;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
-    mLikeImageDrawable = new KeyframesDrawable(getSampleLike());
-    imageView.setImageDrawable(mLikeImageDrawable);
-    mLikeImageDrawable.startAnimation();
+    setKFImage(getSampleLike());
 
     View generateStillsButton = findViewById(R.id.dev_generate_stills_button);
     generateStillsButton.setVisibility(View.GONE);
+
+    registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
+  }
+
+  private void setKFImage(KFImage kfImage) {
+    ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
+    mLikeImageDrawable = new KeyframesDrawable(kfImage);
+    imageView.setImageDrawable(mLikeImageDrawable);
+    mLikeImageDrawable.startAnimation();
   }
 
   private KFImage getSampleLike() {
@@ -73,12 +141,14 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onPause() {
     mLikeImageDrawable.stopAnimationAtLoopEnd();
+    unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
   }
 
   @Override
   public void onResume() {
     super.onResume();
+    registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
     mLikeImageDrawable.startAnimation();
   }
 
