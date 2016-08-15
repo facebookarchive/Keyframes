@@ -147,7 +147,7 @@ public class KFFeature {
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
 
-    mKeyFramedPath = KeyFramedPath.fromFeature(this);
+    mKeyFramedPath = mKeyFrames.isEmpty() ? null : KeyFramedPath.fromFeature(this);
   }
 
   /**

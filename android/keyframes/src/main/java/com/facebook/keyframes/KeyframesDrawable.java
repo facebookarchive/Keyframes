@@ -29,6 +29,7 @@ import com.facebook.keyframes.model.KFFeature;
 import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.KFGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 
 /**
@@ -153,6 +154,9 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
       pathToDraw = featureState.getCurrentPathForDrawing();
+      if (pathToDraw.isEmpty()) {
+        continue;
+      }
       mDrawingPaint.setShader(null);
       if (featureState.getFillColor() != Color.TRANSPARENT) {
         mDrawingPaint.setStyle(Paint.Style.FILL);
@@ -290,7 +294,10 @@ public class KeyframesDrawable extends Drawable
         mRecyclableTransformMatrix.postConcat(layerTransformMatrix);
       }
       mPath.reset();
-      mFeature.getPath().apply(frameProgress, mPath);
+      KeyFramedPath path = mFeature.getPath();
+      if (path != null) {
+        path.apply(frameProgress, mPath);
+      }
       mPath.transform(mRecyclableTransformMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
