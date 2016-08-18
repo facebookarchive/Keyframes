@@ -218,6 +218,9 @@ public class KFFeature {
   public void setStrokeWidth(
       KeyFramedStrokeWidth.StrokeWidth strokeWidth,
       float frameProgress) {
+    if (strokeWidth == null) {
+      return;
+    }
     strokeWidth.setStrokeWidth(mStrokeWidth);
     if (mStrokeWidthAnimation == null) {
       return;
@@ -226,6 +229,9 @@ public class KFFeature {
   }
 
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
+    if (featureMatrix == null) {
+      return;
+    }
     featureMatrix.reset();
     if (mFeatureMatrixAnimations == null) {
       return;
