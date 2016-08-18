@@ -183,8 +183,18 @@ public class KeyframesDrawable extends Drawable
         canvas.save();
         canvas.concat(mScaleMatrix);
         canvas.concat(uniqueFeatureMatrix);
+
+        final boolean shouldApplyMatrix = config.matrix != null && !config.matrix.isIdentity();
+        if (shouldApplyMatrix) {
+          canvas.save();
+          canvas.concat(config.matrix);
+        }
         config.drawable.setBounds(currBounds.left, currBounds.top, config.drawable.getIntrinsicWidth(), config.drawable.getIntrinsicHeight());
         config.drawable.draw(canvas);
+        if (shouldApplyMatrix) {
+          canvas.restore();
+        }
+
         canvas.restore();
         continue;
       }
