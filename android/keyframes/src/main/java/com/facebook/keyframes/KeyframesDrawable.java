@@ -93,11 +93,22 @@ public class KeyframesDrawable extends Drawable
    */
   private float mScaleFromCenter;
   private float mScaleFromEnd;
-  private Map<String, FeatureConfig> mFeatureConfigs = null;
+  private final Map<String, FeatureConfig> mFeatureConfigs;
 
 
   public KeyframesDrawable(KFImage KFImage) {
+    this(KFImage, null);
+  }
+
+  public KeyframesDrawable(KFImage KFImage, Map<String, FeatureConfig> configs) {
     mKFImage = KFImage;
+    mFeatureConfigs = configs == null ? null : Collections.unmodifiableMap(configs);
+
+    mRecyclableTransformMatrix = new Matrix();
+    mScaleMatrix = new Matrix();
+    mInverseScaleMatrix = new Matrix();
+    mKeyframesDrawableAnimationCallback = KeyframesDrawableAnimationCallback.create(this, mKFImage);
+
     mDrawingPaint.setStrokeCap(Paint.Cap.ROUND);
 
     // Setup feature state list
@@ -113,11 +124,6 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = animationGroups.size(); i < len; i++) {
       mAnimationGroupMatrices.put(animationGroups.get(i).getGroupId(), new Matrix());
     }
-
-    mKeyframesDrawableAnimationCallback = KeyframesDrawableAnimationCallback.create(this, mKFImage);
-    mRecyclableTransformMatrix = new Matrix();
-    mScaleMatrix = new Matrix();
-    mInverseScaleMatrix = new Matrix();
   }
 
   /**
