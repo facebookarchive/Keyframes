@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
       if (stream != null) {
         try {
           stream.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
       }
     }
@@ -153,7 +153,9 @@ public class MainActivity extends Activity {
 
   @Override
   public void onPause() {
-    mLikeImageDrawable.stopAnimationAtLoopEnd();
+    if (mLikeImageDrawable != null) {
+      mLikeImageDrawable.stopAnimation();
+    }
     unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
   }
@@ -162,7 +164,9 @@ public class MainActivity extends Activity {
   public void onResume() {
     super.onResume();
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
-    mLikeImageDrawable.startAnimation();
+    if (mLikeImageDrawable != null) {
+      mLikeImageDrawable.startAnimation();
+    }
   }
 
   /**
