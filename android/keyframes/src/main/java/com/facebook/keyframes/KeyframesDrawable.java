@@ -303,6 +303,10 @@ public class KeyframesDrawable extends Drawable
     mScaleMatrix.invert(mInverseScaleMatrix);
   }
 
+  public void setMaxFrameRate(int maxFrameRate) {
+    mMaxFrameRate = maxFrameRate;
+  }
+
   private class FeatureState {
     private final KFFeature mFeature;
 
