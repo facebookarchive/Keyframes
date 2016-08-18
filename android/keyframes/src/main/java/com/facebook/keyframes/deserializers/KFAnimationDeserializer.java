@@ -7,12 +7,11 @@
 
 package com.facebook.keyframes.deserializers;
 
+import android.util.JsonReader;
+import com.facebook.keyframes.model.KFAnimation;
+
 import java.io.IOException;
 import java.util.Locale;
-
-import android.util.JsonReader;
-
-import com.facebook.keyframes.model.KFAnimation;
 
 /**
  * Deserializer for {@link KFAnimation}.

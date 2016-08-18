@@ -7,12 +7,11 @@
 
 package com.facebook.keyframes.deserializers;
 
-import java.io.IOException;
-
 import android.graphics.Color;
 import android.util.JsonReader;
-
 import com.facebook.keyframes.model.KFFeature;
+
+import java.io.IOException;
 
 /**
  * Deserializer for {@link KFFeature}.
