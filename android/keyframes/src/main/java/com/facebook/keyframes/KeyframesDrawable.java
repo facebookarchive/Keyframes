@@ -30,8 +30,8 @@ import java.util.Map;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
 import com.facebook.keyframes.model.KFFeature;
-import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.KFGradient;
+import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -227,6 +227,7 @@ public class KeyframesDrawable extends Drawable
         canvas.drawPath(pathToDraw, mDrawingPaint);
         pathToDraw.transform(mInverseScaleMatrix);
       }
+
     }
   }
 
@@ -287,14 +288,14 @@ public class KeyframesDrawable extends Drawable
   public void onProgressUpdate(float frameProgress) {
     if (mMaxFrameRate > -1) {
       long currentTime = SystemClock.uptimeMillis();
-      int minFrameTime = 1000/mMaxFrameRate;
+      int minFrameTime = 1000 / mMaxFrameRate;
       if (currentTime - mPreviousFrameTime < minFrameTime) {
-        Log.d(KeyframesDrawable.class.getSimpleName(), "Skipping frame " + frameProgress);
         return;
       }
       mPreviousFrameTime = currentTime;
     }
     setFrameProgress(frameProgress);
+
     invalidateSelf();
   }
 
