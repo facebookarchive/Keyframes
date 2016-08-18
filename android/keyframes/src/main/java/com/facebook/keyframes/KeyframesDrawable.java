@@ -262,6 +262,10 @@ public class KeyframesDrawable extends Drawable
     mKeyframesDrawableAnimationCallback.start();
   }
 
+  public void stopAnimation() {
+    mKeyframesDrawableAnimationCallback.stop();
+  }
+
   /**
    * Finishes the current playthrough of the animation and stops animating this drawable afterwards.
    */
