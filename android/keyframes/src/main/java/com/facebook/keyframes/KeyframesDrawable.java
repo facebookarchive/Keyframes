@@ -7,10 +7,6 @@
 
 package com.facebook.keyframes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -23,6 +19,11 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
 import com.facebook.keyframes.model.KFFeature;
@@ -92,6 +93,8 @@ public class KeyframesDrawable extends Drawable
    */
   private float mScaleFromCenter;
   private float mScaleFromEnd;
+  private Map<String, FeatureConfig> mFeatureConfigs = null;
+
 
   public KeyframesDrawable(KFImage KFImage) {
     mKFImage = KFImage;
@@ -361,6 +364,21 @@ public class KeyframesDrawable extends Drawable
       int shaderIndex =
               (int) ((frameProgress / mKFImage.getFrameCount()) * (mCachedShaders.length - 1));
       return mCachedShaders[shaderIndex];
+    }
+
+    public final FeatureConfig getConfig() {
+      if (mFeatureConfigs == null) return null;
+      return mFeatureConfigs.get(mFeature.getConfigClassName());
+    }
+  }
+
+  public static class FeatureConfig {
+    final Drawable drawable;
+    final Matrix matrix;
+
+    public FeatureConfig(Drawable drawable, Matrix matrix) {
+      this.drawable = drawable;
+      this.matrix = matrix;
     }
   }
 }
