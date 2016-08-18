@@ -178,7 +178,7 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
       pathToDraw = featureState.getCurrentPathForDrawing();
-      if (pathToDraw.isEmpty()) {
+      if (pathToDraw == null || pathToDraw.isEmpty()) {
         continue;
       }
       mDrawingPaint.setShader(null);
