@@ -62,6 +62,9 @@ public class KFFeatureDeserializer {
         case KFFeature.EFFECT_JSON_FIELD:
           builder.effect = KFFeatureEffectDeserializer.readObject(reader);
           break;
+        case KFFeature.CLASS_NAME_JSON_FIELD:
+          builder.className = reader.nextString();
+          break;
         default:
           reader.skipValue();
       }

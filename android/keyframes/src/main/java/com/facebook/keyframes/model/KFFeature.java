@@ -91,6 +91,13 @@ public class KFFeature {
   private final KFFeatureEffect mEffect;
 
   /**
+   * EXPERIMENTAL optional "class" name used to reconfigure how this feature will render.
+   * WARNING: May not be available on other platforms.
+   */
+  public static final String CLASS_NAME_JSON_FIELD = "class";
+  private final String mClassName;
+
+  /**
    * A post-processed object containing cached information for this path, if keyframed.
    */
   private final KeyFramedPath mKeyFramedPath;
@@ -106,6 +113,7 @@ public class KFFeature {
     public int animationGroup;
     public List<KFAnimation> featureAnimations;
     public KFFeatureEffect effect;
+    public String className;
 
     public KFFeature build() {
       return new KFFeature(
@@ -117,7 +125,8 @@ public class KFFeature {
           timingCurves,
           animationGroup,
           featureAnimations,
-          effect);
+          effect,
+          className);
     }
   }
 
@@ -130,7 +139,8 @@ public class KFFeature {
       float[][][] timingCurves,
       int animationGroup,
       List<KFAnimation> featureAnimations,
-      KFFeatureEffect effect) {
+      KFFeatureEffect effect,
+      String className) {
     mName = name;
     mFillColor = fillColor;
     mStrokeColor = strokeColor;
@@ -146,6 +156,7 @@ public class KFFeature {
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
+    mClassName = className;
 
     mKeyFramedPath = mKeyFrames.isEmpty() ? null : KeyFramedPath.fromFeature(this);
   }
@@ -226,5 +237,9 @@ public class KFFeature {
 
   public KFFeatureEffect getEffect() {
     return mEffect;
+  }
+
+  public String getConfigClassName() {
+    return mClassName;
   }
 }
