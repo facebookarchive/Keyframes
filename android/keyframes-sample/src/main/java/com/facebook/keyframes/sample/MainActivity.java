@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
           Manifest.permission.READ_EXTERNAL_STORAGE,
           Manifest.permission.WRITE_EXTERNAL_STORAGE
   };
+  private KFImage mKfImage;
 
   private void requestPermission() {
     // Check if we have write permission
@@ -112,6 +113,10 @@ public class MainActivity extends Activity {
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
+  public void resetImage(View view) {
+    setKFImage(mKfImage);
+  }
+
   private void clearImage() {
     if (mLikeImageDrawable == null) {
       return;
@@ -123,6 +128,8 @@ public class MainActivity extends Activity {
 
   private void setKFImage(KFImage kfImage) {
     clearImage();
+    mKfImage = kfImage;
+
     final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
     final Matrix robotMatrix = new Matrix();
     if (robotDrawable != null) {
