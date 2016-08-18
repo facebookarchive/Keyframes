@@ -98,7 +98,8 @@ public class KeyframesDrawable extends Drawable
   private float mScaleFromEnd;
   private final Map<String, FeatureConfig> mFeatureConfigs;
 
-  private int mMaxFrameRate = 60;
+
+  private int mMaxFrameRate = -1;
   private long mPreviousFrameTime = 0;
 
   public KeyframesDrawable(KFImage KFImage) {
@@ -263,12 +264,15 @@ public class KeyframesDrawable extends Drawable
    */
   @Override
   public void onProgressUpdate(float frameProgress) {
-    long currentTime = SystemClock.uptimeMillis();
-    int minFrameTime = 1000/mMaxFrameRate;
-    if (currentTime - mPreviousFrameTime < minFrameTime) {
-      return;
+    if (mMaxFrameRate > -1) {
+      long currentTime = SystemClock.uptimeMillis();
+      int minFrameTime = 1000/mMaxFrameRate;
+      if (currentTime - mPreviousFrameTime < minFrameTime) {
+        Log.d(KeyframesDrawable.class.getSimpleName(), "Skipping frame " + frameProgress);
+        return;
+      }
+      mPreviousFrameTime = currentTime;
     }
-    mPreviousFrameTime = currentTime;
     setFrameProgress(frameProgress);
     invalidateSelf();
   }
