@@ -176,6 +176,19 @@ public class KeyframesDrawable extends Drawable
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
+
+      final FeatureConfig config = featureState.getConfig();
+      final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
+      if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
+        canvas.save();
+        canvas.concat(mScaleMatrix);
+        canvas.concat(uniqueFeatureMatrix);
+        config.drawable.setBounds(currBounds.left, currBounds.top, config.drawable.getIntrinsicWidth(), config.drawable.getIntrinsicHeight());
+        config.drawable.draw(canvas);
+        canvas.restore();
+        continue;
+      }
+
       pathToDraw = featureState.getCurrentPathForDrawing();
       if (pathToDraw == null || pathToDraw.isEmpty()) {
         continue;
@@ -312,6 +325,14 @@ public class KeyframesDrawable extends Drawable
     private final Path mPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final Matrix mFeatureMatrix;
+
+    public Matrix getUniqueFeatureMatrix() {
+      if (mFeatureMatrix == mRecyclableTransformMatrix) {
+        // Don't return a matrix unless it's known to be unique for this feature
+        return null;
+      }
+      return mFeatureMatrix;
+    }
 
     // Cached shader vars
     private Shader[] mCachedShaders;
