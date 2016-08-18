@@ -114,7 +114,7 @@ public class KFAnimation {
         PROPERTY_TYPE_JSON_FIELD);
     mAnimationFrames = ArgCheckUtil.checkArg(
         ListHelper.immutableOrEmpty(animationFrames),
-        animationFrames != null && animationFrames.size() > 1,
+        animationFrames != null && animationFrames.size() > 0,
         ANIMATION_FRAMES_JSON_FIELD);
     mTimingCurves = ArgCheckUtil.checkArg(
         timingCurves,
