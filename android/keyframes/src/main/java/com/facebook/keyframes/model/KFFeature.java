@@ -7,9 +7,9 @@
 
 package com.facebook.keyframes.model;
 
-import java.util.List;
-
 import android.graphics.Matrix;
+
+import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -78,14 +78,14 @@ public class KFFeature {
    */
   final KFAnimation mStrokeWidthAnimation;
   /**
-   * The remaining, matrix based animations from the feature_animations set.  Package private for
-   * testing.
+   * The remaining, matrix based animations from the feature_animations set.
+   * Package private for testing.
    */
   final List<KFAnimation> mFeatureMatrixAnimations;
 
   /**
-   * An optional effect that this feature layer can have.  Currently, only a simple linear gradient
-   * is supported.
+   * An optional effect that this feature layer can have.
+   * Currently, only a simple linear gradient is supported.
    */
   public static final String EFFECT_JSON_FIELD = "effects";
   private final KFFeatureEffect mEffect;
@@ -101,7 +101,6 @@ public class KFFeature {
    * A post-processed object containing cached information for this path, if keyframed.
    */
   private final KeyFramedPath mKeyFramedPath;
-
 
   public static class Builder {
     public String name;
