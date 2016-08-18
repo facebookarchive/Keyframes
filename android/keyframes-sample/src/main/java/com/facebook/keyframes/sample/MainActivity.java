@@ -112,7 +112,17 @@ public class MainActivity extends Activity {
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
+  private void clearImage() {
+    if (mLikeImageDrawable == null) {
+      return;
+    }
+    mLikeImageDrawable.stopAnimation();
+    mLikeImageDrawable = null;
+  }
+
+
   private void setKFImage(KFImage kfImage) {
+    clearImage();
     final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
     final Matrix robotMatrix = new Matrix();
     if (robotDrawable != null) {
