@@ -22,6 +22,7 @@ import android.os.SystemClock;
 import android.util.Pair;
 import android.util.SparseArray;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -303,6 +304,21 @@ public class KeyframesDrawable extends Drawable
     invalidateSelf();
   }
 
+  @Override
+  public void onStop() {
+    final OnAnimationEnd onAnimationEnd = mOnAnimationEnd.get();
+    if (onAnimationEnd != null) {
+      onAnimationEnd.onAnimationEnd();
+      mOnAnimationEnd.clear();
+    }
+  }
+
+  private WeakReference<OnAnimationEnd> mOnAnimationEnd;
+
+  public void setAnimationListener(OnAnimationEnd listener) {
+    mOnAnimationEnd = new WeakReference<>(listener);
+  }
+
   private void calculateScaleMatrix(
           float scaleFromCenter,
           float scaleFromEnd,
@@ -458,6 +474,10 @@ public class KeyframesDrawable extends Drawable
       final FeatureConfig config = getConfig();
       return config != null && config.drawable != null;
     }
+  }
+
+  public interface OnAnimationEnd {
+    void onAnimationEnd();
   }
 
   public static class FeatureConfig {

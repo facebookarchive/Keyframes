@@ -26,6 +26,7 @@ public abstract class KeyframesDrawableAnimationCallback {
    */
   public interface FrameListener {
     void onProgressUpdate(float frameProgress);
+    void onStop();
   }
 
   private final WeakReference<FrameListener> mListener;
@@ -90,6 +91,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     cancelCallback();
     mStartTimeMillis = 0;
     mCurrentLoopNumber = -1;
+    mListener.get().onStop();
   }
 
   /**
@@ -110,7 +112,8 @@ public abstract class KeyframesDrawableAnimationCallback {
       mStartTimeMillis = frameTimeMillis;
     }
     int currentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
-    if (mStopAtLoopEnd && currentLoopNumber > mCurrentLoopNumber) {
+    final boolean loopHasEnded = currentLoopNumber > mCurrentLoopNumber;
+    if (mStopAtLoopEnd && loopHasEnded) {
       mListener.get().onProgressUpdate(mFrameCount);
       stop();
       return;
