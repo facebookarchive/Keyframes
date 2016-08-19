@@ -306,11 +306,15 @@ public class KeyframesDrawable extends Drawable
 
   @Override
   public void onStop() {
-    final OnAnimationEnd onAnimationEnd = mOnAnimationEnd.get();
-    if (onAnimationEnd != null) {
-      onAnimationEnd.onAnimationEnd();
-      mOnAnimationEnd.clear();
+    if (mOnAnimationEnd == null) {
+      return;
     }
+    final OnAnimationEnd onAnimationEnd = mOnAnimationEnd.get();
+    if (onAnimationEnd == null) {
+      return;
+    }
+    onAnimationEnd.onAnimationEnd();
+    mOnAnimationEnd.clear();
   }
 
   private WeakReference<OnAnimationEnd> mOnAnimationEnd;
