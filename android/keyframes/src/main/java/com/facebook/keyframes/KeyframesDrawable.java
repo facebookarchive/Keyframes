@@ -309,9 +309,9 @@ public class KeyframesDrawable extends Drawable
     private final KFFeature mFeature;
 
     // Reuseable modifiable objects for drawing
-    private final Path mPath = new Path();
-    private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth =
-            new KeyFramedStrokeWidth.StrokeWidth();
+    private final Path mPath;
+    private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
+    private final Matrix mFeatureMatrix;
 
     // Cached shader vars
     private Shader[] mCachedShaders;
@@ -319,21 +319,36 @@ public class KeyframesDrawable extends Drawable
 
     public FeatureState(KFFeature feature) {
       mFeature = feature;
+      if (hasCustomDrawable()) {
+        mPath = null;
+        mStrokeWidth = null;
+        // Bitmap features use the matrix later in draw()
+        // so there's no way to reuse a globally cached matrix
+        mFeatureMatrix = new Matrix();
+      } else {
+        mPath = new Path();
+        mStrokeWidth = new KeyFramedStrokeWidth.StrokeWidth();
+        // Path features use the matrix immediately
+        // so there's no need to waste memory with a unique copy
+        mFeatureMatrix = mRecyclableTransformMatrix;
+      }
+      assert mFeatureMatrix != null;
     }
 
     public void setupFeatureStateForProgress(float frameProgress) {
-      mFeature.setAnimationMatrix(mRecyclableTransformMatrix, frameProgress);
+      mFeature.setAnimationMatrix(mFeatureMatrix, frameProgress);
       Matrix layerTransformMatrix = mAnimationGroupMatrices.get(mFeature.getAnimationGroup());
 
       if (layerTransformMatrix != null && !layerTransformMatrix.isIdentity()) {
-        mRecyclableTransformMatrix.postConcat(layerTransformMatrix);
+        mFeatureMatrix.postConcat(layerTransformMatrix);
+      }
+      KeyFramedPath path = mFeature.getPath();
+      if (hasCustomDrawable() || path == null) {
+        return; // skip all the path stuff
       }
       mPath.reset();
-      KeyFramedPath path = mFeature.getPath();
-      if (path != null) {
-        path.apply(frameProgress, mPath);
-      }
-      mPath.transform(mRecyclableTransformMatrix);
+      path.apply(frameProgress, mPath);
+      mPath.transform(mFeatureMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
       if (mFeature.getEffect() != null) {
@@ -347,7 +362,7 @@ public class KeyframesDrawable extends Drawable
     }
 
     public float getStrokeWidth() {
-      return mStrokeWidth.getStrokeWidth();
+      return mStrokeWidth != null ? mStrokeWidth.getStrokeWidth() : 0;
     }
 
     public Shader getCurrentShader() {
@@ -401,6 +416,11 @@ public class KeyframesDrawable extends Drawable
     public final FeatureConfig getConfig() {
       if (mFeatureConfigs == null) return null;
       return mFeatureConfigs.get(mFeature.getConfigClassName());
+    }
+
+    private boolean hasCustomDrawable() {
+      final FeatureConfig config = getConfig();
+      return config != null && config.drawable != null;
     }
   }
 
