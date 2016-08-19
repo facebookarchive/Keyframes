@@ -19,7 +19,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -131,18 +130,13 @@ public class MainActivity extends Activity {
     mKfImage = kfImage;
 
     final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
-    final Matrix robotMatrix = new Matrix();
     if (robotDrawable != null) {
-      robotMatrix.setScale(
-              robotDrawable.getIntrinsicWidth() / 40.0f,
-              robotDrawable.getIntrinsicHeight() / 40.0f
+      robotDrawable.setBounds(0, 0, 80, 80);
+      mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
+        Pair.create("love", Pair.create(robotDrawable, new Matrix())),
+        Pair.create("robot", Pair.create(robotDrawable, new Matrix()))
       );
     }
-
-    mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
-            Pair.create("robot", Pair.create(robotDrawable, robotMatrix))
-    );
-    mLikeImageDrawable.setMaxFrameRate(Build.VERSION.SDK_INT < 18 ? 30 : 60);
     mLikeImageDrawable.startAnimation();
 
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);

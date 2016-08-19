@@ -190,7 +190,6 @@ public class KeyframesDrawable extends Drawable
           canvas.save();
           canvas.concat(config.matrix);
         }
-        config.drawable.setBounds(currBounds.left, currBounds.top, config.drawable.getIntrinsicWidth(), config.drawable.getIntrinsicHeight());
         config.drawable.draw(canvas);
         if (shouldApplyMatrix) {
           canvas.restore();
@@ -489,8 +488,15 @@ public class KeyframesDrawable extends Drawable
     final Matrix matrix;
 
     public FeatureConfig(Drawable drawable, Matrix matrix) {
-      this.drawable = drawable;
       this.matrix = matrix;
+      this.drawable = drawable;
+
+      if (BuildConfig.DEBUG && drawable != null) {
+        final Rect bounds = drawable.getBounds();
+        if (bounds.width() <= 0 || bounds.height() <= 0) {
+          throw new IllegalStateException("KeyframesDrawable FeatureConfig Drawable must have bounds set");
+        }
+      }
     }
   }
 }
