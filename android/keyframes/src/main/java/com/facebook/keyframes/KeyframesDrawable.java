@@ -19,10 +19,12 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
+import android.util.Pair;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,6 +103,15 @@ public class KeyframesDrawable extends Drawable
 
   public KeyframesDrawable(KFImage KFImage) {
     this(KFImage, null);
+  }
+
+  @SafeVarargs
+  public static KeyframesDrawable create(KFImage KFImage, Pair<String, Pair<Drawable, Matrix>>... configs) {
+    Map<String, FeatureConfig> configMap = new HashMap<>();
+    for (Pair<String, Pair<Drawable, Matrix>> config : configs) {
+      configMap.put(config.first, new FeatureConfig(config.second.first, config.second.second));
+    }
+    return new KeyframesDrawable(KFImage, configMap);
   }
 
   public KeyframesDrawable(KFImage KFImage, Map<String, FeatureConfig> configs) {

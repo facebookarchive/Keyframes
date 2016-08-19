@@ -17,14 +17,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.*;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import com.facebook.keyframes.KeyframesDrawable;
@@ -113,10 +113,23 @@ public class MainActivity extends Activity {
   }
 
   private void setKFImage(KFImage kfImage) {
-    ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
-    mLikeImageDrawable = new KeyframesDrawable(kfImage);
-    imageView.setImageDrawable(mLikeImageDrawable);
+    final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
+    final Matrix robotMatrix = new Matrix();
+    if (robotDrawable != null) {
+      robotMatrix.setScale(
+              robotDrawable.getIntrinsicWidth() / 40.0f,
+              robotDrawable.getIntrinsicHeight() / 40.0f
+      );
+    }
+
+    mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
+            Pair.create("robot", Pair.create(robotDrawable, robotMatrix))
+    );
+    mLikeImageDrawable.setMaxFrameRate(Build.VERSION.SDK_INT < 18 ? 30 : 60);
     mLikeImageDrawable.startAnimation();
+
+    final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
+    imageView.setImageDrawable(mLikeImageDrawable);
   }
 
   private KFImage getSampleLike() {
