@@ -18,6 +18,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
@@ -95,6 +96,8 @@ public class KeyframesDrawable extends Drawable
   private float mScaleFromEnd;
   private final Map<String, FeatureConfig> mFeatureConfigs;
 
+  private int mMaxFrameRate = 60;
+  private long mPreviousFrameTime = 0;
 
   public KeyframesDrawable(KFImage KFImage) {
     this(KFImage, null);
@@ -249,6 +252,12 @@ public class KeyframesDrawable extends Drawable
    */
   @Override
   public void onProgressUpdate(float frameProgress) {
+    long currentTime = SystemClock.uptimeMillis();
+    int minFrameTime = 1000/mMaxFrameRate;
+    if (currentTime - mPreviousFrameTime < minFrameTime) {
+      return;
+    }
+    mPreviousFrameTime = currentTime;
     setFrameProgress(frameProgress);
     invalidateSelf();
   }
