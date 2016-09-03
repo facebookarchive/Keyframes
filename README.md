@@ -10,41 +10,11 @@ Use of the extraction script requires an installation of **Adobe After Effects**
 
 Simply have the project open in After Effects, open the extraction script provided in `~/scripts` in ExtendScript, and run the script.  The script will iterate through the compositions in the project and output a JSON blob for each composition with the necessary metadata to reconstruct the images.
 
-For simplicity, the library currently supports a small subset of the features included in **Adobe After Effects** for animations.  This means that we only support path based shapes, and have no support for expressions.  See `~/CONTRIBUTING` for how to help us by improving this library!
-
 ### iOS Rendering
 
-#### Cocoapods
-keyframes is available on [CocoaPods](link to edit later once it's published!). 
-Just add the following to your project Profile:
-```
-pod 'keyframes', '~> 1.0'
-```
-#### Framework (manual)
-Check out keyframes-sample-ios project to find out how to add sources manually into your project.
-
-#### Rendering Setup
-Parse json blob into a container, then create KFVector instance with it.
-```
-NSString *filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"sample_like" ofType:@"json" inDirectory:nil];
-NSData *data = [NSData dataWithContentsOfFile:filePath];
-NSDictionary *likeVectorDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-KFVector *likeVector = KFVectorFromDictionary(likeVectorDictionary);
-```
-
-#### Play!
-Once KFVector is ready, create KFVectorLayer, add it to layer hierarchy, then play the animation.
-```
-  KFVectorLayer *likeVectorLayer = [KFVectorLayer new];
-  likeVectorLayer.frame = ...
-  likeVectorLayer.faceModel = likeVector;
-  [self.view.layer addSublayer:likeVectorLayer];
-  [likeVectorLayer startAnimation];
-```
+*Halp, Sean!*
 
 ### Android Rendering
-
-It's important to note that **Keyframes for Android** is only supported for **API 18 (Jellybean MR2) and above**.
 
 #### Download
 
@@ -85,15 +55,6 @@ kfDrawable.startAnimation();
 // Stops the animation when the current animation ends.
 kfDrawable.stopAnimationAtLoopEnd();
 ```
-
-#### Experiment!
-Preview your animation descriptor files in the sample app.
-
-1. Build & install the sample app
-2. Run `android/keyframes-sample/scripts/push-animation.sh $PATH_TO_YOUR_JSON_FILE`
-3. For all connected devices...
-  * The sample app will launch
-  * Your JSON fill will load and begin rendering
 
 ## Understanding Keyframes Model Objects
 
@@ -146,7 +107,3 @@ With these fields from an `Image` object, as well as a progress value, we can bu
 ## Contributing
 
 See `~/CONTRIBUTING` for how to help us by improving this library!
-
-## License
-
-Keyframes is BSD-licensed.  Additional information can be found at `~/LICENSE`
