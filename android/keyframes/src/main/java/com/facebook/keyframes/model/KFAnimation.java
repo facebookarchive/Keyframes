@@ -10,6 +10,7 @@ package com.facebook.keyframes.model;
 import java.util.Comparator;
 import java.util.List;
 
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedMatrixAnimation;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -38,7 +39,9 @@ public class KFAnimation {
   public enum PropertyType {
     SCALE (true),
     ROTATION (true),
-    POSITION (true),
+    X_POSITION (true),
+    Y_POSITION (true),
+    ANCHOR_POINT (false),
     STROKE_WIDTH (false);
 
     /**
@@ -82,12 +85,6 @@ public class KFAnimation {
   private final float[][][] mTimingCurves;
 
   /**
-   * An anchor point, which changes the origin of a matrix based property.
-   */
-  public static final String ANCHOR_JSON_FIELD = "anchor";
-  private final float[] mAnchor;
-
-  /**
    * A post-processed data structure containing cached information for this key frame animation.
    */
   private final KeyFramedObject mKeyFramedAnimation;
@@ -114,20 +111,18 @@ public class KFAnimation {
         PROPERTY_TYPE_JSON_FIELD);
     mAnimationFrames = ArgCheckUtil.checkArg(
         ListHelper.immutableOrEmpty(animationFrames),
-        animationFrames != null && animationFrames.size() > 1,
+        animationFrames != null && animationFrames.size() > 0,
         ANIMATION_FRAMES_JSON_FIELD);
     mTimingCurves = ArgCheckUtil.checkArg(
         timingCurves,
         ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mAnimationFrames.size()),
         TIMING_CURVES_JSON_FIELD);
-    mAnchor = ArgCheckUtil.checkArg(
-        anchor,
-        anchor == null || anchor.length == 2,
-        ANCHOR_JSON_FIELD);
     if (mPropertyType.isMatrixBased()) {
       mKeyFramedAnimation = KeyFramedMatrixAnimation.fromAnimation(this);
     } else if (mPropertyType == PropertyType.STROKE_WIDTH){
       mKeyFramedAnimation = KeyFramedStrokeWidth.fromAnimation(this);
+    } else if (mPropertyType == PropertyType.ANCHOR_POINT) {
+      mKeyFramedAnimation = KeyFramedAnchorPoint.fromAnchorPoint(this);
     } else {
       throw new IllegalArgumentException(
           "Unknown property type for animation post processing: " + mPropertyType);
@@ -144,10 +139,6 @@ public class KFAnimation {
 
   public float[][][] getTimingCurves() {
     return mTimingCurves;
-  }
-
-  public float[] getAnchor() {
-    return mAnchor;
   }
 
   public KeyFramedObject getAnimation() {

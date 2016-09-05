@@ -10,9 +10,12 @@ package com.facebook.keyframes.model;
 import java.util.List;
 
 import android.graphics.Matrix;
+import android.graphics.Paint;
 
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
+import com.facebook.keyframes.util.AnimationHelper;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
@@ -70,6 +73,12 @@ public class KFFeature {
   private final int mAnimationGroup;
 
   /**
+   * The cap the use at the ends of stroke lines.
+   */
+  public static final String STROKE_LINE_CAP_JSON_FIELD = "stroke_line_cap";
+  private final Paint.Cap mStrokeLineCap;
+
+  /**
    * A list of animations to apply to just this feature layer.
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
@@ -82,6 +91,10 @@ public class KFFeature {
    * testing.
    */
   final List<KFAnimation> mFeatureMatrixAnimations;
+  /**
+   * The anchor point for all animations in this feature.
+   */
+  final KFAnimation mAnchorPoint;
 
   /**
    * An optional effect that this feature layer can have.  Currently, only a simple linear gradient
@@ -104,7 +117,9 @@ public class KFFeature {
     public List<KFFeatureFrame> keyFrames;
     public float[][][] timingCurves;
     public int animationGroup;
+    public Paint.Cap strokeLineCap = Paint.Cap.ROUND;
     public List<KFAnimation> featureAnimations;
+    public float[] anchorPoint;
     public KFFeatureEffect effect;
 
     public KFFeature build() {
@@ -116,7 +131,9 @@ public class KFFeature {
           keyFrames,
           timingCurves,
           animationGroup,
+          strokeLineCap,
           featureAnimations,
+          anchorPoint,
           effect);
     }
   }
@@ -129,7 +146,9 @@ public class KFFeature {
       List<KFFeatureFrame> keyFrames,
       float[][][] timingCurves,
       int animationGroup,
+      Paint.Cap strokeLineCap,
       List<KFAnimation> featureAnimations,
+      float[] anchorPoint,
       KFFeatureEffect effect) {
     mName = name;
     mFillColor = fillColor;
@@ -141,39 +160,19 @@ public class KFFeature {
         ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mKeyFrames.size()),
         TIMING_CURVES_JSON_FIELD);
     mAnimationGroup = animationGroup;
+    mStrokeLineCap = strokeLineCap;
 
-    mStrokeWidthAnimation = extractStrokeWidthFromAnimationSet(featureAnimations);
+    mStrokeWidthAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.STROKE_WIDTH);
+    mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.ANCHOR_POINT);
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
 
     mKeyFramedPath = mKeyFrames.isEmpty() ? null : KeyFramedPath.fromFeature(this);
-  }
-
-  /**
-   * Returns a KeyFramedStrokeWidth, if available.  This method modifies the list passed in by
-   * removing the stroke width entry from the list.
-   * @param animations The complete list of feature animations to extract stroke width from
-   * @return a valid KeyFramedStrokeWidth, if found, or a no animation sentinel otherwise
-   */
-  private KFAnimation extractStrokeWidthFromAnimationSet(
-      List<KFAnimation> animations) {
-    if (animations == null) {
-      return null;
-    }
-    int strokeWidthAnimationIndex = -1;
-    for (int i = 0, len = animations.size(); i < len; i++) {
-      if (animations.get(i).getPropertyType() == KFAnimation.PropertyType.STROKE_WIDTH) {
-        // Only case is a stroke width animation, special to feature animation set.  Remove from the
-        // set of matrix based animations and remember the index.
-        strokeWidthAnimationIndex = i;
-        break;
-      }
-    }
-    if (strokeWidthAnimationIndex == -1) {
-      return null;
-    }
-    return animations.remove(strokeWidthAnimationIndex);
   }
 
   public String getName() {
@@ -204,6 +203,10 @@ public class KFFeature {
     return mAnimationGroup;
   }
 
+  public Paint.Cap getStrokeLineCap() {
+    return mStrokeLineCap;
+  }
+
   public void setStrokeWidth(
       KeyFramedStrokeWidth.StrokeWidth strokeWidth,
       float frameProgress) {
@@ -218,6 +221,9 @@ public class KFFeature {
     featureMatrix.reset();
     if (mFeatureMatrixAnimations == null) {
       return;
+    }
+    if (mAnchorPoint != null) {
+      ((KeyFramedAnchorPoint) mAnchorPoint.getAnimation()).apply(featureMatrix);
     }
     for (int i = 0, len = mFeatureMatrixAnimations.size(); i < len; i++) {
       mFeatureMatrixAnimations.get(i).getAnimation().apply(frameProgress, featureMatrix);

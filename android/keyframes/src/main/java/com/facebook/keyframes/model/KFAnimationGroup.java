@@ -7,6 +7,8 @@
 
 package com.facebook.keyframes.model;
 
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.util.AnimationHelper;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
@@ -36,6 +38,8 @@ public class KFAnimationGroup {
   public static final String ANIMATIONS_JSON_FIELD = "animations";
   private final List<KFAnimation> mAnimations;
 
+  private final KFAnimation mAnchorPoint;
+
   public static class Builder {
     public int groupId;
     public int parentGroup;
@@ -56,6 +60,9 @@ public class KFAnimationGroup {
         GROUP_ID_JSON_FIELD);
     mParentGroup = parentGroup;
     ListHelper.sort(animations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
+    mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
+        animations,
+        KFAnimation.PropertyType.ANCHOR_POINT);
     mAnimations = ArgCheckUtil.checkArg(
         ListHelper.immutableOrEmpty(animations),
         animations.size() > 0,
@@ -72,5 +79,9 @@ public class KFAnimationGroup {
 
   public List<KFAnimation> getAnimations() {
     return mAnimations;
+  }
+
+  public KeyFramedAnchorPoint getAnchorPoint() {
+    return (KeyFramedAnchorPoint) mAnchorPoint.getAnimation();
   }
 }
