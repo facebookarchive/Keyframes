@@ -1,6 +1,6 @@
 package com.facebook.keyframes.util;
 
-import android.graphics.Path;
+import com.facebook.keyframes.KFPath;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -193,7 +193,7 @@ public class VectorCommandTest {
 
   @Test
   public void testSimplePathApplication() {
-    Path mockPath = Mockito.mock(Path.class);
+    KFPath mockPath = Mockito.mock(KFPath.class);
     InOrder orderedMock = Mockito.inOrder(mockPath);
 
     // Absolute commands
@@ -223,5 +223,24 @@ public class VectorCommandTest {
     // CubicTo command
     VectorCommand.createVectorCommand("c40,45,50,55,60,65").apply(mockPath);
     orderedMock.verify(mockPath).rCubicTo(40, 45, 50, 55, 60, 65);
+  }
+
+  @Test
+  public void testConvertUp() {
+    float[] startPoint = {10, 10};
+    float[] quadDest = new float[4];
+    float[] cubicDest = new float[6];
+
+    // Line to Quad
+    VectorCommand.convertUp(startPoint, new float[]{20f, 20f}, quadDest);
+    Assert.assertArrayEquals(new float[]{15f, 15f, 20f, 20f}, quadDest, 0.1f);
+
+    // Line to Cubic
+    VectorCommand.convertUp(startPoint, new float[]{20f, 20f}, cubicDest);
+    Assert.assertArrayEquals(new float[]{13.3f, 13.3f, 16.6f, 16.6f, 20f, 20f}, cubicDest, 0.1f);
+
+    // Quad to Cubic
+    VectorCommand.convertUp(startPoint, new float[]{15, 15, 20, 10}, cubicDest);
+    Assert.assertArrayEquals(new float[]{13.3f, 13.3f, 16.6f, 13.3f, 20f, 10f}, cubicDest, 0.1f);
   }
 }

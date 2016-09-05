@@ -10,8 +10,7 @@ package com.facebook.keyframes.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Path;
-
+import com.facebook.keyframes.KFPath;
 import com.facebook.keyframes.util.VectorCommand;
 import com.facebook.keyframes.util.ListHelper;
 
@@ -67,7 +66,7 @@ public class KFFeatureFrame implements HasKeyFrame {
       mVectorCommands = ListHelper.immutableOrEmpty(vectorCommandList);
     }
 
-    public void applyFeature(Path path) {
+    public void applyFeature(KFPath path) {
       for (int i = 0, len = mVectorCommands.size(); i < len; i++) {
         mVectorCommands.get(i).apply(path);
       }
