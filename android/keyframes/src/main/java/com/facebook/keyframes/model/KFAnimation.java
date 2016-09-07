@@ -39,6 +39,7 @@ public class KFAnimation {
   public enum PropertyType {
     SCALE (true),
     ROTATION (true),
+    POSITION (true),
     X_POSITION (true),
     Y_POSITION (true),
     ANCHOR_POINT (false),
@@ -85,6 +86,15 @@ public class KFAnimation {
   private final float[][][] mTimingCurves;
 
   /**
+   * An anchor point, which changes the origin of a matrix based property.
+   * Deprecated in favor of the ANCHOR_POINT animation.
+   */
+  @Deprecated
+  public static final String ANCHOR_JSON_FIELD = "anchor";
+  @Deprecated
+  private final float[] mAnchor;
+
+  /**
    * A post-processed data structure containing cached information for this key frame animation.
    */
   private final KeyFramedObject mKeyFramedAnimation;
@@ -117,6 +127,10 @@ public class KFAnimation {
         timingCurves,
         ArgCheckUtil.checkTimingCurveObjectValidity(timingCurves, mAnimationFrames.size()),
         TIMING_CURVES_JSON_FIELD);
+    mAnchor = ArgCheckUtil.checkArg(
+        anchor,
+        anchor == null || anchor.length == 2,
+        ANCHOR_JSON_FIELD);
     if (mPropertyType.isMatrixBased()) {
       mKeyFramedAnimation = KeyFramedMatrixAnimation.fromAnimation(this);
     } else if (mPropertyType == PropertyType.STROKE_WIDTH){
@@ -139,6 +153,14 @@ public class KFAnimation {
 
   public float[][][] getTimingCurves() {
     return mTimingCurves;
+  }
+
+  /**
+   * Deprecated in favor of the ANCHOR_POINT animation.
+   */
+  @Deprecated
+  public float[] getAnchor() {
+    return mAnchor;
   }
 
   public KeyFramedObject getAnimation() {

@@ -46,6 +46,9 @@ public class KFAnimationDeserializer {
         case KFAnimation.TIMING_CURVES_JSON_FIELD:
           builder.timingCurves = CommonDeserializerHelper.read3DFloatArray(reader);
           break;
+        case KFAnimation.ANCHOR_JSON_FIELD:
+          builder.anchor = CommonDeserializerHelper.readFloatArray(reader);
+          break;
         default:
           reader.skipValue();
       }

@@ -82,6 +82,9 @@ public class KFAnimationGroup {
   }
 
   public KeyFramedAnchorPoint getAnchorPoint() {
+    if (mAnchorPoint == null) {
+      return null;
+    }
     return (KeyFramedAnchorPoint) mAnchorPoint.getAnimation();
   }
 }
