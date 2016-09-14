@@ -8,11 +8,15 @@
 package com.facebook.keyframes;
 
 import android.annotation.TargetApi;
-import android.os.*;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.view.Choreographer;
-import com.facebook.keyframes.model.KFImage;
 
 import java.lang.ref.WeakReference;
+
+import com.facebook.keyframes.model.KFImage;
 
 /**
  * A simple callback that when run, will call back indefinitely with progress updates until
