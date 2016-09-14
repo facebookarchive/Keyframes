@@ -173,6 +173,7 @@ public class KeyframesDrawable extends Drawable
   @Override
   public void draw(Canvas canvas) {
     Rect currBounds = getBounds();
+    canvas.translate(currBounds.left, currBounds.top);
     Path pathToDraw;
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
@@ -229,6 +230,7 @@ public class KeyframesDrawable extends Drawable
       }
 
     }
+    canvas.translate(-currBounds.left, -currBounds.top);
   }
 
   /**
