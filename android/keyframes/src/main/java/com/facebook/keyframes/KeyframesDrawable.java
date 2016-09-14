@@ -103,10 +103,19 @@ public class KeyframesDrawable extends Drawable
   private int mMaxFrameRate = -1;
   private long mPreviousFrameTime = 0;
 
+  /**
+   * Create a new KeyframesDrawable with no FeatureConfigs
+   * @param KFImage
+   */
   public KeyframesDrawable(KFImage KFImage) {
     this(KFImage, null);
   }
 
+  /**
+   * Syntax sugar for creating a new KeyframesDrawable with FeatureConfigs
+   * @param KFImage
+   * @param Pair<String, Pair<Drawable, Matrix>>
+   */
   @SafeVarargs
   public static KeyframesDrawable create(KFImage KFImage, Pair<String, Pair<Drawable, Matrix>>... configs) {
     Map<String, FeatureConfig> configMap = new HashMap<>();
@@ -116,6 +125,11 @@ public class KeyframesDrawable extends Drawable
     return new KeyframesDrawable(KFImage, configMap);
   }
 
+  /**
+   * Create a new KeyframesDrawable with FeatureConfigs
+   * @param KFImage
+   * @param Map<String, FeatureConfig>
+   */
   public KeyframesDrawable(KFImage KFImage, Map<String, FeatureConfig> configs) {
     mKFImage = KFImage;
     mFeatureConfigs = configs == null ? null : Collections.unmodifiableMap(configs);
@@ -257,13 +271,16 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Starts the animation callbacks for this drawable.  A corresponding call to
-   * {@link #stopAnimationAtLoopEnd()} needs to be called eventually, or the callback will continue
-   * to post callbacks for this drawable indefinitely.
+   * {@link #stopAnimationAtLoopEnd()} or {@link #stopAnimation()} needs to be called eventually,
+   * or the callback will continue to post callbacks for this drawable indefinitely.
    */
   public void startAnimation() {
     mKeyframesDrawableAnimationCallback.start();
   }
 
+  /**
+   * Stops the animation callbacks for this drawable immediately.
+   */
   public void stopAnimation() {
     mKeyframesDrawableAnimationCallback.stop();
   }
@@ -350,6 +367,10 @@ public class KeyframesDrawable extends Drawable
     mScaleMatrix.invert(mInverseScaleMatrix);
   }
 
+  /**
+   * Cap the frame rate to a specific FPS. Consider using this for low end devices.
+   * @param maxFrameRate
+   */
   public void setMaxFrameRate(int maxFrameRate) {
     mMaxFrameRate = maxFrameRate;
   }
@@ -485,6 +506,9 @@ public class KeyframesDrawable extends Drawable
     void onAnimationEnd();
   }
 
+  /**
+   * Config options define runtime overrides for specific KFFeature behaviors
+   */
   public static class FeatureConfig {
     final Drawable drawable;
     final Matrix matrix;
