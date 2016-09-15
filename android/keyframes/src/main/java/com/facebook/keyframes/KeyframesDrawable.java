@@ -13,7 +13,6 @@ import android.graphics.ColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Shader;
@@ -90,8 +89,7 @@ public class KeyframesDrawable extends Drawable
    * The X and Y scales to be used, calculated from the set dimensions compared with the exported
    * canvas size of the image.
    */
-  private float mXScale;
-  private float mYScale;
+  private float mScale;
   /**
    * See {@link mScaleMatrix} comment about removing these.
    */
@@ -157,7 +155,7 @@ public class KeyframesDrawable extends Drawable
   }
 
   /**
-   * Sets the bounds of this drawable.  Here, we calculate vlaues needed to scale the image from the
+   * Sets the bounds of this drawable.  Here, we calculate values needed to scale the image from the
    * size it was when exported to a size to be drawn on the Android canvas.
    */
   @Override
@@ -166,8 +164,10 @@ public class KeyframesDrawable extends Drawable
     mSetWidth = right - left;
     mSetHeight = bottom - top;
 
-    mXScale = (float) mSetWidth / mKFImage.getCanvasSize()[0];
-    mYScale = (float) mSetWidth / mKFImage.getCanvasSize()[1];
+    float idealXScale = (float) mSetWidth / mKFImage.getCanvasSize()[0];
+    float idealYScale = (float) mSetHeight / mKFImage.getCanvasSize()[1];
+
+    mScale = Math.min(idealXScale, idealYScale);
     setFrameProgress(0);
     calculateScaleMatrix(1, 1, ScaleDirection.UP);
   }
@@ -188,7 +188,7 @@ public class KeyframesDrawable extends Drawable
   public void draw(Canvas canvas) {
     Rect currBounds = getBounds();
     canvas.translate(currBounds.left, currBounds.top);
-    Path pathToDraw;
+    KFPath pathToDraw;
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
@@ -224,12 +224,12 @@ public class KeyframesDrawable extends Drawable
         if (featureState.getCurrentShader() == null) {
           mDrawingPaint.setColor(featureState.getFillColor());
           pathToDraw.transform(mScaleMatrix);
-          canvas.drawPath(pathToDraw, mDrawingPaint);
+          canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
           pathToDraw.transform(mInverseScaleMatrix);
         } else {
           mDrawingPaint.setShader(featureState.getCurrentShader());
           canvas.concat(mScaleMatrix);
-          canvas.drawPath(pathToDraw, mDrawingPaint);
+          canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
           canvas.concat(mInverseScaleMatrix);
         }
       }
@@ -237,9 +237,9 @@ public class KeyframesDrawable extends Drawable
         mDrawingPaint.setColor(featureState.getStrokeColor());
         mDrawingPaint.setStyle(Paint.Style.STROKE);
         mDrawingPaint.setStrokeWidth(
-                featureState.getStrokeWidth() * mXScale * mScaleFromCenter * mScaleFromEnd);
+                featureState.getStrokeWidth() * mScale * mScaleFromCenter * mScaleFromEnd);
         pathToDraw.transform(mScaleMatrix);
-        canvas.drawPath(pathToDraw, mDrawingPaint);
+        canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
         pathToDraw.transform(mInverseScaleMatrix);
       }
 
@@ -350,7 +350,7 @@ public class KeyframesDrawable extends Drawable
       return;
     }
 
-    mScaleMatrix.setScale(mXScale, mYScale);
+    mScaleMatrix.setScale(mScale, mScale);
     if (scaleFromCenter == 1 && scaleFromEnd == 1) {
       mScaleFromCenter = 1;
       mScaleFromEnd = 1;
@@ -379,7 +379,7 @@ public class KeyframesDrawable extends Drawable
     private final KFFeature mFeature;
 
     // Reuseable modifiable objects for drawing
-    private final Path mPath;
+    private final KFPath mPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final Matrix mFeatureMatrix;
 
@@ -404,7 +404,7 @@ public class KeyframesDrawable extends Drawable
         // so there's no way to reuse a globally cached matrix
         mFeatureMatrix = new Matrix();
       } else {
-        mPath = new Path();
+        mPath = new KFPath();
         mStrokeWidth = new KeyFramedStrokeWidth.StrokeWidth();
         // Path features use the matrix immediately
         // so there's no need to waste memory with a unique copy
@@ -435,7 +435,7 @@ public class KeyframesDrawable extends Drawable
       mCurrentShader = getNearestShaderForFeature(frameProgress);
     }
 
-    public Path getCurrentPathForDrawing() {
+    public KFPath getCurrentPathForDrawing() {
       return mPath;
     }
 
