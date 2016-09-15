@@ -10,7 +10,7 @@ package com.facebook.keyframes.util;
 
 import java.util.Locale;
 
-import android.graphics.Path;
+import com.facebook.keyframes.KFPath;
 
 public abstract class VectorCommand {
 
@@ -106,6 +106,59 @@ public abstract class VectorCommand {
     return command.argCount == args.length;
   }
 
+  /**
+   * This function converts a lower order argument array to a higher one.
+   * @param fromArgs The original arguments
+   * @param destArgs The array to convert fromArgs upwards into
+   * @return destArgs representing the original arguments in higher order form.
+   */
+  public static float[] convertUp(float[] startPoint, float[] fromArgs, float[] destArgs) {
+    if (fromArgs.length >= destArgs.length) {
+      throw new IllegalArgumentException("convertUp should only be called to convert a lower " +
+          "order argument array to a higher one.");
+    }
+    if (fromArgs.length == 2) {
+      if (destArgs.length == 4) {
+        destArgs[0] = (startPoint[0] + fromArgs[0]) / 2f;
+        destArgs[1] = (startPoint[1] + fromArgs[1]) / 2f;
+        destArgs[2] = fromArgs[0];
+        destArgs[3] = fromArgs[1];
+      } else if (destArgs.length == 6) {
+        destArgs[0] = startPoint[0] + (fromArgs[0] - startPoint[0]) / 3f;
+        destArgs[1] = startPoint[1] + (fromArgs[1] - startPoint[1]) / 3f;
+        destArgs[2] = fromArgs[0] + (startPoint[0] - fromArgs[0]) / 3f;
+        destArgs[3] = fromArgs[1] + (startPoint[1] - fromArgs[1]) / 3f;
+        destArgs[4] = fromArgs[0];
+        destArgs[5] = fromArgs[1];
+      } else {
+        throw new IllegalArgumentException(String.format(
+            "Unknown conversion from %d args to %d",
+            fromArgs.length,
+            destArgs.length));
+      }
+    } else if (fromArgs.length == 4) {
+      if (destArgs.length == 6) {
+        destArgs[0] = startPoint[0] + 2f / 3f * (fromArgs[0] - startPoint[0]);
+        destArgs[1] = startPoint[1] + 2f / 3f * (fromArgs[1] - startPoint[1]);
+        destArgs[2] = fromArgs[2] + 2f / 3f * (fromArgs[0] - fromArgs[2]);
+        destArgs[3] = fromArgs[3] + 2f / 3f * (fromArgs[1] - fromArgs[3]);
+        destArgs[4] = fromArgs[2];
+        destArgs[5] = fromArgs[3];
+      } else {
+        throw new IllegalArgumentException(String.format(
+            "Unknown conversion from %d args to %d",
+            fromArgs.length,
+            destArgs.length));
+      }
+    } else {
+      throw new IllegalArgumentException(String.format(
+          "Unknown conversion from %d args to %d",
+          fromArgs.length,
+          destArgs.length));
+    }
+    return destArgs;
+  }
+
   final ArgFormat mArgFormat;
   final float[] mArgs;
 
@@ -119,28 +172,61 @@ public abstract class VectorCommand {
   /**
    * Applies this command to the path.
    */
-  public abstract void apply(Path path);
+  public abstract void apply(KFPath path);
 
   /**
    * A protected method that essentially is a 'static' method describing how to apply this command,
    * given a set of arguments and the format of the arguments, to a path.  This allows us to have a
    * generic interpolate method for all commands.
    */
-  protected abstract void applyInner(Path path, ArgFormat format, float[] args);
+  protected abstract void applyInner(KFPath path, ArgFormat format, float[] args);
+
+  /**
+   * Returns the number of arguments for this particular vector command.
+   */
+  private int getArgumentCount() {
+    return mArgs.length;
+  }
 
   /**
    * Calculates the path from transitioning from current path to the passed in path given the
    * current progress, then writes the result into the destPath.  The two commands must be the same.
    */
   public void interpolate(
-      VectorCommand command,
+      VectorCommand toCommand,
       float progress,
-      Path destPath) {
-    float[] interpolatedArgs = getRecyclableArgArray();
-    for (int i = 0, len = mArgs.length; i < len; i++) {
-      interpolatedArgs[i] = interpolateValue(mArgs[i], command.mArgs[i], progress);
+      KFPath destPath) {
+    if (mArgFormat != toCommand.mArgFormat) {
+      throw new IllegalArgumentException(
+          "Argument format must match between interpolated commands. RELATIVE and ABSOLUTE " +
+              "coordinates should stay consistent");
     }
-    applyInner(destPath, mArgFormat, interpolatedArgs);
+    float[] fromArgs;
+    float[] toArgs;
+    float[] destArgs;
+    VectorCommand higherOrderCommand;
+    if (this.getArgumentCount() > toCommand.getArgumentCount()) {
+      // This command is higher order than toCommand.
+      fromArgs = mArgs;
+      toArgs = convertUp(destPath.getLastPoint(), toCommand.mArgs, getRecyclableArgArray());
+      destArgs = getRecyclableArgArray();
+      higherOrderCommand = this;
+    } else if (this.getArgumentCount() < toCommand.getArgumentCount()) {
+      // This command is a lower order than toCommand
+      fromArgs = convertUp(destPath.getLastPoint(), mArgs, toCommand.getRecyclableArgArray());
+      toArgs = toCommand.mArgs;
+      destArgs = toCommand.getRecyclableArgArray();
+      higherOrderCommand = toCommand;
+    } else {
+      fromArgs = mArgs;
+      toArgs = toCommand.mArgs;
+      destArgs = getRecyclableArgArray();
+      higherOrderCommand = this;
+    }
+    for (int i = 0, len = mArgs.length; i < len; i++) {
+      destArgs[i] = interpolateValue(fromArgs[i], toArgs[i], progress);
+    }
+    higherOrderCommand.applyInner(destPath, mArgFormat, destArgs);
   }
 
   private float[] getRecyclableArgArray() {
@@ -157,12 +243,12 @@ public abstract class VectorCommand {
     }
 
     @Override
-    public void apply(Path path) {
+    public void apply(KFPath path) {
       applyInner(path, mArgFormat, mArgs);
     }
 
     @Override
-    protected void applyInner(Path path, ArgFormat format, float[] args) {
+    protected void applyInner(KFPath path, ArgFormat format, float[] args) {
       switch (format) {
         case RELATIVE: {
           path.rMoveTo(args[0], args[1]);
@@ -180,6 +266,18 @@ public abstract class VectorCommand {
         }
       }
     }
+
+    @Override
+    public void interpolate(
+        VectorCommand toCommand,
+        float progress,
+        KFPath destPath) {
+      if (!(toCommand instanceof MoveToCommand)) {
+        throw new IllegalArgumentException("MoveToCommand should only be interpolated with other " +
+            "instances of MoveToCommand");
+      }
+      super.interpolate(toCommand, progress, destPath);
+    }
   }
 
   public static class QuadraticToCommand extends VectorCommand {
@@ -189,12 +287,12 @@ public abstract class VectorCommand {
     }
 
     @Override
-    public void apply(Path path) {
+    public void apply(KFPath path) {
       applyInner(path, mArgFormat, mArgs);
     }
 
     @Override
-    protected void applyInner(Path path, ArgFormat format, float[] args) {
+    protected void applyInner(KFPath path, ArgFormat format, float[] args) {
       switch (format) {
         case RELATIVE: {
           path.rQuadTo(
@@ -229,12 +327,12 @@ public abstract class VectorCommand {
     }
 
     @Override
-    public void apply(Path path) {
+    public void apply(KFPath path) {
       applyInner(path, mArgFormat, mArgs);
     }
 
     @Override
-    protected void applyInner(Path path, ArgFormat format, float[] args) {
+    protected void applyInner(KFPath path, ArgFormat format, float[] args) {
       switch (format) {
         case RELATIVE: {
           path.rCubicTo(
@@ -273,12 +371,12 @@ public abstract class VectorCommand {
     }
 
     @Override
-    public void apply(Path path) {
+    public void apply(KFPath path) {
       applyInner(path, mArgFormat, mArgs);
     }
 
     @Override
-    protected void applyInner(Path path, ArgFormat format, float[] args) {
+    protected void applyInner(KFPath path, ArgFormat format, float[] args) {
       switch (format) {
         case RELATIVE: {
           path.rLineTo(args[0], args[1]);

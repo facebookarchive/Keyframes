@@ -9,8 +9,7 @@ package com.facebook.keyframes.model.keyframedmodels;
 
 import java.util.List;
 
-import android.graphics.Path;
-
+import com.facebook.keyframes.KFPath;
 import com.facebook.keyframes.model.KFFeature;
 import com.facebook.keyframes.model.KFFeatureFrame;
 
@@ -19,7 +18,7 @@ import com.facebook.keyframes.model.KFFeatureFrame;
  * includes the commands to draw a shape at each given key frame.  This is a post-process object
  * used for KFFeature.
  */
-public class KeyFramedPath extends KeyFramedObject<KFFeatureFrame, Path> {
+public class KeyFramedPath extends KeyFramedObject<KFFeatureFrame, KFPath> {
 
   /**
    * Constructs a KeyFramedPath from a {@link KFFeature}.
@@ -44,7 +43,7 @@ public class KeyFramedPath extends KeyFramedObject<KFFeatureFrame, Path> {
       KFFeatureFrame stateA,
       KFFeatureFrame stateB,
       float interpolationValue,
-      Path modifiable) {
+      KFPath modifiable) {
     if (stateB == null || interpolationValue == 0) {
       stateA.getShapeData().applyFeature(modifiable);
       return;
