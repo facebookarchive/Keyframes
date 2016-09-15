@@ -132,6 +132,9 @@ public class KFImage {
       KFAnimationGroup group = mAnimationGroups.get(groupIndex);
       matrix = matrixMap.get(group.getGroupId());
       matrix.reset();
+      if (group.getAnchorPoint() != null) {
+        group.getAnchorPoint().apply(matrix);
+      }
       for (int animationIndex = 0, animationsLen = group.getAnimations().size();
            animationIndex < animationsLen;
            animationIndex++) {

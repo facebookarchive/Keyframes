@@ -42,7 +42,9 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
 
   /**
    * The origin for this matrix animation.
+   * Deprecated in favor of the ANCHOR_POINT animation.
    */
+  @Deprecated
   private final float[] mAnchor;
 
   private KeyFramedMatrixAnimation(
@@ -52,8 +54,9 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
       float[] anchor) {
     super(objects, timingCurves);
     mPropertyType = propertyType;
-    mAnchor = anchor != null ? anchor : new float[2];
 
+    // Deprecated anchor behavior below
+    mAnchor = anchor != null ? anchor : new float[2];
     if (propertyType == KFAnimation.PropertyType.POSITION) {
       // Translations are special cased relative transforms.
       mAnchor[0] = objects.get(0).getData()[0];
@@ -86,6 +89,12 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
       case POSITION:
         applyPosition(stateA, stateB, interpolationValue, modifiable);
         break;
+      case X_POSITION:
+        applyXPosition(stateA, stateB, interpolationValue, modifiable);
+        break;
+      case Y_POSITION:
+        applyYPosition(stateA, stateB, interpolationValue, modifiable);
+        break;
       default:
         throw new UnsupportedOperationException(
             "Cannot apply matrix transformation to " + mPropertyType);
@@ -93,8 +102,7 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
   }
 
   /**
-   * This method applies a rotational transform to the matrix.  The anchor points determine where
-   * the rotation is centered around.
+   * This method applies a rotational transform to the matrix, interpolated between two states.
    */
   private void applyRotation(
       KFAnimationFrame stateA,
@@ -102,20 +110,19 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
       float interpolationValue,
       Matrix modifiable) {
     if (stateB == null) {
-      modifiable.postRotate(stateA.getData()[0], mAnchor[0], mAnchor[1]);
+      modifiable.postRotate(stateA.getData()[0]);
       return;
     }
     float rotationStart = stateA.getData()[0];
     float rotationEnd = stateB.getData()[0];
     modifiable.postRotate(
         interpolateValue(rotationStart, rotationEnd, interpolationValue),
-        mAnchor[0],
-        mAnchor[1]);
+        mAnchor != null ? mAnchor[0] : 0,
+        mAnchor != null ? mAnchor[1] : 0);
   }
 
   /**
-   * This method applies a scale transformation to the matrix.  The anchor points determine where
-   * the original of scaling is.
+   * This method applies a scale transformation to the matrix, interpolated between two states.
    */
   private void applyScale(
       KFAnimationFrame stateA,
@@ -125,9 +132,7 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
     if (stateB == null) {
       modifiable.postScale(
           stateA.getData()[0] / 100f,
-          stateA.getData()[1] / 100f,
-          mAnchor[0],
-          mAnchor[1]);
+          stateA.getData()[1] / 100f);
       return;
     }
     float scaleStartX = stateA.getData()[0];
@@ -137,8 +142,48 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
     modifiable.postScale(
         interpolateValue(scaleStartX, scaleEndX, interpolationValue) / 100f,
         interpolateValue(scaleStartY, scaleEndY, interpolationValue) / 100f,
-        mAnchor[0],
-        mAnchor[1]);
+        mAnchor != null ? mAnchor[0] : 0,
+        mAnchor != null ? mAnchor[1] : 0);
+  }
+
+  /**
+   * This method applies an X translation transformation to the matrix, interpolated between two
+   * states.
+   */
+  private void applyXPosition(
+      KFAnimationFrame stateA,
+      KFAnimationFrame stateB,
+      float interpolationValue,
+      Matrix modifiable) {
+    if (stateB == null) {
+      modifiable.postTranslate(stateA.getData()[0], 0);
+      return;
+    }
+    float translationStartX = stateA.getData()[0];
+    float translationEndX = stateB.getData()[0];
+    modifiable.setTranslate(
+        interpolateValue(translationStartX, translationEndX, interpolationValue),
+        0);
+  }
+
+  /**
+   * This method applies a Y translation transformation to the matrix, interpolated between two
+   * states.
+   */
+  private void applyYPosition(
+      KFAnimationFrame stateA,
+      KFAnimationFrame stateB,
+      float interpolationValue,
+      Matrix modifiable) {
+    if (stateB == null) {
+      modifiable.postTranslate(0, stateA.getData()[0]);
+      return;
+    }
+    float translationStartY = stateA.getData()[0];
+    float translationEndY = stateB.getData()[0];
+    modifiable.postTranslate(
+        0,
+        interpolateValue(translationStartY, translationEndY, interpolationValue));
   }
 
   /**
@@ -146,7 +191,10 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
    * translation animation are special cased to be relative to the position of the first frame
    * of this animation.  This means that if the translation for the first frame is 80x, 80y, and the
    * translation for the second key frame is 90x, 70y, the resulting translation is 10x, -10y.
+   *
+   * Deprecated in favor of X_POSITION and Y_POSITION transforms.
    */
+  @Deprecated
   private void applyPosition(
       KFAnimationFrame stateA,
       KFAnimationFrame stateB,
