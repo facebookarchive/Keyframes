@@ -8,8 +8,10 @@
 package com.facebook.keyframes.deserializers;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.JsonReader;
 
 import com.facebook.keyframes.model.KFFeature;
@@ -62,6 +64,9 @@ public class KFFeatureDeserializer {
           break;
         case KFFeature.EFFECT_JSON_FIELD:
           builder.effect = KFFeatureEffectDeserializer.readObject(reader);
+          break;
+        case KFFeature.STROKE_LINE_CAP_JSON_FIELD:
+          builder.strokeLineCap = Paint.Cap.valueOf(reader.nextString().toUpperCase(Locale.US));
           break;
         default:
           reader.skipValue();

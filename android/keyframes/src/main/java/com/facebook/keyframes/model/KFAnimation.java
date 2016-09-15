@@ -10,6 +10,7 @@ package com.facebook.keyframes.model;
 import java.util.Comparator;
 import java.util.List;
 
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedMatrixAnimation;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -39,6 +40,9 @@ public class KFAnimation {
     SCALE (true),
     ROTATION (true),
     POSITION (true),
+    X_POSITION (true),
+    Y_POSITION (true),
+    ANCHOR_POINT (false),
     STROKE_WIDTH (false);
 
     /**
@@ -83,8 +87,11 @@ public class KFAnimation {
 
   /**
    * An anchor point, which changes the origin of a matrix based property.
+   * Deprecated in favor of the ANCHOR_POINT animation.
    */
+  @Deprecated
   public static final String ANCHOR_JSON_FIELD = "anchor";
+  @Deprecated
   private final float[] mAnchor;
 
   /**
@@ -114,7 +121,7 @@ public class KFAnimation {
         PROPERTY_TYPE_JSON_FIELD);
     mAnimationFrames = ArgCheckUtil.checkArg(
         ListHelper.immutableOrEmpty(animationFrames),
-        animationFrames != null && animationFrames.size() > 1,
+        animationFrames != null && animationFrames.size() > 0,
         ANIMATION_FRAMES_JSON_FIELD);
     mTimingCurves = ArgCheckUtil.checkArg(
         timingCurves,
@@ -128,6 +135,8 @@ public class KFAnimation {
       mKeyFramedAnimation = KeyFramedMatrixAnimation.fromAnimation(this);
     } else if (mPropertyType == PropertyType.STROKE_WIDTH){
       mKeyFramedAnimation = KeyFramedStrokeWidth.fromAnimation(this);
+    } else if (mPropertyType == PropertyType.ANCHOR_POINT) {
+      mKeyFramedAnimation = KeyFramedAnchorPoint.fromAnchorPoint(this);
     } else {
       throw new IllegalArgumentException(
           "Unknown property type for animation post processing: " + mPropertyType);
@@ -146,6 +155,10 @@ public class KFAnimation {
     return mTimingCurves;
   }
 
+  /**
+   * Deprecated in favor of the ANCHOR_POINT animation.
+   */
+  @Deprecated
   public float[] getAnchor() {
     return mAnchor;
   }

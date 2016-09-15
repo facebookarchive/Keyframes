@@ -15,7 +15,7 @@ public class ModelTests {
     builder.groupId = 1;
     builder.animations = Arrays.asList(
         createDummyAnimationOfType(KFAnimation.PropertyType.ROTATION),
-        createDummyAnimationOfType(KFAnimation.PropertyType.POSITION),
+        createDummyAnimationOfType(KFAnimation.PropertyType.X_POSITION),
         createDummyAnimationOfType(KFAnimation.PropertyType.SCALE));
     KFAnimationGroup group = builder.build();
 
@@ -26,7 +26,7 @@ public class ModelTests {
         KFAnimation.PropertyType.ROTATION,
         group.getAnimations().get(1).getPropertyType());
     Assert.assertEquals(
-        KFAnimation.PropertyType.POSITION,
+        KFAnimation.PropertyType.X_POSITION,
         group.getAnimations().get(2).getPropertyType());
   }
 
@@ -40,7 +40,7 @@ public class ModelTests {
     builder.featureAnimations = new ArrayList<>(Arrays.asList(
         createDummyAnimationOfType(KFAnimation.PropertyType.ROTATION),
         dummyStrokeWidth,
-        createDummyAnimationOfType(KFAnimation.PropertyType.POSITION),
+        createDummyAnimationOfType(KFAnimation.PropertyType.X_POSITION),
         createDummyAnimationOfType(KFAnimation.PropertyType.SCALE)));
     KFFeature feature = builder.build();
 
@@ -52,7 +52,7 @@ public class ModelTests {
         KFAnimation.PropertyType.ROTATION,
         feature.mFeatureMatrixAnimations.get(1).getPropertyType());
     Assert.assertEquals(
-        KFAnimation.PropertyType.POSITION,
+        KFAnimation.PropertyType.X_POSITION,
         feature.mFeatureMatrixAnimations.get(2).getPropertyType());
     Assert.assertEquals(
         dummyStrokeWidth,

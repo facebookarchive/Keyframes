@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
   private KFImage getSampleLike() {
     InputStream stream = null;
     try {
-      stream = getResources().getAssets().open("sample_anger_temp");
+      stream = getResources().getAssets().open("sample_file");
       KFImage likeImage = KFImageDeserializer.deserialize(stream);
       return likeImage;
     } catch (IOException e) {

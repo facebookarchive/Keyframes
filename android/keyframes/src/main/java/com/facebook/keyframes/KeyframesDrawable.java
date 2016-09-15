@@ -85,9 +85,6 @@ public class KeyframesDrawable extends Drawable
    * canvas size of the image.
    */
   private float mScale;
-  /**
-   * See {@link mScaleMatrix} comment about removing these.
-   */
   private float mScaleFromCenter;
   private float mScaleFromEnd;
 
@@ -158,6 +155,7 @@ public class KeyframesDrawable extends Drawable
         continue;
       }
       mDrawingPaint.setShader(null);
+      mDrawingPaint.setStrokeCap(featureState.getStrokeLineCap());
       if (featureState.getFillColor() != Color.TRANSPARENT) {
         mDrawingPaint.setStyle(Paint.Style.FILL);
         if (featureState.getCurrentShader() == null) {
@@ -325,6 +323,10 @@ public class KeyframesDrawable extends Drawable
 
     public int getFillColor() {
       return mFeature.getFillColor();
+    }
+
+    public Paint.Cap getStrokeLineCap() {
+      return mFeature.getStrokeLineCap();
     }
 
     private void prepareShadersForFeature(KFFeature feature) {
