@@ -102,11 +102,11 @@ Preview your animation descriptor files in the sample app.
 An `Image` in Keyframes consists of a number of important fields, which together, describe an animated and scalable image.  At the top level, an image contains information about how to scale (`canvas_size`) an image, as well as how to play back an animation at the correct speed (`frame_rate`, `frame_count`).  The animation itself is not bound to the discrete `frame_rate` that the image was extracted at, as the Keyframes rendering library supports fractional frames.  In addition to these global parameters of an `Image`, an `Image` also contains a number of `Feature`s, which describe different shapes to be drawn, as well as `Animation Group`s, which describe transforms that can be applied to multiple `Feature`s or even other `Animation Group`s at once.
 
 Let's break down this simple image of a star against a circle scaling up and down.  The animation was exported at 24FPS, and the frame number is shown in the top left corner as well as the scale of the star on the bottom.
-![Star, Real Time](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-realtime.gif)
+![Star, Real Time](/docs/images/doc-star-realtime.gif)
 
 Let's slow that down a bit, frame by frame.
 
-![Star, Slowwwww](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-slow.gif)
+![Star, Slowwwww](/docs/images/doc-star-slow.gif)
 
 ### **Features**
 
@@ -118,8 +118,8 @@ A shape is any list of line drawing commands, which strung together, describe a 
 
 Here are the important shapes for the above image, along with vertices (squares) and control points (circles), if relevant.
 
-![Circle Shape](https://github.com/facebook/keyframes/raw/master/docs/images/doc-circle-shape.png)
-![Star Shape](https://github.com/facebook/keyframes/raw/master/docs/images/doc-star-shape.png)
+![Circle Shape](/docs/images/doc-circle-shape.png)
+![Star Shape](/docs/images/doc-star-shape.png)
 
 ### **Animations**
 
@@ -137,7 +137,7 @@ The values of a transform of an animation and how they change during the playbac
 
 For our scaling star image, the graph of scale change over time looks like this, with vertices and timing curve in/out values shown.
 
-![Scale Animation Curve](https://github.com/facebook/keyframes/raw/master/docs/images/doc-scale-curve.png)
+![Scale Animation Curve](/docs/images/doc-scale-curve.png)
 
 ### **Tying it all together**
 
