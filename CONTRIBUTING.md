@@ -3,7 +3,10 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 ## Our Development Process
-... (in particular how this is synced with internal changes to the project)
+We work directly in the github project and provide versioned releases
+appropriate for major milestones and minor bug fixes or improvements.  GitHub
+is used directly for issues and pull requests and the developers actively
+respond to requests.
 
 ## Pull Requests
 We actively welcome your pull requests.
@@ -31,9 +34,8 @@ outlined on that page and do not file a public issue.
 
 ## Coding Style  
 * 2 spaces for indentation rather than tabs
-* 80 character line length
-* ...
-
-## License
-By contributing to Keyframes, you agree that your contributions will be licensed
-under its BSD license.
+* Line wrapping indents 4 spaces
+* 100 character line length
+* One parameter per line when line wrapping is required
+* Use the `m` member variable prefix for private fields
+* Opening braces to appear on the same line as code

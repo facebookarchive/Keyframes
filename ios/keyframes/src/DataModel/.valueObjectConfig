@@ -1,2 +1,5 @@
 {
+  "customPluginPaths": [
+    "remodel-plugins/fb-copyright-header-comment.js"
+  ]
 }
