@@ -165,7 +165,6 @@ public class KeyframesDrawable extends Drawable
     float idealYScale = (float) mSetHeight / mKFImage.getCanvasSize()[1];
 
     mScale = Math.min(idealXScale, idealYScale);
-    setFrameProgress(0);
     calculateScaleMatrix(1, 1, ScaleDirection.UP);
   }
 
