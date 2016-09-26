@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49A85F1D1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */; };
+		49A85F1E1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */; };
 		AD205EB11D2C5A2100AE89A1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD205EB01D2C5A2100AE89A1 /* Info.plist */; };
 		AD46D2FE1D3041AD0008AF78 /* keyframesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AD46D2FD1D3041AD0008AF78 /* keyframesTests.m */; };
 		AD46D3001D3041AD0008AF78 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBA24B01D2C3C9400D2549E /* keyframes.framework */; };
@@ -65,6 +67,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorBitmapFeatureLayer.h; sourceTree = "<group>"; };
+		49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorBitmapFeatureLayer.m; sourceTree = "<group>"; };
 		AD205EB01D2C5A2100AE89A1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		AD46D2FB1D3041AD0008AF78 /* keyframesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = keyframesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD46D2FD1D3041AD0008AF78 /* keyframesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = keyframesTests.m; sourceTree = "<group>"; };
@@ -206,6 +210,8 @@
 			children = (
 				AD8E72651D2C3DB100E3BA9D /* KFVectorAnimationLayer.h */,
 				AD8E72661D2C3DB100E3BA9D /* KFVectorAnimationLayer.m */,
+				49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */,
+				49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */,
 				AD8E72671D2C3DB100E3BA9D /* KFVectorFeatureLayer.h */,
 				AD8E72681D2C3DB100E3BA9D /* KFVectorFeatureLayer.m */,
 				AD8E72691D2C3DB100E3BA9D /* KFVectorFeatureLayerInterface.h */,
@@ -277,6 +283,7 @@
 				AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */,
 				AD8E72971D2C3DB100E3BA9D /* KFVectorLayer.h in Headers */,
 				AD8E729D1D2C3DB100E3BA9D /* KFVectorParsingHelper.h in Headers */,
+				49A85F1D1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h in Headers */,
 				AD8E72991D2C3DB100E3BA9D /* KFVectorLayerHelper.h in Headers */,
 				AD8E72901D2C3DB100E3BA9D /* KFVectorAnimationLayer.h in Headers */,
 				AD8E72921D2C3DB100E3BA9D /* KFVectorFeatureLayer.h in Headers */,
@@ -420,6 +427,7 @@
 				AD8E72981D2C3DB100E3BA9D /* KFVectorLayer.m in Sources */,
 				AD8E72931D2C3DB100E3BA9D /* KFVectorFeatureLayer.m in Sources */,
 				AD8E728F1D2C3DB100E3BA9D /* KFUtilities.m in Sources */,
+				49A85F1E1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m in Sources */,
 				AD8E72891D2C3DB100E3BA9D /* KFVectorFeatureKeyFrame.m in Sources */,
 				AD8E729E1D2C3DB100E3BA9D /* KFVectorParsingHelper.m in Sources */,
 				AD8E727A1D2C3DB100E3BA9D /* KFVector.m in Sources */,
@@ -593,6 +601,7 @@
 				AD46D3041D3041AD0008AF78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ADBA24AA1D2C3C9400D2549E /* Build configuration list for PBXProject "keyframes" */ = {
 			isa = XCConfigurationList;

@@ -18,32 +18,20 @@
 
 #pragma mark - Internal structure helpers
 
-static NSArray *_buildTimingCurvesArrayFromDictionary(NSArray *timingCurvesArray)
+static NSArray *_buildControlPoints(NSArray *points)
 {
-  return KFMapArray(timingCurvesArray, ^id(NSArray *points) {
-    NSArray *point1Array = points[0];
-    NSArray *point2Array = points[1];
+  NSArray *point1Array = points[0];
+  NSArray *point2Array = points[1];
 
-    CGPoint point1 = CGPointMake([point1Array[0] floatValue], [point1Array[1] floatValue]);
-    CGPoint point2 = CGPointMake([point2Array[0] floatValue], [point2Array[1] floatValue]);
-    return @[[NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]];
-  });
-}
-
-static NSArray *_buildFeatureKeyFrameModelArray(NSArray *keyframesArray, CGSize canvasSize)
-{
-  return KFMapArray(keyframesArray, ^id(NSDictionary *keyFrameDictionary) {
-    return [[KFVectorFeatureKeyFrame alloc]
-            initWithType:keyFrameDictionary[@"type"]
-            paths:keyFrameDictionary[@"data"]
-            startFrame:[keyFrameDictionary[@"start_frame"] unsignedIntegerValue]];
-  });
+  CGPoint point1 = CGPointMake([point1Array[0] floatValue], [point1Array[1] floatValue]);
+  CGPoint point2 = CGPointMake([point2Array[0] floatValue], [point2Array[1] floatValue]);
+  return @[[NSValue valueWithCGPoint:point1], [NSValue valueWithCGPoint:point2]];
 }
 
 static KFVectorAnimation *_buildAnimationModelFromDictionary(NSDictionary *animationDictionary,
-                                                                NSUInteger frameRate,
-                                                                NSUInteger animationFrameCount,
-                                                                CGSize canvasSize)
+                                                             NSUInteger fromFrame,
+                                                             NSUInteger toFrame,
+                                                             CGSize canvasSize)
 {
   if (animationDictionary == nil) {
     return nil;
@@ -55,26 +43,38 @@ static KFVectorAnimation *_buildAnimationModelFromDictionary(NSDictionary *anima
     anchor = CGPointMake(anchorX, anchorY);
   }
 
-  NSMutableArray *keyValues = KFMapArray(animationDictionary[@"key_values"], ^id(NSDictionary *keyFrameDictionary) {
-    return [[KFVectorAnimationKeyValue alloc]
-            initWithKeyValue:keyFrameDictionary[@"data"]
-            startFrame:[keyFrameDictionary[@"start_frame"] unsignedIntegerValue]];
-  }).mutableCopy;
-  NSMutableArray *timingCurves = _buildTimingCurvesArrayFromDictionary(animationDictionary[@"timing_curves"]).mutableCopy;
+  NSMutableArray *keyValues = [NSMutableArray new];
+  NSMutableArray *timingCurves = [NSMutableArray new];
+  for (NSUInteger index = 0; index < [animationDictionary[@"key_values"] count]; ++index) {
+    NSDictionary *keyFrameDictionary = animationDictionary[@"key_values"][index];
+    NSUInteger startFrame = [keyFrameDictionary[@"start_frame"] unsignedIntegerValue];
+    if (fromFrame <= startFrame && startFrame <= toFrame) {
+      [keyValues addObject:[[KFVectorAnimationKeyValue alloc]
+                            initWithKeyValue:keyFrameDictionary[@"data"]
+                            startFrame:startFrame - fromFrame]];
+      if (index > 0 && keyValues.count > 1) {
+        NSArray *points = animationDictionary[@"timing_curves"][index - 1];
+        [timingCurves addObject:_buildControlPoints(points)];
+      }
+    } else if ([animationDictionary[@"key_values"] count] == 1 && startFrame == 0) {
+      // handle static value
+      [keyValues addObject:[[KFVectorAnimationKeyValue alloc]
+                            initWithKeyValue:keyFrameDictionary[@"data"]
+                            startFrame:0]];
+    }
+  }
 
   return [[KFVectorAnimation alloc]
           initWithProperty:animationDictionary[@"property"]
           anchor:anchor
-          frameRate:frameRate
-          animationFrameCount:animationFrameCount
           keyValues:keyValues
           timingCurves:timingCurves];
 }
 
 static KFVectorGradientEffect *_buildGradientEffectsArrayFromArray(NSDictionary *effectsDictionary,
-                                                                      NSUInteger frameRate,
-                                                                      NSUInteger animationFrameCount,
-                                                                      CGSize canvasSize)
+                                                                   NSUInteger fromFrame,
+                                                                   NSUInteger toFrame,
+                                                                   CGSize canvasSize)
 {
   if (!effectsDictionary[@"gradient"]) {
     return nil;
@@ -83,39 +83,69 @@ static KFVectorGradientEffect *_buildGradientEffectsArrayFromArray(NSDictionary 
   NSDictionary *gradientEffectDictionary = effectsDictionary[@"gradient"];
   return [[KFVectorGradientEffect alloc]
           initWithGradientTypeString:gradientEffectDictionary[@"gradient_type"]
-          colorStart:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_start"], frameRate, animationFrameCount, canvasSize)
-          colorEnd:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_end"], frameRate, animationFrameCount, canvasSize)];
+          colorStart:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_start"], fromFrame, toFrame, canvasSize)
+          colorEnd:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_end"], fromFrame, toFrame, canvasSize)];
 }
 
 static KFVectorFeature *_buildFeatureModelFromDictionary(NSDictionary *featureDictionary,
-                                                                             NSUInteger frameRate,
-                                                                             NSUInteger animationFrameCount,
-                                                                             CGSize canvasSize)
+                                                         NSUInteger fromFrame,
+                                                         NSUInteger toFrame,
+                                                         CGSize canvasSize)
 {
-  NSMutableArray *keyFrames = _buildFeatureKeyFrameModelArray(featureDictionary[@"key_frames"], canvasSize).mutableCopy;
-  NSMutableArray *timingCurves = _buildTimingCurvesArrayFromDictionary(featureDictionary[@"timing_curves"]).mutableCopy;
+  NSUInteger featureFromFrame = (featureDictionary[@"from_frame"] ? [featureDictionary[@"from_frame"] unsignedIntegerValue] : fromFrame);
+  NSUInteger featureToFrame = (featureDictionary[@"to_frame"] ? [featureDictionary[@"to_frame"] unsignedIntegerValue] : toFrame);
+  if (featureFromFrame > toFrame || featureToFrame < fromFrame) {
+    return nil;
+  }
+
+  NSMutableArray *keyFrames = [NSMutableArray new];
+  NSMutableArray *timingCurves = [NSMutableArray new];
+  for (NSUInteger index = 0; index < [featureDictionary[@"key_frames"] count]; ++index) {
+    NSDictionary *keyFrameDictionary = featureDictionary[@"key_frames"][index];
+    NSUInteger startFrame = [keyFrameDictionary[@"start_frame"] unsignedIntegerValue];
+    if (fromFrame <= startFrame && startFrame <= toFrame) {
+      [keyFrames addObject:[[KFVectorFeatureKeyFrame alloc]
+                            initWithType:keyFrameDictionary[@"type"]
+                            paths:keyFrameDictionary[@"data"]
+                            startFrame:startFrame - fromFrame]];
+      if (index > 0 && keyFrames.count > 1) {
+        NSArray *points = featureDictionary[@"timing_curves"][index - 1];
+        [timingCurves addObject:_buildControlPoints(points)];
+      }
+    } else if ([featureDictionary[@"key_frames"] count] == 1 && startFrame == 0) {
+      // handle static value
+      [keyFrames addObject:[[KFVectorFeatureKeyFrame alloc]
+                            initWithType:keyFrameDictionary[@"type"]
+                            paths:keyFrameDictionary[@"data"]
+                            startFrame:0]];
+    }
+  }
   NSArray *featureAnimations = KFMapArray(featureDictionary[@"feature_animations"], ^id(NSDictionary *featureAnimationDictionary) {
-    return _buildAnimationModelFromDictionary(featureAnimationDictionary, frameRate, animationFrameCount, canvasSize);
+    return _buildAnimationModelFromDictionary(featureAnimationDictionary, fromFrame, toFrame, canvasSize);
   });
+  CGSize featureSize = featureDictionary[@"size"] ? CGSizeMake([featureDictionary[@"size"][0] floatValue], [featureDictionary[@"size"][1] floatValue]) : canvasSize;
 
   return [[KFVectorFeature alloc]
           initWithName:featureDictionary[@"name"]
+          featureSize:featureSize
           animationGroupId:featureDictionary[@"animation_group"] ? [featureDictionary[@"animation_group"] unsignedIntegerValue] : NSNotFound
-          frameRate:frameRate
-          animationFrameCount:animationFrameCount
+          fromFrame:featureFromFrame < fromFrame ? 0 : featureFromFrame - fromFrame
+          toFrame:featureToFrame - fromFrame
           fillColor:featureDictionary[@"fill_color"] ? KFColorWithHexString(featureDictionary[@"fill_color"]) : nil
           strokeColor:featureDictionary[@"stroke_color"] ? KFColorWithHexString(featureDictionary[@"stroke_color"]) : nil
           strokeWidth:[featureDictionary[@"stroke_width"] floatValue] / MIN(canvasSize.width, canvasSize.height)
+          strokeLineCap:featureDictionary[@"stroke_line_cap"]
           keyFrames:keyFrames
           timingCurves:timingCurves
           featureAnimations:featureAnimations
-          gradientEffect:_buildGradientEffectsArrayFromArray(featureDictionary[@"effects"], frameRate, animationFrameCount, canvasSize)];
+          backedImage:featureDictionary[@"backed_image"]
+          gradientEffect:_buildGradientEffectsArrayFromArray(featureDictionary[@"effects"], fromFrame, toFrame, canvasSize)];
 }
 
 static KFVectorAnimationGroup *_buildAnimationGroupModelFromDictionary(NSDictionary *animationGroupDictionary,
-                                                                          NSUInteger frameRate,
-                                                                          NSUInteger animationFrameCount,
-                                                                          CGSize canvasSize)
+                                                                       NSUInteger fromFrame,
+                                                                       NSUInteger toFrame,
+                                                                       CGSize canvasSize)
 {
   return
   [[KFVectorAnimationGroup alloc]
@@ -123,7 +153,7 @@ static KFVectorAnimationGroup *_buildAnimationGroupModelFromDictionary(NSDiction
    groupId:[animationGroupDictionary[@"group_id"] integerValue]
    parentGroupId:animationGroupDictionary[@"parent_group"] ? [animationGroupDictionary[@"parent_group"] integerValue] : NSNotFound
    animations:KFMapArray(animationGroupDictionary[@"animations"], ^id(NSDictionary *animationDictionary) {
-    return _buildAnimationModelFromDictionary(animationDictionary, frameRate, animationFrameCount, canvasSize);
+    return _buildAnimationModelFromDictionary(animationDictionary, fromFrame, toFrame, canvasSize);
   })];
 }
 
@@ -131,25 +161,39 @@ static KFVectorAnimationGroup *_buildAnimationGroupModelFromDictionary(NSDiction
 
 KFVector *KFVectorFromDictionary(NSDictionary *faceDictionary)
 {
-  CGSize canvasSize = CGSizeMake([faceDictionary[@"canvas_size"][0] floatValue],[faceDictionary[@"canvas_size"][1] floatValue]);
+  NSUInteger animationFrameCount = [faceDictionary[@"animation_frame_count"] unsignedIntegerValue];
+  return KFVectorFromDictionaryInRange(faceDictionary, 0, animationFrameCount);
+}
+
+KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger fromFrame, NSUInteger toFrame)
+{
+  NSCAssert(fromFrame <= toFrame, @"From frame should be less than to frame.");
+  NSCAssert(fromFrame >= 0, @"From frame should be greater or equal than zero.");
+  NSCAssert(toFrame <= [faceDictionary[@"animation_frame_count"] unsignedIntegerValue], @"To frame should be less than frame count.");
+
+  CGSize canvasSize = CGSizeMake([faceDictionary[@"canvas_size"][0] floatValue], [faceDictionary[@"canvas_size"][1] floatValue]);
 
   NSUInteger frameRate = [faceDictionary[@"frame_rate"] unsignedIntegerValue];
-  NSUInteger animationFrameCount = [faceDictionary[@"animation_frame_count"] unsignedIntegerValue];
-  NSArray *featuresArray = KFMapArray(faceDictionary[@"features"], ^id(NSDictionary *featureDictionary) {
-    return _buildFeatureModelFromDictionary(featureDictionary, frameRate, animationFrameCount, canvasSize);
-  });
+  NSMutableArray *featuresArray = [NSMutableArray new];
+  for (NSDictionary *featureDictionary in faceDictionary[@"features"]) {
+    KFVectorFeature *feature = _buildFeatureModelFromDictionary(featureDictionary, fromFrame, toFrame, canvasSize);
+    if (feature) {
+      [featuresArray addObject:feature];
+    }
+  }
 
   NSArray *animationGroups = KFMapArray(faceDictionary[@"animation_groups"], ^id(NSDictionary *animationGroupDictionary) {
-    return _buildAnimationGroupModelFromDictionary(animationGroupDictionary, frameRate, animationFrameCount, canvasSize);
+    return _buildAnimationGroupModelFromDictionary(animationGroupDictionary, fromFrame, toFrame, canvasSize);
   });
 
   return
   [[KFVector alloc]
    initWithCanvasSize:canvasSize
    name:faceDictionary[@"name"]
+   formatVersion:faceDictionary[@"formatVersion"] ? faceDictionary[@"formatVersion"] : @"0.0"
    key:[faceDictionary[@"key"] integerValue]
    frameRate:frameRate
-   animationFrameCount:animationFrameCount
+   animationFrameCount:toFrame - fromFrame
    features:featuresArray
    animationGroups:animationGroups];
 }

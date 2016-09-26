@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import <keyframes/KFVectorAnimationLayer.h>
 #import <keyframes/KFVectorFeatureLayerInterface.h>
 
 /**
@@ -14,6 +15,6 @@
  *
  * Animates the keyframes of KFVectorFeature.
  */
-@interface KFVectorFeatureLayer : CAShapeLayer <KFVectorFeatureLayerInterface>
+@interface KFVectorFeatureLayer : KFVectorAnimationLayer <KFVectorFeatureLayerInterface>
 
 @end

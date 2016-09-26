@@ -11,10 +11,11 @@
 #import <keyframes/KFVectorFeatureLayerInterface.h>
 
 /**
- * @discussion Use this class to draw each feature of the face.
- *
- * Animates the keyframes of KFVectorFeature.
+ * @discussion Use this class to draw the feature that is backed with still bitmaps.
  */
-@interface KFVectorGradientFeatureLayer : KFVectorAnimationLayer <KFVectorFeatureLayerInterface>
+@interface KFVectorBitmapFeatureLayer : KFVectorAnimationLayer <KFVectorFeatureLayerInterface>
+
+/** Designated initializer. Given a backed image of the layer. */
+- (instancetype)initWithImage:(UIImage *)image;
 
 @end

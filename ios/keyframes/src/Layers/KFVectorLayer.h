@@ -14,9 +14,15 @@
  * Since this is bezier path drawing, reaction type change
  * can be animated. Used for original single face input.
  */
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
+@interface KFVectorLayer : CALayer <CAAnimationDelegate>
+#else
 @interface KFVectorLayer : CALayer
+#endif
 
 @property (strong, nonatomic) KFVector *faceModel;
+@property (copy, nonatomic) NSDictionary<NSString *, UIImage *> *imageAssets;
+@property (copy, nonatomic) void (^animationDidStopBlock)(void);
 
 /**
  * Path based face view initially starts off with frame stuck at 0.
@@ -25,9 +31,14 @@
 - (void)startAnimation;
 
 /**
- * Call this method to pause vector animation. To resume, call startAnimation again.
+ * Call this method to pause vector animation. To resume, call resumeAnimation.
  */
 - (void)pauseAnimation;
+
+/**
+ * Call this method to resume vector animation.
+ */
+- (void)resumeAnimation;
 
 /**
  * Call this method seek the animation to a given progress, progress is in range of [0, 1].

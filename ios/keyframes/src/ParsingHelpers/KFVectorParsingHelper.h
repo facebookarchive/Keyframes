@@ -14,5 +14,6 @@
 KF_EXTERN_C_BEGIN
 
 KFVector *KFVectorFromDictionary(NSDictionary *faceDictionary);
+KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger fromFrame, NSUInteger toFrame);
 
 KF_EXTERN_C_END

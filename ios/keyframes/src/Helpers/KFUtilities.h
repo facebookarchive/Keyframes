@@ -28,6 +28,8 @@ NSArray *KFMapArrayWithIndex(NSArray *arrayToMap, KFMapArrayWithIndexHandler map
 
 UIColor *KFColorWithHexString(NSString *hexString);
 
+BOOL KFVersionLessThan(NSString *versionA, NSString *versionB);
+
 @interface NSMutableArray<ObjectType> (KFFoundation)
 
 - (void)removeFirstObject;

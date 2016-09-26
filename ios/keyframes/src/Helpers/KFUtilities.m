@@ -57,6 +57,10 @@ UIColor *KFColorWithHexString(NSString *string)
   return [UIColor blackColor];
 }
 
+BOOL KFVersionLessThan(NSString *versionA, NSString *versionB)
+{
+  return [versionA compare:versionB options:NSNumericSearch] == NSOrderedAscending;
+}
 
 @implementation NSMutableArray (KFFoundation)
 

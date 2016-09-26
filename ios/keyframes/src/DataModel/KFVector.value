@@ -5,9 +5,9 @@
 # the root directory of this source tree.
 #
 
-KFVector includes(RMCoding) {
-   CGSize canvasSize;
+KFVector includes(RMCoding) { CGSize canvasSize;
    NSString *name;
+   NSString *formatVersion;
    NSInteger key;
    NSUInteger frameRate;
    NSUInteger animationFrameCount;
