@@ -2,7 +2,7 @@ LICENSE AGREEMENT
 
 For Keyframes software
 
-Copyright (c) 2015-present, Facebook, Inc.  All rights reserved.
+Copyright (c) 2016-present, Facebook, Inc.  All rights reserved.
 
 Facebook, Inc. ("Facebook") owns all right, title and interest, including all
 intellectual property and other proprietary rights, in and to the Keyframes
