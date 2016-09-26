@@ -1,4 +1,5 @@
-# ![Keyframes](/docs/images/doc-logo.png) Keyframes
+![Keyframes](/docs/images/doc-logo.png)
+# Keyframes
 
 Keyframes is a combination of (1) an ExtendScript script that extracts image animation data from an After Effects file and (2) a corresponding rendering library for Android and iOS.  Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
 
