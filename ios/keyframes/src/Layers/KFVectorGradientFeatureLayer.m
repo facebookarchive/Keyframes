@@ -22,6 +22,7 @@
   NSArray *_keyFramePaths;
   NSArray *_keyTimes;
   CAGradientLayer *_gradientLayer;
+  CAKeyframeAnimation *_colorAnimation;
 }
 
 static void setupGradientLayerWithEffect(CAGradientLayer *gradientLayer, KFVectorGradientEffect *gradientEffect, CGSize canvasSize)
@@ -61,6 +62,13 @@ static void setupGradientLayerWithEffect(CAGradientLayer *gradientLayer, KFVecto
   }
 }
 
+- (void)resetAnimations
+{
+  [super resetAnimations];
+  [_gradientLayer removeAllAnimations];
+  [_gradientLayer addAnimation:_colorAnimation forKey:[_colorAnimation valueForKey:@"animationKey"]];
+}
+
 - (void)_addAnimations
 {
   NSMutableArray *colorsArray = [NSMutableArray array];
@@ -80,21 +88,21 @@ static void setupGradientLayerWithEffect(CAGradientLayer *gradientLayer, KFVecto
     [colorsArray addObject:@[(id)startColor.CGColor, (id)endColor.CGColor]];
   }
 
-  CAKeyframeAnimation *colorAnimation = [CAKeyframeAnimation animationWithKeyPath:@"colors"];
-  colorAnimation.duration = _feature.gradientEffect.colorStart.animationFrameCount * 1.0 / _feature.gradientEffect.colorStart.frameRate;
-  colorAnimation.repeatCount = HUGE_VALF;
-  colorAnimation.values = colorsArray;
+  _colorAnimation = [CAKeyframeAnimation animationWithKeyPath:@"colors"];
+  _colorAnimation.duration = self.frameCount * 1.0 / self.frameRate;
+  _colorAnimation.repeatCount = self.repeatCount;
+  _colorAnimation.values = colorsArray;
 
   KFVectorAnimation *animationToUseForTimingCurve = _feature.gradientEffect.colorStart;
   if (_feature.gradientEffect.colorEnd.timingCurves.count == colorsArray.count - 1) {
     animationToUseForTimingCurve = _feature.gradientEffect.colorEnd;
   }
-  colorAnimation.timingFunctions = KFVectorLayerMediaTimingFunction(animationToUseForTimingCurve.timingCurves);
-  colorAnimation.keyTimes = KFMapArray(animationToUseForTimingCurve.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
-    return @(keyValue.startFrame * 1.0 / animationToUseForTimingCurve.animationFrameCount);
+  _colorAnimation.timingFunctions = KFVectorLayerMediaTimingFunction(animationToUseForTimingCurve.timingCurves);
+  _colorAnimation.keyTimes = KFMapArray(animationToUseForTimingCurve.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+    return @(keyValue.startFrame * 1.0 / self.frameCount);
   });
-
-  [_gradientLayer addAnimation:colorAnimation forKey:@"gradient color animation"];
+  _colorAnimation.removedOnCompletion = NO;
+  [_colorAnimation setValue:@"gradient color animation" forKey:@"animationKey"];
 }
 
 @end

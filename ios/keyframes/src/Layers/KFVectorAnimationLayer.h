@@ -17,7 +17,19 @@
  */
 @interface KFVectorAnimationLayer : CAShapeLayer
 
+@property (nonatomic, assign, readwrite) NSUInteger frameRate;
+@property (nonatomic, assign, readwrite) NSUInteger frameCount;
+@property (nonatomic, copy, readwrite) NSString *formatVersion;
+
 /// Setting KFVectorAnimation will setup the layer at frame 0 with animation specified.
-- (void)setAnimations:(NSArray<KFVectorAnimation *> *)animations canvasSize:(CGSize)canvasSize;
+- (void)setAnimations:(NSArray<KFVectorAnimation *> *)animations
+        scaleToCanvas:(CGPoint)scaleToCanvas
+         scaleToLayer:(CGPoint)scaleToLayer;
+
+/// Sets the lifespan of the layer from certain frame to certain frame.
+- (void)setLifespanFromFrame:(NSUInteger)fromFrame toFrom:(NSUInteger)toFrame;
+
+/// Reset animations to the beginning.
+- (void)resetAnimations;
 
 @end

@@ -20,8 +20,6 @@
 
 static __unsafe_unretained NSString * const kPropertyKey = @"PROPERTY";
 static __unsafe_unretained NSString * const kAnchorKey = @"ANCHOR";
-static __unsafe_unretained NSString * const kFrameRateKey = @"FRAME_RATE";
-static __unsafe_unretained NSString * const kAnimationFrameCountKey = @"ANIMATION_FRAME_COUNT";
 static __unsafe_unretained NSString * const kKeyValuesKey = @"KEY_VALUES";
 static __unsafe_unretained NSString * const kTimingCurvesKey = @"TIMING_CURVES";
 
@@ -87,21 +85,17 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
   if ((self = [super init])) {
     _property = [aDecoder decodeObjectForKey:kPropertyKey];
     _anchor = CGPointFromString([aDecoder decodeObjectForKey:kAnchorKey]);
-    _frameRate = [aDecoder decodeIntegerForKey:kFrameRateKey];
-    _animationFrameCount = [aDecoder decodeIntegerForKey:kAnimationFrameCountKey];
     _keyValues = [aDecoder decodeObjectForKey:kKeyValuesKey];
     _timingCurves = [aDecoder decodeObjectForKey:kTimingCurvesKey];
   }
   return self;
 }
 
-- (instancetype)initWithProperty:(NSString *)property anchor:(CGPoint)anchor frameRate:(NSUInteger)frameRate animationFrameCount:(NSUInteger)animationFrameCount keyValues:(NSArray *)keyValues timingCurves:(NSArray *)timingCurves
+- (instancetype)initWithProperty:(NSString *)property anchor:(CGPoint)anchor keyValues:(NSArray *)keyValues timingCurves:(NSArray *)timingCurves
 {
   if ((self = [super init])) {
     _property = [property copy];
     _anchor = anchor;
-    _frameRate = frameRate;
-    _animationFrameCount = animationFrameCount;
     _keyValues = [keyValues copy];
     _timingCurves = [timingCurves copy];
   }
@@ -116,24 +110,22 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t property: %@; \n\t anchor: %@; \n\t frameRate: %tu; \n\t animationFrameCount: %tu; \n\t keyValues: %@; \n\t timingCurves: %@; \n", [super description], _property, NSStringFromCGPoint(_anchor), _frameRate, _animationFrameCount, _keyValues, _timingCurves];
+  return [NSString stringWithFormat:@"%@ - \n\t property: %@; \n\t anchor: %@; \n\t keyValues: %@; \n\t timingCurves: %@; \n", [super description], _property, NSStringFromCGPoint(_anchor), _keyValues, _timingCurves];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [aCoder encodeObject:_property forKey:kPropertyKey];
   [aCoder encodeObject:NSStringFromCGPoint(_anchor) forKey:kAnchorKey];
-  [aCoder encodeInteger:_frameRate forKey:kFrameRateKey];
-  [aCoder encodeInteger:_animationFrameCount forKey:kAnimationFrameCountKey];
   [aCoder encodeObject:_keyValues forKey:kKeyValuesKey];
   [aCoder encodeObject:_timingCurves forKey:kTimingCurvesKey];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_property hash], HashCGFloat(_anchor.x), HashCGFloat(_anchor.y), _frameRate, _animationFrameCount, [_keyValues hash], [_timingCurves hash]};
+  NSUInteger subhashes[] = {[_property hash], HashCGFloat(_anchor.x), HashCGFloat(_anchor.y), [_keyValues hash], [_timingCurves hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 7; ++ii) {
+  for (int ii = 1; ii < 5; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -154,8 +146,6 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
     return NO;
   }
   return
-    _frameRate == object->_frameRate &&
-    _animationFrameCount == object->_animationFrameCount &&
     CGPointEqualToPoint(_anchor, object->_anchor) &&
     (_property == object->_property ? YES : [_property isEqual:object->_property]) &&
     (_keyValues == object->_keyValues ? YES : [_keyValues isEqual:object->_keyValues]) &&

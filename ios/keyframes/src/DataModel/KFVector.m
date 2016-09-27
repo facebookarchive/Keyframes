@@ -20,6 +20,7 @@
 
 static __unsafe_unretained NSString * const kCanvasSizeKey = @"CANVAS_SIZE";
 static __unsafe_unretained NSString * const kNameKey = @"NAME";
+static __unsafe_unretained NSString * const kFormatVersionKey = @"FORMAT_VERSION";
 static __unsafe_unretained NSString * const kKeyKey = @"KEY";
 static __unsafe_unretained NSString * const kFrameRateKey = @"FRAME_RATE";
 static __unsafe_unretained NSString * const kAnimationFrameCountKey = @"ANIMATION_FRAME_COUNT";
@@ -83,11 +84,12 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 @implementation KFVector
 
-- (instancetype)initWithCanvasSize:(CGSize)canvasSize name:(NSString *)name key:(NSInteger)key frameRate:(NSUInteger)frameRate animationFrameCount:(NSUInteger)animationFrameCount features:(NSArray *)features animationGroups:(NSArray *)animationGroups
+- (instancetype)initWithCanvasSize:(CGSize)canvasSize name:(NSString *)name formatVersion:(NSString *)formatVersion key:(NSInteger)key frameRate:(NSUInteger)frameRate animationFrameCount:(NSUInteger)animationFrameCount features:(NSArray *)features animationGroups:(NSArray *)animationGroups
 {
   if ((self = [super init])) {
     _canvasSize = canvasSize;
     _name = [name copy];
+    _formatVersion = [formatVersion copy];
     _key = key;
     _frameRate = frameRate;
     _animationFrameCount = animationFrameCount;
@@ -103,6 +105,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
   if ((self = [super init])) {
     _canvasSize = CGSizeFromString([aDecoder decodeObjectForKey:kCanvasSizeKey]);
     _name = [aDecoder decodeObjectForKey:kNameKey];
+    _formatVersion = [aDecoder decodeObjectForKey:kFormatVersionKey];
     _key = [aDecoder decodeIntegerForKey:kKeyKey];
     _frameRate = [aDecoder decodeIntegerForKey:kFrameRateKey];
     _animationFrameCount = [aDecoder decodeIntegerForKey:kAnimationFrameCountKey];
@@ -119,13 +122,14 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t canvasSize: %@; \n\t name: %@; \n\t key: %zd; \n\t frameRate: %tu; \n\t animationFrameCount: %tu; \n\t features: %@; \n\t animationGroups: %@; \n", [super description], NSStringFromCGSize(_canvasSize), _name, _key, _frameRate, _animationFrameCount, _features, _animationGroups];
+  return [NSString stringWithFormat:@"%@ - \n\t canvasSize: %@; \n\t name: %@; \n\t formatVersion: %@; \n\t key: %zd; \n\t frameRate: %tu; \n\t animationFrameCount: %tu; \n\t features: %@; \n\t animationGroups: %@; \n", [super description], NSStringFromCGSize(_canvasSize), _name, _formatVersion, _key, _frameRate, _animationFrameCount, _features, _animationGroups];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [aCoder encodeObject:NSStringFromCGSize(_canvasSize) forKey:kCanvasSizeKey];
   [aCoder encodeObject:_name forKey:kNameKey];
+  [aCoder encodeObject:_formatVersion forKey:kFormatVersionKey];
   [aCoder encodeInteger:_key forKey:kKeyKey];
   [aCoder encodeInteger:_frameRate forKey:kFrameRateKey];
   [aCoder encodeInteger:_animationFrameCount forKey:kAnimationFrameCountKey];
@@ -135,9 +139,9 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {HashCGFloat(_canvasSize.width), HashCGFloat(_canvasSize.height), [_name hash], ABS(_key), _frameRate, _animationFrameCount, [_features hash], [_animationGroups hash]};
+  NSUInteger subhashes[] = {HashCGFloat(_canvasSize.width), HashCGFloat(_canvasSize.height), [_name hash], [_formatVersion hash], ABS(_key), _frameRate, _animationFrameCount, [_features hash], [_animationGroups hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 8; ++ii) {
+  for (int ii = 1; ii < 9; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -163,6 +167,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
     _animationFrameCount == object->_animationFrameCount &&
     CGSizeEqualToSize(_canvasSize, object->_canvasSize) &&
     (_name == object->_name ? YES : [_name isEqual:object->_name]) &&
+    (_formatVersion == object->_formatVersion ? YES : [_formatVersion isEqual:object->_formatVersion]) &&
     (_features == object->_features ? YES : [_features isEqual:object->_features]) &&
     (_animationGroups == object->_animationGroups ? YES : [_animationGroups isEqual:object->_animationGroups]);
 }
