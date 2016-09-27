@@ -30,7 +30,7 @@ in the project directory in Terminal.
 
 To update your version of Keyframes, run
 ```
-> pod update AsyncDisplayKit
+> pod update Keyframes
 ```
 in the project directory in Terminal.
 
