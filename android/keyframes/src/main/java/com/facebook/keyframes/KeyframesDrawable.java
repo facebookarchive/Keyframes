@@ -97,6 +97,7 @@ public class KeyframesDrawable extends Drawable
 
   private int mMaxFrameRate = -1;
   private long mPreviousFrameTime = 0;
+  private boolean mHasInitialized = false;
 
   /**
    * Create a new KeyframesDrawable with no FeatureConfigs
@@ -166,6 +167,11 @@ public class KeyframesDrawable extends Drawable
 
     mScale = Math.min(idealXScale, idealYScale);
     calculateScaleMatrix(1, 1, ScaleDirection.UP);
+    if (!mHasInitialized) {
+      // Call this at least once or else nothing will render. But if this is called this every time
+      // setBounds is called then the animation will reset when resizing.
+      setFrameProgress(0);
+    }
   }
 
   @Override
@@ -294,6 +300,7 @@ public class KeyframesDrawable extends Drawable
    * {@link #draw(Canvas)}.
    */
   public void setFrameProgress(float frameProgress) {
+    mHasInitialized = true;
     mKFImage.setAnimationMatrices(mAnimationGroupMatrices, frameProgress);
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       mFeatureStateList.get(i).setupFeatureStateForProgress(frameProgress);
