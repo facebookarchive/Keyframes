@@ -95,9 +95,6 @@ public class KeyframesDrawable extends Drawable
   private final Map<String, FeatureConfig> mFeatureConfigs;
 
 
-  private int mMaxFrameRate = -1;
-  private long mPreviousFrameTime = 0;
-
   /**
    * Create a new KeyframesDrawable with no FeatureConfigs
    * @param KFImage
@@ -307,16 +304,7 @@ public class KeyframesDrawable extends Drawable
    */
   @Override
   public void onProgressUpdate(float frameProgress) {
-    if (mMaxFrameRate > -1) {
-      long currentTime = SystemClock.uptimeMillis();
-      int minFrameTime = 1000 / mMaxFrameRate;
-      if (currentTime - mPreviousFrameTime < minFrameTime) {
-        return;
-      }
-      mPreviousFrameTime = currentTime;
-    }
     setFrameProgress(frameProgress);
-
     invalidateSelf();
   }
 
@@ -367,10 +355,11 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Cap the frame rate to a specific FPS. Consider using this for low end devices.
+   * Calls {@link KeyframesDrawableAnimationCallback#setMinimumMillisBetweenProgressUpdates}
    * @param maxFrameRate
    */
   public void setMaxFrameRate(int maxFrameRate) {
-    mMaxFrameRate = maxFrameRate;
+    mKeyframesDrawableAnimationCallback.setMinimumMillisBetweenProgressUpdates(1000 / maxFrameRate);
   }
 
   private class FeatureState {
