@@ -7,10 +7,10 @@
 
 package com.facebook.keyframes.model;
 
-import java.util.List;
-
 import android.graphics.Matrix;
 import android.graphics.Paint;
+
+import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
@@ -87,8 +87,8 @@ public class KFFeature {
    */
   final KFAnimation mStrokeWidthAnimation;
   /**
-   * The remaining, matrix based animations from the feature_animations set.  Package private for
-   * testing.
+   * The remaining, matrix based animations from the feature_animations set.
+   * Package private for testing.
    */
   final List<KFAnimation> mFeatureMatrixAnimations;
   /**
@@ -97,17 +97,23 @@ public class KFFeature {
   final KFAnimation mAnchorPoint;
 
   /**
-   * An optional effect that this feature layer can have.  Currently, only a simple linear gradient
-   * is supported.
+   * An optional effect that this feature layer can have.
+   * Currently, only a simple linear gradient is supported.
    */
   public static final String EFFECT_JSON_FIELD = "effects";
   private final KFFeatureEffect mEffect;
 
   /**
+   * EXPERIMENTAL optional "class" name used to reconfigure how this feature will render.
+   * WARNING: May not be available on other platforms.
+   */
+  public static final String CLASS_NAME_JSON_FIELD = "class";
+  private final String mClassName;
+
+  /**
    * A post-processed object containing cached information for this path, if keyframed.
    */
   private final KeyFramedPath mKeyFramedPath;
-
 
   public static class Builder {
     public String name;
@@ -121,6 +127,7 @@ public class KFFeature {
     public List<KFAnimation> featureAnimations;
     public float[] anchorPoint;
     public KFFeatureEffect effect;
+    public String className;
 
     public KFFeature build() {
       return new KFFeature(
@@ -134,7 +141,8 @@ public class KFFeature {
           strokeLineCap,
           featureAnimations,
           anchorPoint,
-          effect);
+          effect,
+          className);
     }
   }
 
@@ -149,7 +157,8 @@ public class KFFeature {
       Paint.Cap strokeLineCap,
       List<KFAnimation> featureAnimations,
       float[] anchorPoint,
-      KFFeatureEffect effect) {
+      KFFeatureEffect effect,
+      String className) {
     mName = name;
     mFillColor = fillColor;
     mStrokeColor = strokeColor;
@@ -171,6 +180,7 @@ public class KFFeature {
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
+    mClassName = className;
 
     mKeyFramedPath = mKeyFrames.isEmpty() ? null : KeyFramedPath.fromFeature(this);
   }
@@ -210,6 +220,9 @@ public class KFFeature {
   public void setStrokeWidth(
       KeyFramedStrokeWidth.StrokeWidth strokeWidth,
       float frameProgress) {
+    if (strokeWidth == null) {
+      return;
+    }
     strokeWidth.setStrokeWidth(mStrokeWidth);
     if (mStrokeWidthAnimation == null) {
       return;
@@ -218,6 +231,9 @@ public class KFFeature {
   }
 
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
+    if (featureMatrix == null) {
+      return;
+    }
     featureMatrix.reset();
     if (mFeatureMatrixAnimations == null) {
       return;
@@ -232,5 +248,9 @@ public class KFFeature {
 
   public KFFeatureEffect getEffect() {
     return mEffect;
+  }
+
+  public String getConfigClassName() {
+    return mClassName;
   }
 }

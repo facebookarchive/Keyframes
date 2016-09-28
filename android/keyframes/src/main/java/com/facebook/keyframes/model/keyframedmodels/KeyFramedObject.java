@@ -7,12 +7,11 @@
 
 package com.facebook.keyframes.model.keyframedmodels;
 
-import java.util.List;
-
 import android.util.SparseArray;
 import android.view.animation.Interpolator;
-
 import com.facebook.keyframes.model.HasKeyFrame;
+
+import java.util.List;
 
 /**
  * A generic object which holds key framed data and how to process information given a frame
@@ -36,6 +35,7 @@ public abstract class KeyFramedObject<T extends HasKeyFrame, M> {
       object = objects.get(i);
       mObjects.put(object.getKeyFrame(), object);
     }
+
     mFirstDescribedFrame = mObjects.keyAt(0);
     mLastDescribedFrame = mObjects.keyAt(listSize - 1);
     mInterpolators = KeyFrameAnimationHelper.buildInterpolatorList(timingCurves);

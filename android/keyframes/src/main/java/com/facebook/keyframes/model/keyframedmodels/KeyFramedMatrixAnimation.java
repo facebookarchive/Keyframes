@@ -7,12 +7,11 @@
 
 package com.facebook.keyframes.model.keyframedmodels;
 
-import java.util.List;
-
 import android.graphics.Matrix;
-
 import com.facebook.keyframes.model.KFAnimation;
 import com.facebook.keyframes.model.KFAnimationFrame;
+
+import java.util.List;
 
 /**
  * A {@link KeyFramedObject} which houses information for a matrix based animation.  This includes

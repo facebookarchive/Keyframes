@@ -7,14 +7,14 @@
 
 package com.facebook.keyframes;
 
-import java.lang.ref.WeakReference;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.view.Choreographer;
+
+import java.lang.ref.WeakReference;
 
 import com.facebook.keyframes.model.KFImage;
 
@@ -30,6 +30,7 @@ public abstract class KeyframesDrawableAnimationCallback {
    */
   public interface FrameListener {
     void onProgressUpdate(float frameProgress);
+    void onStop();
   }
 
   private final WeakReference<FrameListener> mListener;
@@ -94,6 +95,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     cancelCallback();
     mStartTimeMillis = 0;
     mCurrentLoopNumber = -1;
+    mListener.get().onStop();
   }
 
   /**
@@ -114,7 +116,8 @@ public abstract class KeyframesDrawableAnimationCallback {
       mStartTimeMillis = frameTimeMillis;
     }
     int currentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
-    if (mStopAtLoopEnd && currentLoopNumber > mCurrentLoopNumber) {
+    final boolean loopHasEnded = currentLoopNumber > mCurrentLoopNumber;
+    if (mStopAtLoopEnd && loopHasEnded) {
       mListener.get().onProgressUpdate(mFrameCount);
       stop();
       return;

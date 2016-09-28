@@ -20,18 +20,28 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import com.facebook.keyframes.KeyframesDrawable;
 import com.facebook.keyframes.deserializers.KFImageDeserializer;
 import com.facebook.keyframes.model.KFImage;
-
-import java.io.*;
 
 public class MainActivity extends Activity {
 
@@ -81,6 +91,7 @@ public class MainActivity extends Activity {
           Manifest.permission.READ_EXTERNAL_STORAGE,
           Manifest.permission.WRITE_EXTERNAL_STORAGE
   };
+  private KFImage mKfImage;
 
   private void requestPermission() {
     // Check if we have write permission
@@ -112,11 +123,34 @@ public class MainActivity extends Activity {
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
+  public void resetImage(View view) {
+    setKFImage(mKfImage);
+  }
+
+  private void clearImage() {
+    if (mLikeImageDrawable == null) {
+      return;
+    }
+    mLikeImageDrawable.stopAnimation();
+    mLikeImageDrawable = null;
+  }
+
+
   private void setKFImage(KFImage kfImage) {
-    ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
-    mLikeImageDrawable = new KeyframesDrawable(kfImage);
-    imageView.setImageDrawable(mLikeImageDrawable);
+    clearImage();
+    mKfImage = kfImage;
+
+    final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
+    if (robotDrawable != null) {
+      robotDrawable.setBounds(0, 0, 80, 80);
+      mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
+        Pair.create("robot", Pair.create(robotDrawable, new Matrix()))
+      );
+    }
     mLikeImageDrawable.startAnimation();
+
+    final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
+    imageView.setImageDrawable(mLikeImageDrawable);
   }
 
   private KFImage getSampleLike() {
@@ -131,7 +165,7 @@ public class MainActivity extends Activity {
       if (stream != null) {
         try {
           stream.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
       }
     }
@@ -140,7 +174,9 @@ public class MainActivity extends Activity {
 
   @Override
   public void onPause() {
-    mLikeImageDrawable.stopAnimationAtLoopEnd();
+    if (mLikeImageDrawable != null) {
+      mLikeImageDrawable.stopAnimation();
+    }
     unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
   }
@@ -149,7 +185,9 @@ public class MainActivity extends Activity {
   public void onResume() {
     super.onResume();
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
-    mLikeImageDrawable.startAnimation();
+    if (mLikeImageDrawable != null) {
+      mLikeImageDrawable.startAnimation();
+    }
   }
 
   /**

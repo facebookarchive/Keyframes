@@ -7,10 +7,6 @@
 
 package com.facebook.keyframes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -21,12 +17,21 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
+import android.util.Pair;
 import android.util.SparseArray;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
 import com.facebook.keyframes.model.KFFeature;
-import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.KFGradient;
+import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
@@ -87,9 +92,48 @@ public class KeyframesDrawable extends Drawable
   private float mScale;
   private float mScaleFromCenter;
   private float mScaleFromEnd;
+  private final Map<String, FeatureConfig> mFeatureConfigs;
 
+
+  private int mMaxFrameRate = -1;
+  private long mPreviousFrameTime = 0;
+
+  /**
+   * Create a new KeyframesDrawable with no FeatureConfigs
+   * @param KFImage
+   */
   public KeyframesDrawable(KFImage KFImage) {
+    this(KFImage, null);
+  }
+
+  /**
+   * Syntax sugar for creating a new KeyframesDrawable with FeatureConfigs
+   * @param KFImage
+   * @param Pair<String, Pair<Drawable, Matrix>>
+   */
+  @SafeVarargs
+  public static KeyframesDrawable create(KFImage KFImage, Pair<String, Pair<Drawable, Matrix>>... configs) {
+    Map<String, FeatureConfig> configMap = new HashMap<>();
+    for (Pair<String, Pair<Drawable, Matrix>> config : configs) {
+      configMap.put(config.first, new FeatureConfig(config.second.first, config.second.second));
+    }
+    return new KeyframesDrawable(KFImage, configMap);
+  }
+
+  /**
+   * Create a new KeyframesDrawable with FeatureConfigs
+   * @param KFImage
+   * @param Map<String, FeatureConfig>
+   */
+  public KeyframesDrawable(KFImage KFImage, Map<String, FeatureConfig> configs) {
     mKFImage = KFImage;
+    mFeatureConfigs = configs == null ? null : Collections.unmodifiableMap(configs);
+
+    mRecyclableTransformMatrix = new Matrix();
+    mScaleMatrix = new Matrix();
+    mInverseScaleMatrix = new Matrix();
+    mKeyframesDrawableAnimationCallback = KeyframesDrawableAnimationCallback.create(this, mKFImage);
+
     mDrawingPaint.setStrokeCap(Paint.Cap.ROUND);
 
     // Setup feature state list
@@ -105,11 +149,6 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = animationGroups.size(); i < len; i++) {
       mAnimationGroupMatrices.put(animationGroups.get(i).getGroupId(), new Matrix());
     }
-
-    mKeyframesDrawableAnimationCallback = KeyframesDrawableAnimationCallback.create(this, mKFImage);
-    mRecyclableTransformMatrix = new Matrix();
-    mScaleMatrix = new Matrix();
-    mInverseScaleMatrix = new Matrix();
   }
 
   /**
@@ -150,8 +189,30 @@ public class KeyframesDrawable extends Drawable
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
+
+      final FeatureConfig config = featureState.getConfig();
+      final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
+      if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
+        canvas.save();
+        canvas.concat(mScaleMatrix);
+        canvas.concat(uniqueFeatureMatrix);
+
+        final boolean shouldApplyMatrix = config.matrix != null && !config.matrix.isIdentity();
+        if (shouldApplyMatrix) {
+          canvas.save();
+          canvas.concat(config.matrix);
+        }
+        config.drawable.draw(canvas);
+        if (shouldApplyMatrix) {
+          canvas.restore();
+        }
+
+        canvas.restore();
+        continue;
+      }
+
       pathToDraw = featureState.getCurrentPathForDrawing();
-      if (pathToDraw.isEmpty()) {
+      if (pathToDraw == null || pathToDraw.isEmpty()) {
         continue;
       }
       mDrawingPaint.setShader(null);
@@ -179,6 +240,7 @@ public class KeyframesDrawable extends Drawable
         canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
         pathToDraw.transform(mInverseScaleMatrix);
       }
+
     }
     canvas.translate(-currBounds.left, -currBounds.top);
   }
@@ -207,11 +269,18 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Starts the animation callbacks for this drawable.  A corresponding call to
-   * {@link #stopAnimationAtLoopEnd()} needs to be called eventually, or the callback will continue
-   * to post callbacks for this drawable indefinitely.
+   * {@link #stopAnimationAtLoopEnd()} or {@link #stopAnimation()} needs to be called eventually,
+   * or the callback will continue to post callbacks for this drawable indefinitely.
    */
   public void startAnimation() {
     mKeyframesDrawableAnimationCallback.start();
+  }
+
+  /**
+   * Stops the animation callbacks for this drawable immediately.
+   */
+  public void stopAnimation() {
+    mKeyframesDrawableAnimationCallback.stop();
   }
 
   /**
@@ -238,8 +307,36 @@ public class KeyframesDrawable extends Drawable
    */
   @Override
   public void onProgressUpdate(float frameProgress) {
+    if (mMaxFrameRate > -1) {
+      long currentTime = SystemClock.uptimeMillis();
+      int minFrameTime = 1000 / mMaxFrameRate;
+      if (currentTime - mPreviousFrameTime < minFrameTime) {
+        return;
+      }
+      mPreviousFrameTime = currentTime;
+    }
     setFrameProgress(frameProgress);
+
     invalidateSelf();
+  }
+
+  @Override
+  public void onStop() {
+    if (mOnAnimationEnd == null) {
+      return;
+    }
+    final OnAnimationEnd onAnimationEnd = mOnAnimationEnd.get();
+    if (onAnimationEnd == null) {
+      return;
+    }
+    onAnimationEnd.onAnimationEnd();
+    mOnAnimationEnd.clear();
+  }
+
+  private WeakReference<OnAnimationEnd> mOnAnimationEnd;
+
+  public void setAnimationListener(OnAnimationEnd listener) {
+    mOnAnimationEnd = new WeakReference<>(listener);
   }
 
   private void calculateScaleMatrix(
@@ -268,13 +365,29 @@ public class KeyframesDrawable extends Drawable
     mScaleMatrix.invert(mInverseScaleMatrix);
   }
 
+  /**
+   * Cap the frame rate to a specific FPS. Consider using this for low end devices.
+   * @param maxFrameRate
+   */
+  public void setMaxFrameRate(int maxFrameRate) {
+    mMaxFrameRate = maxFrameRate;
+  }
+
   private class FeatureState {
     private final KFFeature mFeature;
 
     // Reuseable modifiable objects for drawing
-    private final KFPath mPath = new KFPath();
-    private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth =
-            new KeyFramedStrokeWidth.StrokeWidth();
+    private final KFPath mPath;
+    private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
+    private final Matrix mFeatureMatrix;
+
+    public Matrix getUniqueFeatureMatrix() {
+      if (mFeatureMatrix == mRecyclableTransformMatrix) {
+        // Don't return a matrix unless it's known to be unique for this feature
+        return null;
+      }
+      return mFeatureMatrix;
+    }
 
     // Cached shader vars
     private Shader[] mCachedShaders;
@@ -282,21 +395,36 @@ public class KeyframesDrawable extends Drawable
 
     public FeatureState(KFFeature feature) {
       mFeature = feature;
+      if (hasCustomDrawable()) {
+        mPath = null;
+        mStrokeWidth = null;
+        // Bitmap features use the matrix later in draw()
+        // so there's no way to reuse a globally cached matrix
+        mFeatureMatrix = new Matrix();
+      } else {
+        mPath = new KFPath();
+        mStrokeWidth = new KeyFramedStrokeWidth.StrokeWidth();
+        // Path features use the matrix immediately
+        // so there's no need to waste memory with a unique copy
+        mFeatureMatrix = mRecyclableTransformMatrix;
+      }
+      assert mFeatureMatrix != null;
     }
 
     public void setupFeatureStateForProgress(float frameProgress) {
-      mFeature.setAnimationMatrix(mRecyclableTransformMatrix, frameProgress);
+      mFeature.setAnimationMatrix(mFeatureMatrix, frameProgress);
       Matrix layerTransformMatrix = mAnimationGroupMatrices.get(mFeature.getAnimationGroup());
 
       if (layerTransformMatrix != null && !layerTransformMatrix.isIdentity()) {
-        mRecyclableTransformMatrix.postConcat(layerTransformMatrix);
+        mFeatureMatrix.postConcat(layerTransformMatrix);
+      }
+      KeyFramedPath path = mFeature.getPath();
+      if (hasCustomDrawable() || path == null) {
+        return; // skip all the path stuff
       }
       mPath.reset();
-      KeyFramedPath path = mFeature.getPath();
-      if (path != null) {
-        path.apply(frameProgress, mPath);
-      }
-      mPath.transform(mRecyclableTransformMatrix);
+      path.apply(frameProgress, mPath);
+      mPath.transform(mFeatureMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
       if (mFeature.getEffect() != null) {
@@ -310,7 +438,7 @@ public class KeyframesDrawable extends Drawable
     }
 
     public float getStrokeWidth() {
-      return mStrokeWidth.getStrokeWidth();
+      return mStrokeWidth != null ? mStrokeWidth.getStrokeWidth() : 0;
     }
 
     public Shader getCurrentShader() {
@@ -363,6 +491,40 @@ public class KeyframesDrawable extends Drawable
       int shaderIndex =
               (int) ((frameProgress / mKFImage.getFrameCount()) * (mCachedShaders.length - 1));
       return mCachedShaders[shaderIndex];
+    }
+
+    public final FeatureConfig getConfig() {
+      if (mFeatureConfigs == null) return null;
+      return mFeatureConfigs.get(mFeature.getConfigClassName());
+    }
+
+    private boolean hasCustomDrawable() {
+      final FeatureConfig config = getConfig();
+      return config != null && config.drawable != null;
+    }
+  }
+
+  public interface OnAnimationEnd {
+    void onAnimationEnd();
+  }
+
+  /**
+   * Config options define runtime overrides for specific KFFeature behaviors
+   */
+  public static class FeatureConfig {
+    final Drawable drawable;
+    final Matrix matrix;
+
+    public FeatureConfig(Drawable drawable, Matrix matrix) {
+      this.matrix = matrix;
+      this.drawable = drawable;
+
+      if (BuildConfig.DEBUG && drawable != null) {
+        final Rect bounds = drawable.getBounds();
+        if (bounds.width() <= 0 || bounds.height() <= 0) {
+          throw new IllegalStateException("KeyframesDrawable FeatureConfig Drawable must have bounds set");
+        }
+      }
     }
   }
 }
