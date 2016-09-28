@@ -144,7 +144,6 @@ public class MainActivity extends Activity {
     if (robotDrawable != null) {
       robotDrawable.setBounds(0, 0, 80, 80);
       mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
-        Pair.create("love", Pair.create(robotDrawable, new Matrix())),
         Pair.create("robot", Pair.create(robotDrawable, new Matrix()))
       );
     }
