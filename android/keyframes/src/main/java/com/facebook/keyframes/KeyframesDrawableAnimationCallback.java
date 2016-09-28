@@ -41,6 +41,19 @@ public abstract class KeyframesDrawableAnimationCallback {
   private boolean mStopAtLoopEnd;
   private int mCurrentLoopNumber;
 
+  private long mMinimumMillisBetweenProgressUpdates = -1;
+  private long mPreviousProgressMillis = 0;
+
+  /**
+   * Set the minimum number of milliseconds between each loop.
+   * Consider using this for low end devices.
+   * @param minimumMillisBetweenProgressUpdates
+   */
+  public void setMinimumMillisBetweenProgressUpdates(long minimumMillisBetweenProgressUpdates) {
+    mMinimumMillisBetweenProgressUpdates = minimumMillisBetweenProgressUpdates;
+  }
+
+
   /**
    * Creates a KeyframesDrawableAnimationCallback appropriate for the API level of the device.
    * @param listener The listener that will receive callbacks on updates to the value
@@ -109,6 +122,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     if (mListener.get() == null) {
       cancelCallback();
       mStartTimeMillis = 0;
+      mPreviousProgressMillis = 0;
       mCurrentLoopNumber = -1;
       return;
     }
@@ -123,7 +137,16 @@ public abstract class KeyframesDrawableAnimationCallback {
       return;
     }
     long currentProgressMillis = (frameTimeMillis - mStartTimeMillis) % mMillisPerLoop;
-    mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
+
+    boolean shouldUpdateProgress = true;
+    if (currentProgressMillis - mPreviousProgressMillis < mMinimumMillisBetweenProgressUpdates) {
+      shouldUpdateProgress = false;
+    } else {
+      mPreviousProgressMillis = currentProgressMillis;
+    }
+    if (shouldUpdateProgress) {
+      mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
+    }
     mCurrentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
     postCallback();
   }
