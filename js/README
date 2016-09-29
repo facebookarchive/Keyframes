@@ -1,0 +1,17 @@
+# Keyframes Exporter
+
+# 1. Keep your Affter Effect Open with the composition you want to export
+# 2. Export the raw JSON
+  `
+  cd fbobjc/Tools/TheFactory/NodeScripts
+  npm install
+  node_modules/.bin/babel-node AfterEffects-Examples/dump-selected-ae-comp.js
+  `
+# 3. Process to the keyframe JSON
+  `
+  cd fbobjc/Users/lry/KFExporter
+  npm install
+  node_modules/.bin/babel-node src/keyframes-scripts/executor.js raw.json
+  `
+
+# 4. Use the raw JSON to test or zip the JSON to 3f asset

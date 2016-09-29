@@ -23,9 +23,14 @@ export type KfAnimationGroup = {
 
 export type KfFeature = {
   name: string,
+  backed_image?: string,
+  from_frame?: number,
+  to_frame?: number,
+  size?: KfPoint,
   fill_color?: string,
   stroke_color?: string,
   stroke_width?: number,
+  stroke_line_cap?: string,
   effects?: {
     gradient?: KfGradient,
   },
@@ -33,8 +38,8 @@ export type KfFeature = {
   feature_animations?: KfProperty[],
 
   timing_curves?: KfTimingCurve[],
-  key_frames: KfValue<string[]>[],
-}
+  key_frames?: KfValue<string[]>[],
+};
 
 export type KfValue<T> = {
   start_frame: number,
@@ -48,19 +53,25 @@ export type KfAnimatable<T> = {
 
 export type KfPoint = [number, number];
 
-export type KfProperty = KfPropertyPosition | KfPropertyRotation | KfPropertyScale | KfPropertyStrokeWidth;
+export type KfProperty = KfPropertyAnchorPoint | KfPropertyXPosition | KfPropertyYPosition | KfPropertyRotation | KfPropertyScale | KfPropertyOpacity | KfPropertyStrokeWidth;
 
-export type KfPropertyPosition = KfAnimatable<KfPoint> & {
-  property: 'POSITION',
-  anchor?: KfPoint,
+export type KfPropertyAnchorPoint = KfAnimatable<KfPoint> & {
+  property: 'ANCHOR_POINT',
+};
+export type KfPropertyXPosition = KfAnimatable<[number]> & {
+  property: 'X_POSITION',
+};
+export type KfPropertyYPosition = KfAnimatable<[number]> & {
+  property: 'Y_POSITION',
 };
 export type KfPropertyRotation = KfAnimatable<[number] | [number, number, number]> & {
   property: 'ROTATION',
-  anchor: KfPoint,
 };
 export type KfPropertyScale = KfAnimatable<KfPoint> & {
   property: 'SCALE',
-  anchor?: KfPoint,
+};
+export type KfPropertyOpacity = KfAnimatable<[number]> & {
+  property: 'OPACITY',
 };
 export type KfPropertyStrokeWidth = KfAnimatable<[number]> & {
   property: 'STROKE_WIDTH',
