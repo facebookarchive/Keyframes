@@ -693,7 +693,7 @@ function warnIfUsingMissingFeature(shouldWarn?: boolean, feature:string, ...obje
   }
   const keyPath = objects.map(({name}) => name).reverse().concat(feature);
   const comp = objects[objects.length - 1];
-  keyPath.unshift(comp.parentFolder$name);
+  keyPath.unshift(comp && comp.parentFolder$name);
   console.warn('UNSUPPORTED: %s', keyPath.join(' → '));
 }
 
