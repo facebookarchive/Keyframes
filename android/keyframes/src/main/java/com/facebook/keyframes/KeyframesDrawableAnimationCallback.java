@@ -45,12 +45,12 @@ public abstract class KeyframesDrawableAnimationCallback {
   private long mPreviousProgressMillis = 0;
 
   /**
-   * Set the minimum number of milliseconds between each loop.
+   * Set the maximum frame rate for this animation.
    * Consider using this for low end devices.
-   * @param minimumMillisBetweenProgressUpdates
+   * @param maxFrameRate
    */
-  public void setMinimumMillisBetweenProgressUpdates(long minimumMillisBetweenProgressUpdates) {
-    mMinimumMillisBetweenProgressUpdates = minimumMillisBetweenProgressUpdates;
+  public void setMaxFrameRate(int maxFrameRate) {
+    mMinimumMillisBetweenProgressUpdates = 1000 / maxFrameRate;
   }
 
 
