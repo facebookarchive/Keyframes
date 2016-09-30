@@ -132,7 +132,7 @@ public class KFFeature {
     public int fillColor;
     public int strokeColor;
     public float strokeWidth;
-    public float fromFrame = Float.MIN_VALUE;
+    public float fromFrame = 0;
     public float toFrame = Float.MAX_VALUE;
     public List<KFFeatureFrame> keyFrames;
     public float[][][] timingCurves;

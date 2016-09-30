@@ -117,9 +117,6 @@ public class MainActivity extends Activity {
 
     setKFImage(getSampleLike());
 
-    View generateStillsButton = findViewById(R.id.dev_generate_stills_button);
-    generateStillsButton.setVisibility(View.GONE);
-
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
@@ -187,45 +184,6 @@ public class MainActivity extends Activity {
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
     if (mLikeImageDrawable != null) {
       mLikeImageDrawable.startAnimation();
-    }
-  }
-
-  /**
-   * TODO TEMPORARY HACK! JUST GRABBING SNAPSHOTS!
-   */
-  public void generateNewTestStills(View view) {
-    try {
-      String storageDirectory =
-          Environment.getExternalStorageDirectory().getAbsolutePath() + "/Keyframes";
-      File storageDirFile = new File(storageDirectory);
-      if (!storageDirFile.exists()) {
-        storageDirFile.mkdir();
-      }
-
-      KFImage image = getSampleLike();
-      int frameCount = image.getFrameCount();
-      KeyframesDrawable drawable = new KeyframesDrawable(image);
-      Bitmap bitmap =
-          Bitmap.createBitmap(TEST_CANVAS_SIZE_PX, TEST_CANVAS_SIZE_PX, Bitmap.Config.ARGB_8888);
-      Canvas canvas = new Canvas(bitmap);
-
-      drawable.setBounds(0, 0, TEST_CANVAS_SIZE_PX, TEST_CANVAS_SIZE_PX);
-
-      float step = .1f;
-      for (float progress = 0; progress <= 1; progress += step) {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        drawable.setFrameProgress(frameCount * progress);
-        drawable.draw(canvas);
-
-        File outputFile = new File(storageDirFile, "test_" + (int) (progress / step) + ".png");
-        OutputStream outputStream = new FileOutputStream(outputFile);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        outputStream.flush();
-        outputStream.close();
-        Log.v("Keyframes Dev", "Test static image generated at: " + outputFile.getAbsolutePath());
-      }
-    } catch (Exception e) {
-
     }
   }
 }
