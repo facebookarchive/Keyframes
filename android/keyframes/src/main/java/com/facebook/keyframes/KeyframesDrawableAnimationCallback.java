@@ -45,16 +45,6 @@ public abstract class KeyframesDrawableAnimationCallback {
   private long mPreviousProgressMillis = 0;
 
   /**
-   * Set the maximum frame rate for this animation.
-   * Consider using this for low end devices.
-   * @param maxFrameRate
-   */
-  public void setMaxFrameRate(int maxFrameRate) {
-    mMinimumMillisBetweenProgressUpdates = 1000 / maxFrameRate;
-  }
-
-
-  /**
    * Creates a KeyframesDrawableAnimationCallback appropriate for the API level of the device.
    * @param listener The listener that will receive callbacks on updates to the value
    * @return A KeyframesDrawableAnimationCallback implementation
@@ -83,6 +73,15 @@ public abstract class KeyframesDrawableAnimationCallback {
     mListener = new WeakReference<>(listener);
     mFrameCount = frameCount;
     mMillisPerLoop = Math.round(1000 * ((float) frameCount / frameRate));
+  }
+
+  /**
+   * Set the maximum frame rate for this animation.
+   * Consider using this for low end devices.
+   * @param maxFrameRate
+   */
+  public void setMaxFrameRate(int maxFrameRate) {
+    mMinimumMillisBetweenProgressUpdates = 1000 / maxFrameRate;
   }
 
   protected abstract void postCallback();
@@ -118,7 +117,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     mStopAtLoopEnd = true;
   }
 
-  protected void advanceAnimation(long frameTimeMillis) {
+  protected void advanceAnimation(final long frameTimeMillis) {
     if (mListener.get() == null) {
       cancelCallback();
       mStartTimeMillis = 0;
@@ -139,10 +138,10 @@ public abstract class KeyframesDrawableAnimationCallback {
     long currentProgressMillis = (frameTimeMillis - mStartTimeMillis) % mMillisPerLoop;
 
     boolean shouldUpdateProgress = true;
-    if (currentProgressMillis - mPreviousProgressMillis < mMinimumMillisBetweenProgressUpdates) {
+    if (frameTimeMillis - mPreviousProgressMillis < mMinimumMillisBetweenProgressUpdates) {
       shouldUpdateProgress = false;
     } else {
-      mPreviousProgressMillis = currentProgressMillis;
+      mPreviousProgressMillis = frameTimeMillis;
     }
     if (shouldUpdateProgress) {
       mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
