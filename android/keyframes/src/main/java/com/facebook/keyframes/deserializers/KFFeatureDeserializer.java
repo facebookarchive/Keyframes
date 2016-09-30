@@ -47,7 +47,13 @@ public class KFFeatureDeserializer {
           builder.strokeColor = Color.parseColor(reader.nextString());
           break;
         case KFFeature.STROKE_WIDTH_JSON_FIELD:
-          builder.strokeWidth= (float) reader.nextDouble();
+          builder.strokeWidth = (float) reader.nextDouble();
+          break;
+        case KFFeature.FROM_FRAME_JSON_FIELD:
+          builder.fromFrame = (float) reader.nextDouble();
+          break;
+        case KFFeature.TO_FRAME_JSON_FIELD:
+          builder.toFrame = (float) reader.nextDouble();
           break;
         case KFFeature.KEY_FRAMES_JSON_FIELD:
           builder.keyFrames = KFFeatureFrameDeserializer.LIST_DESERIALIZER.readList(reader);

@@ -194,6 +194,9 @@ public class KeyframesDrawable extends Drawable
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       featureState = mFeatureStateList.get(i);
+      if (!featureState.isVisible()) {
+        continue;
+      }
 
       final FeatureConfig config = featureState.getConfig();
       final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
@@ -387,6 +390,8 @@ public class KeyframesDrawable extends Drawable
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final Matrix mFeatureMatrix;
 
+    private boolean mIsVisible;
+
     public Matrix getUniqueFeatureMatrix() {
       if (mFeatureMatrix == mRecyclableTransformMatrix) {
         // Don't return a matrix unless it's known to be unique for this feature
@@ -418,6 +423,11 @@ public class KeyframesDrawable extends Drawable
     }
 
     public void setupFeatureStateForProgress(float frameProgress) {
+      if (frameProgress < mFeature.getFromFrame() || frameProgress > mFeature.getToFrame()) {
+        mIsVisible = false;
+        return;
+      }
+      mIsVisible = true;
       mFeature.setAnimationMatrix(mFeatureMatrix, frameProgress);
       Matrix layerTransformMatrix = mAnimationGroupMatrices.get(mFeature.getAnimationGroup());
 
@@ -461,6 +471,10 @@ public class KeyframesDrawable extends Drawable
 
     public Paint.Cap getStrokeLineCap() {
       return mFeature.getStrokeLineCap();
+    }
+
+    public boolean isVisible() {
+      return mIsVisible;
     }
 
     private void prepareShadersForFeature(KFFeature feature) {

@@ -51,6 +51,18 @@ public class KFFeature {
   private final float mStrokeWidth;
 
   /**
+   * The frame that this feature stops showing up.
+   */
+  public static final String FROM_FRAME_JSON_FIELD = "from_frame";
+  private final float mFromFrame;
+
+  /**
+   * The frame that this feature starts showing up.
+   */
+  public static final String TO_FRAME_JSON_FIELD = "to_frame";
+  private final float mToFrame;
+
+  /**
    * A list of {@link KFFeatureFrame}s which holds information about how the path of this
    * feature changes throughout the duration of the animation.
    */
@@ -120,6 +132,8 @@ public class KFFeature {
     public int fillColor;
     public int strokeColor;
     public float strokeWidth;
+    public float fromFrame = Float.MIN_VALUE;
+    public float toFrame = Float.MAX_VALUE;
     public List<KFFeatureFrame> keyFrames;
     public float[][][] timingCurves;
     public int animationGroup;
@@ -135,6 +149,8 @@ public class KFFeature {
           fillColor,
           strokeColor,
           strokeWidth,
+          fromFrame,
+          toFrame,
           keyFrames,
           timingCurves,
           animationGroup,
@@ -151,6 +167,8 @@ public class KFFeature {
       int fillColor,
       int strokeColor,
       float strokeWidth,
+      float fromFrame,
+      float toFrame,
       List<KFFeatureFrame> keyFrames,
       float[][][] timingCurves,
       int animationGroup,
@@ -163,6 +181,8 @@ public class KFFeature {
     mFillColor = fillColor;
     mStrokeColor = strokeColor;
     mStrokeWidth = strokeWidth;
+    mFromFrame = fromFrame;
+    mToFrame = toFrame;
     mKeyFrames = ListHelper.immutableOrEmpty(keyFrames);
     mTimingCurves = ArgCheckUtil.checkArg(
         timingCurves,
@@ -195,6 +215,14 @@ public class KFFeature {
 
   public int getStrokeColor() {
     return mStrokeColor;
+  }
+
+  public float getFromFrame() {
+    return mFromFrame;
+  }
+
+  public float getToFrame() {
+    return mToFrame;
   }
 
   public List<KFFeatureFrame> getKeyFrames() {

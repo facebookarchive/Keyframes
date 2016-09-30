@@ -140,11 +140,11 @@ public class MainActivity extends Activity {
     clearImage();
     mKfImage = kfImage;
 
-    final Drawable robotDrawable = getResources().getDrawable(R.mipmap.ic_launcher);
-    if (robotDrawable != null) {
-      robotDrawable.setBounds(0, 0, 80, 80);
+    final Drawable logoDrawable = getResources().getDrawable(R.drawable.keyframes_launcher);
+    if (logoDrawable != null) {
+      logoDrawable.setBounds(0, 0, 80, 80);
       mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
-        Pair.create("robot", Pair.create(robotDrawable, new Matrix()))
+        Pair.create("keyframes", Pair.create(logoDrawable, new Matrix()))
       );
     }
     mLikeImageDrawable.startAnimation();
