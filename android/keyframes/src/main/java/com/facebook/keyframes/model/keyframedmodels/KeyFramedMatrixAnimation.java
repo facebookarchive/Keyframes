@@ -161,7 +161,7 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
     }
     float translationStartX = stateA.getData()[0];
     float translationEndX = stateB.getData()[0];
-    modifiable.setTranslate(
+    modifiable.postTranslate(
         interpolateValue(translationStartX, translationEndX, interpolationValue),
         0);
   }
