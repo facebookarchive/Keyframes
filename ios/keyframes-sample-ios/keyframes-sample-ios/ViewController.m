@@ -21,17 +21,17 @@
 
 @implementation ViewController
 
-- (KFVector *)loadLikeVectorFromDisk
+- (KFVector *)loadSampleVectorFromDisk
 {
-  static KFVector *likeVector;
+  static KFVector *sampleVector;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    NSString *filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"sample_like" ofType:@"json" inDirectory:nil];
+    NSString *filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"sample_logo" ofType:@"json" inDirectory:nil];
     NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSDictionary *likeVectorDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    likeVector = KFVectorFromDictionary(likeVectorDictionary);
+    NSDictionary *sampleVectorDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    sampleVector = KFVectorFromDictionary(sampleVectorDictionary);
   });
-  return likeVector;
+  return sampleVector;
 }
 
 
@@ -39,15 +39,15 @@
   [super viewDidLoad];
   // Do any additional setup after loading the view, typically from a nib.
   
-  KFVector *likeVector = [self loadLikeVectorFromDisk];
+  KFVector *sampleVector = [self loadSampleVectorFromDisk];
   
-  KFVectorLayer *likeVectorLayer = [KFVectorLayer new];
+  KFVectorLayer *sampleVectorLayer = [KFVectorLayer new];
   const CGFloat shortSide = MIN(CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds));
   const CGFloat longSide = MAX(CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds));
-  likeVectorLayer.frame = CGRectMake(shortSide / 4, longSide / 2 - shortSide / 4, shortSide / 2, shortSide / 2);
-  likeVectorLayer.faceModel = likeVector;
-  [self.view.layer addSublayer:likeVectorLayer];
-  [likeVectorLayer startAnimation];
+  sampleVectorLayer.frame = CGRectMake(shortSide / 4, longSide / 2 - shortSide / 4, shortSide / 2, shortSide / 2);
+  sampleVectorLayer.faceModel = sampleVector;
+  [self.view.layer addSublayer:sampleVectorLayer];
+  [sampleVectorLayer startAnimation];
 }
 
 - (void)didReceiveMemoryWarning {

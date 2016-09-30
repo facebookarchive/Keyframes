@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4917F9431D9E4D72009230A1 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = 4917F9421D9E4D72009230A1 /* sample_logo.json */; };
 		AD205EB51D2C5E1400AE89A1 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD8E72481D2C3CDD00E3BA9D /* keyframes.framework */; };
-		AD52E92E1D2C607900034F71 /* sample_like.json in Resources */ = {isa = PBXBuildFile; fileRef = AD52E92D1D2C607900034F71 /* sample_like.json */; };
 		ADBA23D31D2C2A9200D2549E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D21D2C2A9200D2549E /* main.m */; };
 		ADBA23D61D2C2A9200D2549E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D51D2C2A9200D2549E /* AppDelegate.m */; };
 		ADBA23D91D2C2A9200D2549E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBA23D81D2C2A9200D2549E /* ViewController.m */; };
@@ -18,6 +18,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4917F9451D9E4D72009230A1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD8E72431D2C3CDD00E3BA9D /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
+			remoteInfo = keyframesTests;
+		};
 		AD8E72471D2C3CDD00E3BA9D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AD8E72431D2C3CDD00E3BA9D /* keyframes.xcodeproj */;
@@ -48,7 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AD52E92D1D2C607900034F71 /* sample_like.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = sample_like.json; path = Assets/sample_like.json; sourceTree = "<group>"; };
+		4917F9421D9E4D72009230A1 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = sample_logo.json; path = Assets/sample_logo.json; sourceTree = "<group>"; };
 		AD8E72431D2C3CDD00E3BA9D /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
 		ADBA23CE1D2C2A9200D2549E /* keyframes-sample-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBA23D21D2C2A9200D2549E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -78,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				AD8E72481D2C3CDD00E3BA9D /* keyframes.framework */,
+				4917F9461D9E4D72009230A1 /* keyframesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -118,7 +126,7 @@
 		ADBA23D11D2C2A9200D2549E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AD52E92D1D2C607900034F71 /* sample_like.json */,
+				4917F9421D9E4D72009230A1 /* sample_logo.json */,
 				ADBA23D21D2C2A9200D2549E /* main.m */,
 			);
 			name = "Supporting Files";
@@ -185,6 +193,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		4917F9461D9E4D72009230A1 /* keyframesTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = keyframesTests.xctest;
+			remoteRef = 4917F9451D9E4D72009230A1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		AD8E72481D2C3CDD00E3BA9D /* keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -201,7 +216,7 @@
 			files = (
 				ADBA23E11D2C2A9200D2549E /* LaunchScreen.storyboard in Resources */,
 				ADBA23DE1D2C2A9200D2549E /* Assets.xcassets in Resources */,
-				AD52E92E1D2C607900034F71 /* sample_like.json in Resources */,
+				4917F9431D9E4D72009230A1 /* sample_logo.json in Resources */,
 				ADBA23DC1D2C2A9200D2549E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
