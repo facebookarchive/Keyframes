@@ -95,8 +95,6 @@ public class KeyframesDrawable extends Drawable
   private final Map<String, FeatureConfig> mFeatureConfigs;
 
 
-  private int mMaxFrameRate = -1;
-  private long mPreviousFrameTime = 0;
   private boolean mHasInitialized = false;
   /**
    * Create a new KeyframesDrawable with no FeatureConfigs
