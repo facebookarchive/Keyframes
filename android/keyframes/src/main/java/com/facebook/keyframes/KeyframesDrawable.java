@@ -370,7 +370,7 @@ public class KeyframesDrawable extends Drawable
    * @param maxFrameRate
    */
   public void setMaxFrameRate(int maxFrameRate) {
-    mKeyframesDrawableAnimationCallback.setMinimumMillisBetweenProgressUpdates(1000 / maxFrameRate);
+    mKeyframesDrawableAnimationCallback.setMaxFrameRate(maxFrameRate);
   }
 
   private class FeatureState {
