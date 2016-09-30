@@ -29,7 +29,7 @@ public class SanityTests extends AndroidTestCase {
    * Sanity deserializer test to make sure a valid file deserializes into a proper object.
    */
   public void testDeserializeValidFile() throws Exception {
-    InputStream stream = getContext().getResources().getAssets().open("sample_like");
+    InputStream stream = getContext().getResources().getAssets().open("sample_file");
     KFImage deserializedModel = KFImageDeserializer.deserialize(stream);
     Assert.assertNotNull(deserializedModel);
   }
@@ -39,7 +39,7 @@ public class SanityTests extends AndroidTestCase {
    * increments, comparing images with a pre-generated set.
    */
   public void testFramesForSample() throws Exception {
-    InputStream stream = getContext().getResources().getAssets().open("sample_like");
+    InputStream stream = getContext().getResources().getAssets().open("sample_file");
     KFImage kfImage = KFImageDeserializer.deserialize(stream);
     Bitmap testBitmap =
         Bitmap.createBitmap(TEST_CANVAS_SIZE_PX, TEST_CANVAS_SIZE_PX, Bitmap.Config.ARGB_8888);
