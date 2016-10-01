@@ -6,8 +6,8 @@
   "scripts": {
     "test":       "jest",
     "test-watch": "jest --watch",
-    "compile":       "rm -rf lib/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir lib",
-    "compile-watch": "rm -rf lib/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir lib --watch"
+    "compile":       "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes",
+    "compile-watch": "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
@@ -17,6 +17,7 @@
     "jest-cli": "^14.1.0"
   },
   "babel": {
+    "comments": true,
     "presets": [
       "react-native"
     ]
