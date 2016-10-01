@@ -1,12 +1,15 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc.
+ * Copyright (c) 2012-present, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree.
+ * LICENSE file in the root directory of this source tree. An additional grant 
+ * of patent rights can be found in the PATENTS file in the same directory.
  */
 ;(function(exports){
 ////////////////////////////////////////////////////////////////////////////////
+
+var MudBrickLayer = exports.MudBrickLayer || (exports.MudBrickLayer = {});
 
 Object.prototype.toJSON = function(){
   if (this.constructor == Object) {
@@ -227,6 +230,7 @@ copyProperties(FolderItem.prototype, HasItemsMixin.prototype)
 
 ////////////////////////////////////////////////////////////////////////////////
 exports.VirtualTween = VirtualTween;
+VirtualTween.ENABLED = true;
 VirtualTween.FPS = 120;
 VirtualTween.FRAME_TIME = 1 / VirtualTween.FPS;
 function VirtualTween(property, previousKeyframe, nextKeyframe){
@@ -343,6 +347,9 @@ HasKeyframesMixin.prototype.ao_keyframes = function(){//$.writeln('HasKeyframesM
   return keyframes;
 }
 HasKeyframesMixin.prototype.ao_keyframeTweens = function(keyframes){
+  if (!VirtualTween.ENABLED) {
+    return;
+  }
   var layer = this.ao_getLayer();
   if (!keyframes) {
     keyframes = this.ao_keyframes() || makeFakeKeyframesArray.call(this, layer);
@@ -407,6 +414,15 @@ HasPropertiesMixin.prototype.ao_properties = function(){
 HasPropertiesMixin.prototype.ao_properties.runCount = 0;
 
 HasPropertiesMixin.prototype.toJSON = function(key){//$.writeln('HasPropertiesMixin.prototype.toJSON', key);
+  if (MudBrickLayer.debug) {
+    var names = [];
+    var thing = this;
+    while (thing) {
+      names.unshift(thing.name || thing.constructor.name);
+      thing = thing.parentProperty;
+    }
+    MudBrickLayer.debug(names.join('/'));
+  }
   if (Object.ao_shallowClone.BLACKLIST[key]) {
     $.writeln('ignoring blacklisted key: ' + key);
     return;
