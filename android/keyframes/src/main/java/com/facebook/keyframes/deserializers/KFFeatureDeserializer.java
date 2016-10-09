@@ -77,6 +77,9 @@ public class KFFeatureDeserializer {
         case KFFeature.CLASS_NAME_JSON_FIELD:
           builder.className = reader.nextString();
           break;
+        case KFFeature.FEATURE_MASK_JSON_FIELD:
+          builder.featureMask = KFFeatureDeserializer.readObject(reader);
+          break;
         default:
           reader.skipValue();
       }

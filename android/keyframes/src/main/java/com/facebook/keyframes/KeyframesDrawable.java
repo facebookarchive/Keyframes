@@ -15,9 +15,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.os.SystemClock;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -203,20 +203,20 @@ public class KeyframesDrawable extends Drawable
       if (pathToDraw == null || pathToDraw.isEmpty()) {
         continue;
       }
+      if (featureState.getCurrentMaskPath() != null) {
+        canvas.save();
+        applyScaleAndClipCanvas(canvas, featureState.getCurrentMaskPath(), Region.Op.INTERSECT);
+      }
       mDrawingPaint.setShader(null);
       mDrawingPaint.setStrokeCap(featureState.getStrokeLineCap());
       if (featureState.getFillColor() != Color.TRANSPARENT) {
         mDrawingPaint.setStyle(Paint.Style.FILL);
         if (featureState.getCurrentShader() == null) {
           mDrawingPaint.setColor(featureState.getFillColor());
-          pathToDraw.transform(mScaleMatrix);
-          canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
-          pathToDraw.transform(mInverseScaleMatrix);
+          applyScaleAndDrawPath(canvas, pathToDraw, mDrawingPaint);
         } else {
           mDrawingPaint.setShader(featureState.getCurrentShader());
-          canvas.concat(mScaleMatrix);
-          canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
-          canvas.concat(mInverseScaleMatrix);
+          applyScaleToCanvasAndDrawPath(canvas, pathToDraw, mDrawingPaint);
         }
       }
       if (featureState.getStrokeColor() != Color.TRANSPARENT && featureState.getStrokeWidth() > 0) {
@@ -224,13 +224,35 @@ public class KeyframesDrawable extends Drawable
         mDrawingPaint.setStyle(Paint.Style.STROKE);
         mDrawingPaint.setStrokeWidth(
                 featureState.getStrokeWidth() * mScale * mScaleFromCenter * mScaleFromEnd);
-        pathToDraw.transform(mScaleMatrix);
-        canvas.drawPath(pathToDraw.getPath(), mDrawingPaint);
-        pathToDraw.transform(mInverseScaleMatrix);
+        applyScaleAndDrawPath(canvas, pathToDraw, mDrawingPaint);
       }
-
+      if (featureState.getCurrentMaskPath() != null) {
+        canvas.restore();
+      }
     }
     canvas.translate(-currBounds.left, -currBounds.top);
+  }
+
+  private void applyScaleAndClipCanvas(Canvas canvas, KFPath path, Region.Op op) {
+    path.transform(mScaleMatrix);
+    canvas.clipPath(path.getPath(), op);
+    path.transform(mInverseScaleMatrix);
+  }
+
+  private void applyScaleAndDrawPath(Canvas canvas, KFPath path, Paint paint) {
+    path.transform(mScaleMatrix);
+    canvas.drawPath(path.getPath(), paint);
+    path.transform(mInverseScaleMatrix);
+  }
+
+  /**
+   * Note: This method is only necessary because of cached gradient shaders with a fixed size.  We
+   * need to scale the canvas in this case rather than scaling the path.
+   */
+  private void applyScaleToCanvasAndDrawPath(Canvas canvas, KFPath path, Paint paint) {
+    canvas.concat(mScaleMatrix);
+    canvas.drawPath(path.getPath(), paint);
+    canvas.concat(mInverseScaleMatrix);
   }
 
   /**
@@ -359,9 +381,11 @@ public class KeyframesDrawable extends Drawable
 
     // Reuseable modifiable objects for drawing
     private final KFPath mPath;
+    private final KFPath mFeatureMaskPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final Matrix mFeatureMatrix;
     private final float[] mMatrixValueRecyclableArray = new float[9];
+    private final Matrix mFeatureMaskMatrix;
 
     private boolean mIsVisible;
 
@@ -392,6 +416,13 @@ public class KeyframesDrawable extends Drawable
         // so there's no need to waste memory with a unique copy
         mFeatureMatrix = mRecyclableTransformMatrix;
       }
+      if (mFeature.getFeatureMask() != null) {
+        mFeatureMaskPath = new KFPath();
+        mFeatureMaskMatrix = new Matrix();
+      } else {
+        mFeatureMaskPath = null;
+        mFeatureMaskMatrix = null;
+      }
       assert mFeatureMatrix != null;
     }
 
@@ -421,10 +452,21 @@ public class KeyframesDrawable extends Drawable
         prepareShadersForFeature(mFeature);
       }
       mCurrentShader = getNearestShaderForFeature(frameProgress);
+
+      if (mFeature.getFeatureMask() != null) {
+        mFeature.getFeatureMask().setAnimationMatrix(mFeatureMaskMatrix, frameProgress);
+        mFeatureMaskPath.reset();
+        mFeature.getFeatureMask().getPath().apply(frameProgress, mFeatureMaskPath);
+        mFeatureMaskPath.transform(mFeatureMaskMatrix);
+      }
     }
 
     public KFPath getCurrentPathForDrawing() {
       return mPath;
+    }
+
+    public KFPath getCurrentMaskPath() {
+      return mFeatureMaskPath;
     }
 
     public float getStrokeWidth() {
