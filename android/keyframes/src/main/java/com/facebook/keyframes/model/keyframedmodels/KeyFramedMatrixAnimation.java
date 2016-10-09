@@ -110,7 +110,9 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
       float interpolationValue,
       Matrix modifiable) {
     if (stateB == null) {
-      modifiable.postRotate(stateA.getData()[0]);
+      modifiable.postRotate(stateA.getData()[0],
+          mAnchor != null ? mAnchor[0] : 0,
+          mAnchor != null ? mAnchor[1] : 0);
       return;
     }
     float rotationStart = stateA.getData()[0];
@@ -132,7 +134,9 @@ public class KeyFramedMatrixAnimation extends KeyFramedObject<KFAnimationFrame, 
     if (stateB == null) {
       modifiable.postScale(
           stateA.getData()[0] / 100f,
-          stateA.getData()[1] / 100f);
+          stateA.getData()[1] / 100f,
+          mAnchor != null ? mAnchor[0] : 0,
+          mAnchor != null ? mAnchor[1] : 0);
       return;
     }
     float scaleStartX = stateA.getData()[0];
