@@ -93,6 +93,12 @@ public class KFFeature {
   private final Paint.Cap mStrokeLineCap;
 
   /**
+   * Masking layer that can be used for this feature.
+   */
+  public static final String FEATURE_MASK_JSON_FIELD = "masking";
+  private final KFFeature mFeatureMask;
+
+  /**
    * A list of animations to apply to just this feature layer.
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
@@ -140,6 +146,7 @@ public class KFFeature {
     public float[][][] timingCurves;
     public int animationGroup;
     public Paint.Cap strokeLineCap = Paint.Cap.ROUND;
+    public KFFeature featureMask;
     public List<KFAnimation> featureAnimations;
     public float[] anchorPoint;
     public KFFeatureEffect effect;
@@ -157,6 +164,7 @@ public class KFFeature {
           timingCurves,
           animationGroup,
           strokeLineCap,
+          featureMask,
           featureAnimations,
           anchorPoint,
           effect,
@@ -175,6 +183,7 @@ public class KFFeature {
       float[][][] timingCurves,
       int animationGroup,
       Paint.Cap strokeLineCap,
+      KFFeature featureMask,
       List<KFAnimation> featureAnimations,
       float[] anchorPoint,
       KFFeatureEffect effect,
@@ -192,6 +201,7 @@ public class KFFeature {
         TIMING_CURVES_JSON_FIELD);
     mAnimationGroup = animationGroup;
     mStrokeLineCap = strokeLineCap;
+    mFeatureMask = featureMask;
 
     mStrokeWidthAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
@@ -245,6 +255,10 @@ public class KFFeature {
 
   public Paint.Cap getStrokeLineCap() {
     return mStrokeLineCap;
+  }
+
+  public KFFeature getFeatureMask() {
+    return mFeatureMask;
   }
 
   public void setStrokeWidth(
