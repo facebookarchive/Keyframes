@@ -10,6 +10,8 @@
  */
 var __dirname = File($.fileName).parent.fsName;
 
+$.level = 0; // disable debugging
+
 // JS alternative to #include "./(lib)/MudBrickLayer/index.jsxinc"
 $.evalFile(File(__dirname + '/(lib)/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
 require.wasIncludedFrom($.fileName); // make relative requires work
