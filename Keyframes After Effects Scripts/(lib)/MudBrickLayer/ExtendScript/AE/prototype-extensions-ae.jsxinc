@@ -330,8 +330,8 @@ Object.keys(KeyframeInterpolationType).forEach(function(key){
   KeyframeInterpolationTypeKeysByID[id] = key;
 });
 
-exports.__timerIDs__ = {};
-exports.__timerCallbacks__ = {
+exports.__timerIDs__ = exports.__timerIDs__ || {};
+exports.__timerCallbacks__ = exports.__timerCallbacks__ || {
   UID: 0,
 };
 
