@@ -16,6 +16,8 @@ $.level = 0; // disable debugging
 $.evalFile(File(__dirname + '/(lib)/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
 require.wasIncludedFrom($.fileName); // make relative requires work
 
+;(function(){
+
 var AECompToKeyframesAnimation = require('./(lib)/keyframes/AECompToKeyframesAnimation');
 
 // Set this to true if you want to VERY VERY SLOWLY export a "keyframeTweens"
@@ -111,3 +113,5 @@ function exportActiveComp() {
 }
 
 main();
+
+}());
