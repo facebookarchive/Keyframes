@@ -8,6 +8,8 @@
  */
 ;!function(){
 
+var __dirname = File($.fileName).parent.fsName;
+
 if (!(typeof $ === 'object' && 'global' in $ && typeof $.global === 'object')) {
   throw new Error('UNSUPPORTED RUNTIME. Expected to be run with ExtendScript');
 }
@@ -41,7 +43,8 @@ require.cache = {};
 var SLASH = Folder.fs === 'Windows' ? '\\' : '/';
 
 function require(path) {
-  var isAbsolutePath = String(path).charAt(0) === '/';
+  path = String(path);
+  var isAbsolutePath = path.charAt(0) === '/';
   if (!isAbsolutePath && currentFolder == null) {
     throw new Error('You need to call require.wasIncludedFrom($.fileName) immediately after #include');
   }
@@ -57,7 +60,7 @@ function require(path) {
     throw new Error("Can't find '" + absolutePath + "'");
   }
   if (file.fsName in require.cache) {
-    return require.cache[file.fsName];
+    return require.cache[file.fsName].exports;
   }
 
   var module = require.cache[file.fsName] = {
