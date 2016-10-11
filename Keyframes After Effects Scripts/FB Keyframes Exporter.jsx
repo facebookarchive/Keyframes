@@ -8,8 +8,10 @@
  *
  * Run this script in Adobe After Effects
  */
+var __dirname = File($.fileName).parent.fsName;
+
 // JS alternative to #include "./(lib)/MudBrickLayer/index.jsxinc"
-$.evalFile(File(File($.fileName).parent.fsName + '/(lib)/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
+$.evalFile(File(__dirname + '/(lib)/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
 require.wasIncludedFrom($.fileName); // make relative requires work
 
 var AECompToKeyframesAnimation = require('./(lib)/keyframes/AECompToKeyframesAnimation');
