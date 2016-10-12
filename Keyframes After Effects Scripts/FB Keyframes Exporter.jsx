@@ -25,8 +25,6 @@ var UI = require('./(lib)/MudBrickLayer/ExtendScript/common/ui');
 // array with the computed values of every property that has keyframes
 VirtualTween.ENABLED = false;
 
-$.global.MudBrickLayer.debug = console.log.bind(console);
-
 function main(){
   AppWindow({
     title: 'FB Keyframes',
@@ -78,6 +76,9 @@ function AppWindow(app){
 }
 
 function exportActiveComp() {
+  // Enable verbose logging in MudBrickLayer so we can show progress
+  $.global.MudBrickLayer.debug = console.log.bind(console);
+
   var activeComp = app.project && app.project.activeItem;
   if (!activeComp) {
     alert('Failed to get the activeItem. No comp selected? Select a comp and try again');
@@ -118,6 +119,7 @@ function exportActiveComp() {
   console.log('Raw JSON Exported:');
   console.log(filePathRaw);
 
+  $.global.MudBrickLayer.debug = undefined; // Disable verbose logging
   exportActiveComp.logFile.close();
 }
 
