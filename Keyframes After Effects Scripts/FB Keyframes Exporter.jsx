@@ -113,7 +113,12 @@ function exportActiveComp() {
   console.log('FB Keyframes JSON Exported:');
   console.log(filePathKf);
 
-  File(filePathKf).parent.execute();
+  if (Hooks.afterCreation.isSupported()) {
+    Hooks.afterCreation.fire(filePathKf);
+  } else {
+    // TODO: Figure out how to preview on Windows
+    File(filePathKf).parent.execute();
+  }
 
   fs_writeFileSync(filePathRaw, activeItemJSON);
   console.log('Raw JSON Exported:');
@@ -122,6 +127,31 @@ function exportActiveComp() {
   $.global.MudBrickLayer.debug = undefined; // Disable verbose logging
   exportActiveComp.logFile.close();
 }
+
+var Hooks = {
+  afterCreation: {
+    isSupported: function(){
+      return $.os.indexOf('Macintosh OS') === 0;
+    },
+    _file: File(__dirname + '/(lib)/hooks-macos/after-creation.sh'),
+    fire: function(exportedFilePath){
+      if (!this._file.exists) {
+        console.error('After Creation Hook disabled. Enable by creating "' + this._file.fsName + '"');
+        return;
+      }
+      var exportedFile = File(exportedFilePath);
+      if (!exportedFile.exists) {
+        console.error('After Creation Hook NOT called because the exported file does not exist: "' + exportedFile.fsName + '"');
+        return;
+      }
+      var command = '"' + this._file.fsName + '" "' + exportedFile.fsName + '"';
+      console.log('Calling After Creation Hook command: `' + command + '`');
+      console.log(system.callSystem(command));
+    }
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
 
 main();
 
