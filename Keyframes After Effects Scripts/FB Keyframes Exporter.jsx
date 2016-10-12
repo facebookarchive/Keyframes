@@ -19,6 +19,7 @@ require.wasIncludedFrom($.fileName); // make relative requires work
 ;(function(){
 
 var AECompToKeyframesAnimation = require('./(lib)/keyframes/AECompToKeyframesAnimation');
+var UI = require('./(lib)/MudBrickLayer/ExtendScript/common/ui');
 
 // Set this to true if you want to VERY VERY SLOWLY export a "keyframeTweens"
 // array with the computed values of every property that has keyframes
@@ -27,40 +28,48 @@ VirtualTween.ENABLED = false;
 $.global.MudBrickLayer.debug = console.log.bind(console);
 
 function main(){
-  initWindow({
+  AppWindow({
     title: 'FB Keyframes',
     onExport: exportActiveComp,
+    log: function(message){
+      exportActiveComp.logFile && exportActiveComp.logFile.write(new Date().toISOString() + '\t' + message);
+    }
   });
 }
 
-function initWindow(config){
-  var win = new Window('palette', config.title, undefined, {alignChildren:'fill'});
-  win.orientation = 'row';
-  win.onShow = function(){ this.minimumSize = this.size; }
-  // win.onResizing = win.onResize = function(){this.layout.resize();}
+function AppWindow(app){
+  function Ref(id){ return function(view){ refs[id] = view; }; }
+  var refs = {};
 
-  var exportButton = win.add('button', undefined, 'Export', {});
-  exportButton.onClick = exportButtonClick;
-  function exportButtonClick(){
-    exportButton.onClick = function(){};
-    exportButton.enabled = false;
-    textView.text = 'Exporting';
+  function exportButtonOnClick(){
+    refs.exportButton.onClick = function(){};
+    refs.exportButton.enabled = false;
+    refs.status.text = 'Exporting';
     var start = Date.now();
 
-    config.onExport();
+    app.onExport();
 
-    textView.text = 'Done. ' + Math.round((Date.now() - start) / 100) / 10 + ' seconds';
-    exportButton.enabled = true;
-    exportButton.onClick = exportButtonClick;
-  };
+    refs.status.text = 'Done. ' + Math.round((Date.now() - start) / 100) / 10 + ' seconds';
+    refs.exportButton.enabled = true;
+    refs.exportButton.onClick = exportButtonOnClick;
+  }
 
-  textView = win.add('statictext', undefined, 'Ready to export', {});
-  textView.characters = 40;
-  win.show();
+  UI.render(
+    {ref:Ref('win'), type:'palette', title:app.title, alignChildren:'fill', children:[
+
+      {orientation:'row', children:[
+        {ref:Ref('exportButton'), type:'button', text:'Export', onClick:exportButtonOnClick},
+        {ref:Ref('status'), type:'statictext', text:'Ready', characters:40},
+      ]},
+
+    ]}
+  );
+
+  refs.win.show();
 
   function writeToWindowLog(text) {
-    textView.text = text;
-    exportActiveComp.logFile && exportActiveComp.logFile.write(new Date().toISOString() + '\t' + text);
+    refs.status.text = text;
+    app.log && app.log(text);
   }
   console.configure({
     stdout:{write: writeToWindowLog},
