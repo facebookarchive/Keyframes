@@ -24,10 +24,10 @@
     - At most one group per layer
 
 - A typical shape layer looks like
-* [Image placeholder for typical layer]
+![Typical Layer](/docs/images/doc-ae-typical-layer.png)
 
 - Please DO NOT scale, skew, rotate or set opacity under the shape's transformation. DO IT in layers Transform Section
-* [Image: https://fb.quip.com/-/blob/YcLAAApHX6u/nIuPdT0AXsAzVkx7StDo7A]
+![Layer Transform](/docs/images/doc-ae-layer-transform.png)
 
 - Path trim is NOT supported
 - Polystar is NOT supported
@@ -42,7 +42,7 @@
 - expressions is NOT supported
 - Only use interpolate type 'LINEAR' and 'BEZIER' on your keyframes
 - DO NOT USE overshoot or undershoot bezier, in other words two control points should always stay in the red rectangle formed by two keyframes.
-* [placeholder for overshoot]
+![Bezier Overshoot and Undershoot](/docs/images/doc-ae-wrong-bezier.png)
 
 ## Effects
 
@@ -50,5 +50,5 @@
 
 - LINEAR gradient supported by choosing 'Effect/Gradient Ramp'
 - DO NOT USE 'Gradient Fill' 
-* [Image: https://fb.quip.com/-/blob/YcLAAApHX6u/pEpW8PGgXeON_h3a-q5tfA]
-* [Image: https://fb.quip.com/-/blob/YcLAAApHX6u/8YPFHcHvFb1dT8iPZ_nfrg]
+![Right Linear Gradient](/docs/images/doc-ae-right-gradient.png)
+![Wrong Linear Gradient](/docs/images/doc-ae-wrong-gradient.png)
