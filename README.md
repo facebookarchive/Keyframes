@@ -5,6 +5,10 @@ Keyframes is a combination of (1) an ExtendScript script that extracts image ani
 
 ## Usage
 
+### Developing Animations in After Effects
+
+For a detailed list of constraints for developing animations to use with the Keyframes library, please refer to the [Keyframes After Effects Guidelines](/docs/AfterEffectsGuideline.md).
+
 ### Image Data Extraction
 
 Use of the extraction script requires an installation of **Adobe After Effects** as well as **Adobe ExtendScript Toolkit**.  If Keyframes JSON files are already available, only the corresponding iOS and Android libraries are needed.
