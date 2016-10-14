@@ -141,7 +141,7 @@ public class KFImage {
         group.getAnimations().get(animationIndex).getAnimation().apply(frameProgress, matrix);
       }
       if (group.getParentGroup() > 0) {
-        matrix.preConcat(matrixMap.get(group.getParentGroup()));
+        matrix.postConcat(matrixMap.get(group.getParentGroup()));
       }
     }
   }
