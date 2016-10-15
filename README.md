@@ -13,7 +13,7 @@ For a detailed list of constraints for developing animations to use with the Key
 
 Use of the extraction script requires an installation of **Adobe After Effects** as well as **Adobe ExtendScript Toolkit**.  If Keyframes JSON files are already available, only the corresponding iOS and Android libraries are needed.
 
-Simply have the project open in After Effects, open the extraction script provided in `~/scripts` in ExtendScript, and run the script.  The script will iterate through the compositions in the project and output a JSON blob for each composition with the necessary metadata to reconstruct the images.
+For detailed steps on running the ExtendScript script on your AE comp, please refer to the instructions detailed [here](/Keyframes After Effects Scripts).
 
 ### iOS Rendering
 
