@@ -17,14 +17,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Pair;
@@ -34,10 +29,8 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import com.facebook.keyframes.KeyframesDrawable;
 import com.facebook.keyframes.deserializers.KFImageDeserializer;
@@ -49,7 +42,7 @@ public class MainActivity extends Activity {
 
   private static final int TEST_CANVAS_SIZE_PX = 500;
 
-  private KeyframesDrawable mLikeImageDrawable;
+  private KeyframesDrawable mKeyFramesDrawable;
 
   private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
 
@@ -115,7 +108,7 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    setKFImage(getSampleLike());
+    setKFImage(getSampleImage());
 
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
@@ -125,11 +118,11 @@ public class MainActivity extends Activity {
   }
 
   private void clearImage() {
-    if (mLikeImageDrawable == null) {
+    if (mKeyFramesDrawable == null) {
       return;
     }
-    mLikeImageDrawable.stopAnimation();
-    mLikeImageDrawable = null;
+    mKeyFramesDrawable.stopAnimation();
+    mKeyFramesDrawable = null;
   }
 
 
@@ -140,22 +133,22 @@ public class MainActivity extends Activity {
     final Drawable logoDrawable = getResources().getDrawable(R.drawable.keyframes_launcher);
     if (logoDrawable != null) {
       logoDrawable.setBounds(0, 0, 80, 80);
-      mLikeImageDrawable = KeyframesDrawable.create(mKfImage,
+      mKeyFramesDrawable = KeyframesDrawable.create(mKfImage,
         Pair.create("keyframes", Pair.create(logoDrawable, new Matrix()))
       );
     }
-    mLikeImageDrawable.startAnimation();
+    mKeyFramesDrawable.startAnimation();
 
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
-    imageView.setImageDrawable(mLikeImageDrawable);
+    imageView.setImageDrawable(mKeyFramesDrawable);
   }
 
-  private KFImage getSampleLike() {
+  private KFImage getSampleImage() {
     InputStream stream = null;
     try {
       stream = getResources().getAssets().open("sample_file");
-      KFImage likeImage = KFImageDeserializer.deserialize(stream);
-      return likeImage;
+      KFImage sampleImage = KFImageDeserializer.deserialize(stream);
+      return sampleImage;
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
@@ -171,8 +164,8 @@ public class MainActivity extends Activity {
 
   @Override
   public void onPause() {
-    if (mLikeImageDrawable != null) {
-      mLikeImageDrawable.stopAnimation();
+    if (mKeyFramesDrawable != null) {
+      mKeyFramesDrawable.stopAnimation();
     }
     unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
@@ -182,8 +175,8 @@ public class MainActivity extends Activity {
   public void onResume() {
     super.onResume();
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
-    if (mLikeImageDrawable != null) {
-      mLikeImageDrawable.startAnimation();
+    if (mKeyFramesDrawable != null) {
+      mKeyFramesDrawable.startAnimation();
     }
   }
 }
