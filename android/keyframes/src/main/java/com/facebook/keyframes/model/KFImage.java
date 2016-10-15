@@ -12,6 +12,7 @@ import java.util.List;
 import android.graphics.Matrix;
 import android.util.SparseArray;
 
+import com.facebook.keyframes.util.AnimationGroupSort;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
 
@@ -90,6 +91,7 @@ public class KFImage {
         ListHelper.immutableOrEmpty(features),
         features.size() > 0,
         FEATURES_JSON_FIELD);
+    animationGroups = AnimationGroupSort.sort(animationGroups);
     mAnimationGroups =
         ArgCheckUtil.checkArg(
             ListHelper.immutableOrEmpty(animationGroups),
