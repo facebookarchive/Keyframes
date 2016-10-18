@@ -223,7 +223,7 @@ public abstract class VectorCommand {
       destArgs = getRecyclableArgArray();
       higherOrderCommand = this;
     }
-    for (int i = 0, len = mArgs.length; i < len; i++) {
+    for (int i = 0, len = destArgs.length; i < len; i++) {
       destArgs[i] = interpolateValue(fromArgs[i], toArgs[i], progress);
     }
     higherOrderCommand.applyInner(destPath, mArgFormat, destArgs);
