@@ -236,7 +236,7 @@ public class KeyframesDrawable extends Drawable
           canvas.concat(mInverseScaleMatrix);
         }
       }
-      if (featureState.getStrokeColor() != Color.TRANSPARENT) {
+      if (featureState.getStrokeColor() != Color.TRANSPARENT && featureState.getStrokeWidth() > 0) {
         mDrawingPaint.setColor(featureState.getStrokeColor());
         mDrawingPaint.setStyle(Paint.Style.STROKE);
         mDrawingPaint.setStrokeWidth(
@@ -378,6 +378,7 @@ public class KeyframesDrawable extends Drawable
     private final KFPath mPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final Matrix mFeatureMatrix;
+    private final float[] mMatrixValueRecyclableArray = new float[9];
 
     private boolean mIsVisible;
 
@@ -432,6 +433,7 @@ public class KeyframesDrawable extends Drawable
       mPath.transform(mFeatureMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
+      mStrokeWidth.adjustScale(extractScaleFromMatrix(mFeatureMatrix));
       if (mFeature.getEffect() != null) {
         prepareShadersForFeature(mFeature);
       }
@@ -510,6 +512,11 @@ public class KeyframesDrawable extends Drawable
     private boolean hasCustomDrawable() {
       final FeatureConfig config = getConfig();
       return config != null && config.drawable != null;
+    }
+
+    private float extractScaleFromMatrix(Matrix matrix) {
+      matrix.getValues(mMatrixValueRecyclableArray);
+      return (mMatrixValueRecyclableArray[0] + mMatrixValueRecyclableArray[4]) / 2f;
     }
   }
 

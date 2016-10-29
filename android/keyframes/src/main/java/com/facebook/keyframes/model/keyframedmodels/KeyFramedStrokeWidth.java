@@ -30,11 +30,15 @@ public class KeyFramedStrokeWidth
     private float mStrokeWidth;
 
     public float getStrokeWidth() {
-      return mStrokeWidth;
+      return Math.abs(mStrokeWidth);
     }
 
     public void setStrokeWidth(float strokeWidth) {
       mStrokeWidth = strokeWidth;
+    }
+
+    public void adjustScale(float scale) {
+      mStrokeWidth *= scale;
     }
   }
 
