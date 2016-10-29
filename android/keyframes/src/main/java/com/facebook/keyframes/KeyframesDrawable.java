@@ -35,6 +35,7 @@ import com.facebook.keyframes.model.KFFeature;
 import com.facebook.keyframes.model.KFGradient;
 import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 
@@ -215,6 +216,7 @@ public class KeyframesDrawable extends Drawable
         mDrawingPaint.setStyle(Paint.Style.FILL);
         if (featureState.getCurrentShader() == null) {
           mDrawingPaint.setColor(featureState.getFillColor());
+          mDrawingPaint.setAlpha(featureState.getAlpha());
           applyScaleAndDrawPath(canvas, pathToDraw, mDrawingPaint);
         } else {
           mDrawingPaint.setShader(featureState.getCurrentShader());
@@ -223,6 +225,7 @@ public class KeyframesDrawable extends Drawable
       }
       if (featureState.getStrokeColor() != Color.TRANSPARENT && featureState.getStrokeWidth() > 0) {
         mDrawingPaint.setColor(featureState.getStrokeColor());
+        mDrawingPaint.setAlpha(featureState.getAlpha());
         mDrawingPaint.setStyle(Paint.Style.STROKE);
         mDrawingPaint.setStrokeWidth(
                 featureState.getStrokeWidth() * mScale * mScaleFromCenter * mScaleFromEnd);
@@ -385,6 +388,7 @@ public class KeyframesDrawable extends Drawable
     private final KFPath mPath;
     private final KFPath mFeatureMaskPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
+    private final KeyFramedOpacity.Opacity mOpacity;
     private final Matrix mFeatureMatrix;
     private final float[] mMatrixValueRecyclableArray = new float[9];
     private final Matrix mFeatureMaskMatrix;
@@ -418,6 +422,7 @@ public class KeyframesDrawable extends Drawable
         // so there's no need to waste memory with a unique copy
         mFeatureMatrix = mRecyclableTransformMatrix;
       }
+      mOpacity = new KeyFramedOpacity.Opacity();
       if (mFeature.getFeatureMask() != null) {
         mFeatureMaskPath = new KFPath();
         mFeatureMaskMatrix = new Matrix();
@@ -450,6 +455,7 @@ public class KeyframesDrawable extends Drawable
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
       mStrokeWidth.adjustScale(extractScaleFromMatrix(mFeatureMatrix));
+      mFeature.setOpacity(mOpacity, frameProgress);
       if (mFeature.getEffect() != null) {
         prepareShadersForFeature(mFeature);
       }
@@ -473,6 +479,14 @@ public class KeyframesDrawable extends Drawable
 
     public float getStrokeWidth() {
       return mStrokeWidth != null ? mStrokeWidth.getStrokeWidth() : 0;
+    }
+
+    public float getOpacity() {
+      return mOpacity.getOpacity() / 100;
+    }
+
+    public int getAlpha() {
+      return Math.round(0xFF * getOpacity());
     }
 
     public Shader getCurrentShader() {

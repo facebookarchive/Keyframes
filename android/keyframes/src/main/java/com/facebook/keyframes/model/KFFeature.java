@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.AnimationHelper;
@@ -115,6 +116,10 @@ public class KFFeature {
    * The anchor point for all animations in this feature.
    */
   final KFAnimation mAnchorPoint;
+  /**
+   * The opacity for this feature.
+   */
+  private final KFAnimation mOpacityAnimation;
 
   /**
    * An optional effect that this feature layer can have.
@@ -209,6 +214,9 @@ public class KFFeature {
     mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.ANCHOR_POINT);
+    mOpacityAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.OPACITY);
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
@@ -272,6 +280,15 @@ public class KFFeature {
       return;
     }
     mStrokeWidthAnimation.getAnimation().apply(frameProgress, strokeWidth);
+  }
+
+  public void setOpacity(
+      KeyFramedOpacity.Opacity opacity,
+      float frameProgress) {
+    if (opacity == null || mOpacityAnimation == null) {
+      return;
+    }
+    mOpacityAnimation.getAnimation().apply(frameProgress, opacity);
   }
 
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
