@@ -137,6 +137,7 @@ public class MainActivity extends Activity {
     mKeyFramesDrawable.startAnimation();
 
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
+    imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     imageView.setImageDrawable(mKeyFramesDrawable);
   }
 
