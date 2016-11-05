@@ -13,41 +13,37 @@ import android.graphics.Matrix;
 
 import com.facebook.keyframes.model.HasKeyFrame;
 import com.facebook.keyframes.model.KFAnimation;
+import com.facebook.keyframes.model.KFAnimationFrame;
+
+import java.util.List;
 
 /**
  * A special object that defines the anchor point for the other animations in a group or feature.
- * Currently, it does not support keyframing.
  */
-public class KeyFramedAnchorPoint extends KeyFramedObject<HasKeyFrame, Matrix> {
-
-  public final float anchorX;
-  public final float anchorY;
+public class KeyFramedAnchorPoint extends KeyFramedObject<KFAnimationFrame, Matrix> {
 
   public static KeyFramedAnchorPoint fromAnchorPoint(KFAnimation animation) {
-    float[] anchor = animation.getAnimationFrames().get(0).getData();
-    return new KeyFramedAnchorPoint(anchor[0], anchor[1]);
+    return new KeyFramedAnchorPoint(animation.getAnimationFrames(), animation.getTimingCurves());
   }
 
-  private KeyFramedAnchorPoint(float anchorX, float anchorY) {
-    this.anchorX = anchorX;
-    this.anchorY = anchorY;
-  }
-
-  public void apply(Matrix matrix) {
-    matrix.postTranslate(-anchorX, -anchorY);
-  }
-
-  @Override
-  public void apply(float frameProgress, Matrix modifiable) {
-    throw new NoSuchMethodError("Anchor point currently has no keyframing ability");
+  private KeyFramedAnchorPoint(
+      List<KFAnimationFrame> objects,
+      float[][][] timingCurves) {
+    super(objects, timingCurves);
   }
 
   @Override
   protected void applyImpl(
-      HasKeyFrame stateA,
-      HasKeyFrame stateB,
+      KFAnimationFrame stateA,
+      KFAnimationFrame stateB,
       float interpolationValue,
-      Matrix modifiable) {
-    throw new NoSuchMethodError("Anchor point currently has no keyframing ability");
+      Matrix matrix) {
+    if (stateB == null) {
+      matrix.postTranslate(-stateA.getData()[0], -stateA.getData()[1]);
+      return;
+    }
+    matrix.postTranslate(
+        -interpolateValue(stateA.getData()[0], stateB.getData()[0], interpolationValue),
+        -interpolateValue(stateA.getData()[1], stateB.getData()[1], interpolationValue));
   }
 }
