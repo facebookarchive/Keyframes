@@ -298,7 +298,7 @@ public class KFFeature {
       return;
     }
     if (mAnchorPoint != null) {
-      ((KeyFramedAnchorPoint) mAnchorPoint.getAnimation()).apply(featureMatrix);
+      mAnchorPoint.getAnimation().apply(frameProgress, featureMatrix);
     }
     for (int i = 0, len = mFeatureMatrixAnimations.size(); i < len; i++) {
       mFeatureMatrixAnimations.get(i).getAnimation().apply(frameProgress, featureMatrix);
