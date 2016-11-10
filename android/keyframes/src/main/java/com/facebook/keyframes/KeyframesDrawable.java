@@ -96,36 +96,16 @@ public class KeyframesDrawable extends Drawable
 
 
   private boolean mHasInitialized = false;
-  /**
-   * Create a new KeyframesDrawable with no FeatureConfigs
-   * @param KFImage
-   */
-  public KeyframesDrawable(KFImage KFImage) {
-    this(KFImage, null);
-  }
 
   /**
-   * Syntax sugar for creating a new KeyframesDrawable with FeatureConfigs
-   * @param KFImage
-   * @param Pair<String, Pair<Drawable, Matrix>>
+   * Create a new KeyframesDrawable with the supplied values from the builder.
+   * @param builder
    */
-  @SafeVarargs
-  public static KeyframesDrawable create(KFImage KFImage, Pair<String, Pair<Drawable, Matrix>>... configs) {
-    Map<String, FeatureConfig> configMap = new HashMap<>();
-    for (Pair<String, Pair<Drawable, Matrix>> config : configs) {
-      configMap.put(config.first, new FeatureConfig(config.second.first, config.second.second));
-    }
-    return new KeyframesDrawable(KFImage, configMap);
-  }
-
-  /**
-   * Create a new KeyframesDrawable with FeatureConfigs
-   * @param KFImage
-   * @param Map<String, FeatureConfig>
-   */
-  public KeyframesDrawable(KFImage KFImage, Map<String, FeatureConfig> configs) {
-    mKFImage = KFImage;
-    mFeatureConfigs = configs == null ? null : Collections.unmodifiableMap(configs);
+  KeyframesDrawable(KeyframesDrawableBuilder builder) {
+    mKFImage = builder.getImage();
+    mFeatureConfigs = builder.getExperimentalFeatures().getParticleFeatureConfigs() == null ?
+        null :
+        Collections.unmodifiableMap(builder.getExperimentalFeatures().getParticleFeatureConfigs());
 
     mRecyclableTransformMatrix = new Matrix();
     mScaleMatrix = new Matrix();
@@ -147,6 +127,8 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = animationGroups.size(); i < len; i++) {
       mAnimationGroupMatrices.put(animationGroups.get(i).getGroupId(), new Matrix());
     }
+
+    setMaxFrameRate(builder.getMaxFrameRate());
   }
 
   /**
@@ -198,6 +180,7 @@ public class KeyframesDrawable extends Drawable
       final FeatureConfig config = featureState.getConfig();
       final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
       if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
+        // This block is for the experimental particle effects.
         canvas.save();
         canvas.concat(mScaleMatrix);
         canvas.concat(uniqueFeatureMatrix);
@@ -364,7 +347,7 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Cap the frame rate to a specific FPS. Consider using this for low end devices.
-   * Calls {@link KeyframesDrawableAnimationCallback#setMinimumMillisBetweenProgressUpdates}
+   * Calls {@link KeyframesDrawableAnimationCallback#setMaxFrameRate}
    * @param maxFrameRate
    */
   public void setMaxFrameRate(int maxFrameRate) {
@@ -516,7 +499,8 @@ public class KeyframesDrawable extends Drawable
 
     private float extractScaleFromMatrix(Matrix matrix) {
       matrix.getValues(mMatrixValueRecyclableArray);
-      return (mMatrixValueRecyclableArray[0] + mMatrixValueRecyclableArray[4]) / 2f;
+      return (Math.abs(mMatrixValueRecyclableArray[0]) +
+          Math.abs(mMatrixValueRecyclableArray[4])) / 2f;
     }
   }
 

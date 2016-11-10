@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.facebook.keyframes.KeyframesDrawable;
+import com.facebook.keyframes.KeyframesDrawableBuilder;
 import com.facebook.keyframes.deserializers.KFImageDeserializer;
 import com.facebook.keyframes.model.KFImage;
 
@@ -130,9 +131,13 @@ public class MainActivity extends Activity {
     final Drawable logoDrawable = getResources().getDrawable(R.drawable.keyframes_launcher);
     if (logoDrawable != null) {
       logoDrawable.setBounds(0, 0, 80, 80);
-      mKeyFramesDrawable = KeyframesDrawable.create(mKfImage,
-        Pair.create("keyframes", Pair.create(logoDrawable, new Matrix()))
-      );
+      mKeyFramesDrawable = new KeyframesDrawableBuilder()
+          .withImage(mKfImage)
+          .withMaxFrameRate(60)
+          .withExperimentalFeatures()
+          .withParticleFeatureConfigs(
+              Pair.create("keyframes", Pair.create(logoDrawable, new Matrix())))
+          .build();
     }
     mKeyFramesDrawable.startAnimation();
 
