@@ -1,0 +1,100 @@
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant 
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+;!function(){
+
+var __dirname = File($.fileName).parent.fsName;
+
+if (!(typeof $ === 'object' && 'global' in $ && typeof $.global === 'object')) {
+  throw new Error('UNSUPPORTED RUNTIME. Expected to be run with ExtendScript');
+}
+
+var $_global_require = $.global.require;
+$.global.require = require;
+
+var TOP_LEVEL_PATH = null;
+var currentFolder = null;
+var folderPaths = [];
+function pushd(path){
+  folderPaths.push(path);
+  currentFolder = path;
+}
+function popd(){
+  if (folderPaths.length === 1) {
+    throw new Error('This error should not be possible');
+  }
+  folderPaths.pop();
+  currentFolder = folderPaths[folderPaths.length - 1];
+}
+
+
+require.wasIncludedFrom = function(fileName) {
+  TOP_LEVEL_PATH = File(fileName).parent.fsName;
+  pushd(TOP_LEVEL_PATH);
+};
+
+require.cache = {};
+
+var SLASH = Folder.fs === 'Windows' ? '\\' : '/';
+
+function require(path) {
+  path = String(path);
+  var isAbsolutePath = path.charAt(0) === '/';
+  if (!isAbsolutePath && currentFolder == null) {
+    throw new Error('You need to call require.wasIncludedFrom($.fileName) immediately after #include');
+  }
+  var absolutePath = isAbsolutePath ? path : currentFolder + SLASH + path;
+  var file = new File(absolutePath);
+  if (!file.exists) {
+    file = new File(absolutePath + '.js');
+  }
+  if (!file.exists) {
+    file = new File(absolutePath + '/index.js');
+  }
+  if (!file.exists) {
+    throw new Error("Can't find '" + absolutePath + "'");
+  }
+  if (file.fsName in require.cache) {
+    return require.cache[file.fsName].exports;
+  }
+
+  var module = require.cache[file.fsName] = {
+    id: file.fsName,
+    exports: {},
+    _folder: file.parent.fsName,
+    _require: function(path){
+      pushd(module._folder);
+      try {
+        return require(path);
+      }
+      finally {
+        popd();
+      }
+    },
+    _load: function(module, exports, require, __filename, __dirname){
+      pushd(module._folder);
+      try {
+        $.evalFile(module.id);
+      }
+      catch (e) {
+        $.write('(' + e.fileName + ':' + e.line + ':' + e.start + '-' + e.end + ') ' + e.message + '\n');
+        $.write($.stack + '\n');
+        throw e;
+      }
+      finally {
+        popd();
+      }
+    }
+  };
+
+  module._load(module, module.exports, module._require, module.id, module._folder);
+  delete module._load;
+  return module.exports;
+}
+
+}();

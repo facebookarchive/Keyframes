@@ -1,0 +1,579 @@
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant 
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+;(function(exports){
+////////////////////////////////////////////////////////////////////////////////
+
+var MudBrickLayer = exports.MudBrickLayer || (exports.MudBrickLayer = {});
+
+Object.prototype.toJSON = function(){
+  if (this.constructor == Object) {
+    return this;
+  }
+  return "<<< toJSON not implemented '" + this.constructor.name + "' >>>";
+}
+Array.prototype.toJSON = function(){
+  return this;
+}
+
+Project.prototype.toJSON = function(key){
+  // var clone = {};
+  var clone = Object.ao_shallowClone(this);
+  try {
+    clone.file = this.file.fsName;
+  } catch(e){}
+  try {
+    clone.items = this.items;
+  } catch(e){}
+  return clone;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+exports._scheduleTaskWithFunction = function(fn, delay, repeat){
+  var callbackID = exports.__timerCallbacks__.UID++;
+  exports.__timerCallbacks__[callbackID] = function(){
+    delete exports.__timerCallbacks__[callbackID];
+    fn();
+  }
+  var stringToExecute = '__timerCallbacks__[' + callbackID + ']()';
+  var timerID = app.scheduleTask(stringToExecute, delay, repeat);
+  exports.__timerIDs__[timerID] = callbackID;
+  return timerID;
+};
+
+exports.setImmediate = function(fn){
+  return exports._scheduleTaskWithFunction(fn, 0, false);
+}
+exports.setTimeout = function(fn, delay){
+  return exports._scheduleTaskWithFunction(fn, delay, false);
+}
+exports.setInterval = function(fn, delay){
+  return exports._scheduleTaskWithFunction(fn, delay, true);
+}
+exports.clearInterval =
+exports.clearTimeout = function(timerID){
+  var callbackID = exports.__timerIDs__[timerID];
+  delete exports.__timerIDs__[timerID];
+  delete exports.__timerCallbacks__[callbackID];
+  return app.cancelTask(timerID);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+function copyProperties(object, mixin){
+  if (typeof object != 'object') {
+    console.warn('copyProperties expected object to be an object');
+  }
+  Object.keys(mixin).forEach(function(key){
+    object[key] = mixin[key];
+  });
+  return object;
+}
+
+Object.ao_shallowClone = function(object){//$.writeln('Object.ao_shallowClone');
+  if (object == null) return;
+  var clone = {};
+  Object.keys(object).forEach(function(key){
+    // $.writeln(key);
+    var value;
+    try {
+      value = object[key];
+    } catch(e){
+      // $.writeln('Error: ' + e.toString());
+    }
+    var type = typeof value;
+    // if (value === false || value == null || type == 'function' || (type == 'object' && Array.isArray(value) && value.length === 0)){
+    //   return;
+    // }
+    // if (Object.ao_shallowClone.BLACKLIST[key] || !(type == 'boolean' || type == 'string' || type == 'number' || (type == 'object' && Array.isArray(value)))){
+    //   clone[key + '$__type__'] = value && value.constructor && value.constructor.name || type;
+    //   if (Object.ao_shallowClone.BLACKLIST[key] || !(type == 'object' && typeof type.toJSON == 'function')) {
+    //     return;
+    //   }
+    // }
+    if (value === true || type == 'string' || type == 'number') {
+      clone[key] = value;
+    } else if (type == 'object' && value != null) {
+      clone[key + '$__type__'] = value && value.constructor && value.constructor.name || type;
+      Object.keys(Object.ao_shallowClone.WHITELIST).forEach(function(subKey){
+        if (!(subKey in value)) {
+          return;
+        }
+        var subValue = value[subKey];
+        var subValueType = typeof subValue;
+        if (subValue == null || !(subValueType == 'string' || subValueType == 'number')) {
+          return;
+        }
+        try {
+          clone[key + '$' + subKey] = subValue;
+        } catch(e){}
+      });
+    }
+  });
+  return clone;
+}
+Object.ao_shallowClone.WHITELIST = {
+  id: true,
+  index: true,
+  name: true,
+};
+Object.ao_shallowClone.BLACKLIST = {
+  parent: true,
+  parentFolder: true,
+  parentProperty: true,
+  containingComp: true,
+  separationLeader: true,
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+function ItemMixin(){}
+copyProperties(FootageItem.prototype, ItemMixin.prototype);
+copyProperties(FolderItem.prototype, ItemMixin.prototype);
+copyProperties(CompItem.prototype, ItemMixin.prototype);
+
+////////////////////////////////////////////////////////////////////////////////
+
+function HasDurationMixin(){}
+HasDurationMixin.prototype.ao_getFrameCount = function(){//$.writeln('HasDurationMixin.prototype.ao_getFrameCount');
+  if (!(this.duration && this.frameDuration)) return 0;
+  return Math.round(this.duration / this.frameDuration);
+};
+
+copyProperties(FootageItem.prototype, HasDurationMixin.prototype);
+copyProperties(CompItem.prototype, HasDurationMixin.prototype);
+
+////////////////////////////////////////////////////////////////////////////////
+
+CompItem.prototype.toJSON = function(key){//$.writeln('CompItem.prototype.toJSON', key);
+  if (Object.ao_shallowClone.BLACKLIST[key]) {
+    $.writeln('ignoring blacklisted key: ' + key);
+    return;
+  }
+  // var clone = {};
+  var clone = Object.ao_shallowClone(this);
+  clone.__type__ = this.constructor.name;
+  // if (this.usedIn) {
+  //   clone.usedIn = clone.usedIn.map(function(comp){
+  //     return comp.id;
+  //   });
+  // }
+  clone.layers = this.layers;
+  return clone;
+};
+
+CompItem.prototype.ao_collectLayers = function(collection, parents){//$.writeln('CompItem.prototype.ao_collectLayers');
+  if (collection == null) collection = [];
+  parents = parents ? parents.slice() : [];
+  parents.push(this.name);
+  parents.push('layers');
+  this.layers.ao_toArray().forEach(function(layer, index){
+    var lll = {
+      parents: parents,
+      index: index,
+      name: layer.name,
+      type: Object.prototype.toString.call(layer),
+      // layer: layer.toJSON(),
+      // isPlaceholder: layer.mainSource instanceof PlaceholderSource,
+    };
+    if (layer.source) lll.sourceName = layer.source.constructor.name;
+    if (layer.source && layer.source.mainSource) lll.mainSourceName = layer.source.mainSource.constructor.name;
+    // if (layer.mainSource) lll.mainSourceName = Object.prototype.toString.call(layer.mainSource);
+
+    collection.push(lll);
+    if (layer.source && layer.source.ao_collectLayers){
+      layer.source.ao_collectLayers(collection, parents.concat(layer.name, 'source'));
+    }
+  }, this);
+  return collection;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function CollectionMixin(){}
+CollectionMixin.prototype.toJSON =
+CollectionMixin.prototype.ao_toArray = function(){
+  var collection = this;
+  var array = [];
+  var minIndex = 1;
+  var length = collection.length;
+  for (var index = minIndex; index <= length; index++) {
+    array.push(collection[index]);
+  }
+  return array;
+};
+copyProperties(ItemCollection.prototype, CollectionMixin.prototype);
+copyProperties(LayerCollection.prototype, CollectionMixin.prototype);
+
+////////////////////////////////////////////////////////////////////////////////
+
+ItemCollection.prototype.ao_comps = function(){return this.ao_toArray().filter(function(item){return item && item instanceof CompItem})}
+ItemCollection.prototype.ao_folders = function(){return this.ao_toArray().filter(function(item){return item && item instanceof FolderItem})}
+ItemCollection.prototype.ao_footage = function(){return this.ao_toArray().filter(function(item){return item && item instanceof FootageItem})}
+ItemCollection.prototype.ao_compsByName = function(name){return this.ao_comps().filter(function(comp){return comp.name == name})}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function HasItemsMixin(){}
+HasItemsMixin.prototype.ao_comps = function(){return this.items? this.items.ao_comps() : []}
+HasItemsMixin.prototype.ao_folders = function(){return this.items? this.items.ao_folders() : []}
+HasItemsMixin.prototype.ao_footage = function(){return this.items? this.items.ao_footage() : []}
+HasItemsMixin.prototype.ao_compsByName = ItemCollection.prototype.ao_compsByName;
+
+copyProperties(Project.prototype, HasItemsMixin.prototype)
+copyProperties(FolderItem.prototype, HasItemsMixin.prototype)
+
+////////////////////////////////////////////////////////////////////////////////
+exports.VirtualTween = VirtualTween;
+VirtualTween.ENABLED = true;
+VirtualTween.FPS = 120;
+VirtualTween.FRAME_TIME = 1 / VirtualTween.FPS;
+function VirtualTween(property, previousKeyframe, nextKeyframe){
+  if (!(this instanceof VirtualTween)) throw Error('Expected new VirtualTween');
+  if (!(previousKeyframe instanceof VirtualKeyframe)) throw Error('Expected new VirtualKeyframe');
+  if (!(nextKeyframe instanceof VirtualKeyframe)) throw Error('Expected new VirtualKeyframe');
+  this.getProperty = function(){return property};
+  this.index = (previousKeyframe.index + nextKeyframe.index) / 2;
+
+  this.recordValueAtTime(previousKeyframe.time);
+  this.recordValueAtTime(nextKeyframe.time);
+
+  var currentTime = previousKeyframe.time;
+  while (currentTime < nextKeyframe.time) {
+    currentTime += VirtualTween.FRAME_TIME;
+    this.recordValueAtTime(currentTime);
+  }
+}
+VirtualTween.prototype.toJSON = function(){
+  return this;
+}
+VirtualTween.prototype.recordValueAtTime = function(time){
+  this.values = this.values || [];
+  var info = {
+    time: time,
+  };
+  try {
+    info.value = this.getProperty().valueAtTime(time, false);
+  } catch(e){
+    // $.writeln('valueAtTime', e.toString());
+  }
+  this.values.push(info);
+  // this.values.sort(VirtualTween.valueSorter);
+  // var infoIndex = this.values.indexOf(info);
+  // var previousInfo = this.values[infoIndex-1];
+  // var previousInfoTime = previousInfo && previousInfo.time || info.time;
+  // return (previousInfoTime + info.time) / 2;
+}
+VirtualTween.valueSorter = function(a, b){
+  return a.time - b.time;
+}
+////////////////////////////////////////////////////////////////////////////////
+VirtualKeyframe.MIN_INDEX = 1;
+function VirtualKeyframe(property, index){
+  if (!(this instanceof VirtualKeyframe)) throw Error('Expected new VirtualKeyframe');
+  // if (index < VirtualKeyframe.MIN_INDEX) throw Error('Invalid Keyframe index. Too low');
+  // if (index > property.numKeys) throw Error('Invalid Keyframe index. Too high');
+  this.index = index;
+  this.time = property.keyTime(index);
+  try{this.value = property.keyValue(index);}catch(e){}
+  try{this.inInterpolationType = KeyframeInterpolationTypeKeysByID[property.keyInInterpolationType(index)];}catch(e){}
+  try{this.outInterpolationType = KeyframeInterpolationTypeKeysByID[property.keyOutInterpolationType(index)];}catch(e){}
+  try{this.inSpatialTangent = property.keyInSpatialTangent(index);}catch(e){}
+  try{this.outSpatialTangent = property.keyOutSpatialTangent(index);}catch(e){}
+  try{this.inTemporalEase = property.keyInTemporalEase(index);}catch(e){}
+  try{this.outTemporalEase = property.keyOutTemporalEase(index);}catch(e){}
+  try{this.temporalContinuous = property.keyTemporalContinuous(index);}catch(e){}
+  try{this.temporalAutoBezier = property.keyTemporalAutoBezier(index);}catch(e){}
+  try{this.spatialContinuous = property.keySpatialContinuous(index);}catch(e){}
+  try{this.spatialAutoBezier = property.keySpatialAutoBezier(index);}catch(e){}
+  try{this.roving = property.keyRoving(index);}catch(e){}
+  try{this.selected = property.keySelected(index);}catch(e){}
+
+  return this;
+}
+VirtualKeyframe.prototype.toJSON = function(){
+  return this;
+}
+exports.VirtualKeyframe = VirtualKeyframe;
+
+////////////////////////////////////////////////////////////////////////////////
+
+var PropertyValueTypeKeysByID = {};
+Object.keys(PropertyValueType).forEach(function(key){
+  var id = PropertyValueType[key];
+  if (typeof id != 'number') {
+    return;
+  }
+  PropertyValueTypeKeysByID[id] = key;
+});
+
+var PropertyTypeKeysByID = {};
+Object.keys(PropertyType).forEach(function(key){
+  var id = PropertyType[key];
+  if (typeof id != 'number') {
+    return;
+  }
+  PropertyTypeKeysByID[id] = key;
+});
+
+var KeyframeInterpolationTypeKeysByID = {};
+Object.keys(KeyframeInterpolationType).forEach(function(key){
+  var id = KeyframeInterpolationType[key];
+  if (typeof id != 'number') {
+    return;
+  }
+  KeyframeInterpolationTypeKeysByID[id] = key;
+});
+
+exports.__timerIDs__ = exports.__timerIDs__ || {};
+exports.__timerCallbacks__ = exports.__timerCallbacks__ || {
+  UID: 0,
+};
+
+function HasKeyframesMixin(){}
+HasKeyframesMixin.empty = undefined;
+HasKeyframesMixin.prototype.ao_keyframes = function(){//$.writeln('HasKeyframesMixin.prototype.ao_keyframes');
+  var numKeys = this.numKeys;
+  if (numKeys == 0 || numKeys == null) return HasKeyframesMixin.empty;
+  var keyframes = [];
+  for (var index = 1; index <= numKeys; index++) {
+    keyframes.push(new VirtualKeyframe(this, index));
+  }
+  return keyframes;
+}
+HasKeyframesMixin.prototype.ao_keyframeTweens = function(keyframes){
+  if (!VirtualTween.ENABLED) {
+    return;
+  }
+  var layer = this.ao_getLayer();
+  if (!keyframes) {
+    keyframes = this.ao_keyframes() || makeFakeKeyframesArray.call(this, layer);
+  }
+
+  var tweens = [];
+  keyframes.forEach(function(keyframe, index, keyframes){
+    var previousKeyframe = keyframes[index-1];
+    if (!previousKeyframe) {
+      return;
+    }
+    tweens.push(new VirtualTween(this, previousKeyframe, keyframe));
+  }, this);
+  return tweens;
+}
+copyProperties(Property.prototype, HasKeyframesMixin.prototype);
+
+function makeFakeKeyframesArray(layer) {
+  return [
+    new VirtualKeyframe({
+      keyTime: function() { return this.time; },
+      keyValue: function() { return this.valueAtTime(layer.startTime, false); }
+    }, 0)
+  ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function HasPropertiesMixin(){}
+HasPropertiesMixin.prototype.ao_properties = function(){
+  // HasPropertiesMixin.prototype.ao_properties.runCount = (HasPropertiesMixin.prototype.ao_properties.runCount || 0) + 1;
+  // if (HasPropertiesMixin.prototype.ao_properties.runCount > 10){
+  //   $.writeln('HasPropertiesMixin.prototype.ao_properties.runCount > MAX');
+  //   debugger;
+  //   throw Error('HasPropertiesMixin.prototype.ao_properties.runCount > MAX');
+  //   return;
+  // }
+  // if (HasPropertiesMixin.prototype.ao_properties.isRunning){
+  //   $.writeln('HasPropertiesMixin.prototype.ao_properties.isRunning');
+  //   throw Error('HasPropertiesMixin.prototype.ao_properties.isRunning');
+  //   debugger;
+  // }
+  // $.writeln('HasPropertiesMixin.prototype.ao_properties');
+  // HasPropertiesMixin.prototype.ao_properties.isRunning = true;
+
+  var numProperties = this.numProperties;
+  var property, properties = [];
+  for (var index = 1; index <= numProperties; index++) {
+    property = this.property(index);
+    if (!property.isModified) {
+      if (!(property.parentProperty && property.parentProperty.isModified)) {
+        continue;
+      }
+    }
+    properties.push(property);
+  }
+
+  // HasPropertiesMixin.prototype.ao_properties.isRunning = false;
+  // $.writeln('/HasPropertiesMixin.prototype.ao_properties');
+  return properties;
+}
+HasPropertiesMixin.prototype.ao_properties.runCount = 0;
+
+HasPropertiesMixin.prototype.toJSON = function(key){//$.writeln('HasPropertiesMixin.prototype.toJSON', key);
+  if (MudBrickLayer.debug) {
+    var names = [];
+    var thing = this;
+    while (thing) {
+      names.unshift(thing.name || thing.constructor.name);
+      thing = thing.parentProperty;
+    }
+    MudBrickLayer.debug(names.join('/'));
+  }
+  if (Object.ao_shallowClone.BLACKLIST[key]) {
+    $.writeln('ignoring blacklisted key: ' + key);
+    return;
+  }
+  var clone = Object.ao_shallowClone(this);
+  // var clone = {};
+  clone.index = this.index;
+  clone.name = this.name;
+  clone.__type__ = this.constructor.name;
+  if (this.propertyType) clone.propertyType = PropertyTypeKeysByID[this.propertyType];
+  if (this.propertyValueType) clone.propertyValueType = PropertyValueTypeKeysByID[this.propertyValueType];
+
+  var hasSource;
+  try {
+    hasSource = !!this.source;
+  } catch(e){}
+  if (hasSource) {
+    try {
+      clone.source$name = this.source.name;
+    } catch(e){}
+    try {
+      clone.source$id = this.source.id;
+    } catch(e){}
+  }
+  if (this.ao_properties) {
+    clone.properties = this.ao_properties();
+  }
+  return clone;
+};
+// HasPropertiesMixin.prototype.toJSON = Object.prototype.toJSON;
+
+copyProperties(Layer.prototype, HasPropertiesMixin.prototype);
+copyProperties(AVLayer.prototype, HasPropertiesMixin.prototype);
+copyProperties(TextLayer.prototype, HasPropertiesMixin.prototype);
+copyProperties(ShapeLayer.prototype, HasPropertiesMixin.prototype);
+copyProperties(LightLayer.prototype, HasPropertiesMixin.prototype);
+copyProperties(CameraLayer.prototype, HasPropertiesMixin.prototype);
+copyProperties(PropertyGroup.prototype, HasPropertiesMixin.prototype);
+copyProperties(MaskPropertyGroup.prototype, HasPropertiesMixin.prototype);
+
+////////////////////////////////////////////////////////////////////////////////
+
+function PropertyMixin(){}
+/*
+// Instead of using time or frame numbers or anything like that, use float time 0-1 range.
+// Then it should be pretty easy to map from parent time to child composition time
+
+PropertyMixin.prototype.ao_getValuesByFrame = function(){//$.writeln('PropertyMixin.prototype.ao_getValuesByFrame');
+  var comp = this.ao_getLayer().containingComp;
+  var frameCount = comp.ao_getFrameCount();
+  var values = {};
+  // values[0] = this.valueAtTime(0, false);
+  // values[frameCount] = this.valueAtTime(frameCount * comp.frameDuration, false);
+
+  var index = 0;
+  while (++index <= frameCount) {
+    values[index] = this.valueAtTime(index * comp.frameDuration, false);
+  }
+  return values;
+}
+*/
+// PropertyMixin.prototype.ao_getValuesByFrame = function(){//$.writeln('// PropertyMixin.prototype.ao_getValuesByFrame');
+//   var comp = this.ao_getLayer().containingComp;
+//   var frameCount = comp.ao_getFrameCount();
+//   var values = {};
+//   // values[0] = this.valueAtTime(0, false);
+//   // values[frameCount] = this.valueAtTime(frameCount * comp.frameDuration, false);
+//
+//   var index = 0;
+//   while (++index <= frameCount) {
+//     values[index] = this.valueAtTime(index * comp.frameDuration, false);
+//   }
+//   return values;
+// }
+PropertyMixin.prototype.ao_getLayer = function(){//$.writeln('PropertyMixin.prototype.ao_getLayer');
+  var parentProperty = this;
+  do {
+    parentProperty = parentProperty.parentProperty;
+  } while (parentProperty.parentProperty);
+  return parentProperty;
+}
+/*
+PropertyMixin.prototype.toJSON = function(key){//$.writeln('PropertyMixin.prototype.toJSON', key);
+  if (Object.ao_shallowClone.BLACKLIST[key]) {
+    $.writeln('ignoring blacklisted key: ' + key);
+    return;
+  }
+  var clone = Object.ao_shallowClone(this);
+  clone.__type__ = this.constructor.name;
+  clone.propertyType = PropertyTypeKeysByID[clone.propertyType];
+  clone.propertyValueType = PropertyValueTypeKeysByID[clone.propertyValueType];
+
+  if (this.ao_keyframes) {
+    clone.keyframes = this.ao_keyframes();
+  }
+  if (this.ao_keyframeTweens) {
+    clone.keyframeTweens = this.ao_keyframeTweens(clone.keyframes);
+  }
+  // if (clone.keyframes && clone.keyframes.length > 0) {
+  //   clone
+  // }
+  return clone;
+}
+*/
+
+// PropertyMixin.prototype.toJSON = Object.prototype.toJSON;
+
+File.prototype.toJSON = function(key){//$.writeln('File.prototype.toJSON', key);
+  return this.fsName;
+}
+FootageItem.prototype.toJSON = function(key){//$.writeln('FootageItem.prototype.toJSON', key);
+  var clone = Object.ao_shallowClone(this);
+  clone.__type__ = this.constructor.name;
+  clone.file = this.file;
+  return clone;
+};
+
+PropertyMixin.prototype.toJSON = function(key){//$.writeln('PropertyMixin.prototype.toJSON', key);
+  if (Object.ao_shallowClone.BLACKLIST[key]) {
+    $.writeln('ignoring blacklisted key: ' + key);
+    return;
+  }
+  var clone = Object.ao_shallowClone(this);
+  clone.__type__ = this.constructor.name;
+  if (this.propertyType) clone.propertyType = PropertyTypeKeysByID[this.propertyType];
+  if (this.propertyValueType) clone.propertyValueType = PropertyValueTypeKeysByID[this.propertyValueType];
+  if (this.propertyValueType != PropertyValueType.NO_VALUE) {
+    try {
+      clone.value = this.value;
+    } catch(e){
+      // $.writeln(e.toString());
+    }
+  }
+  if (this.ao_keyframes) {
+    clone.keyframes = this.ao_keyframes();
+  }
+  if (this.ao_keyframeTweens) {
+    clone.keyframeTweens = this.ao_keyframeTweens(clone.keyframes);
+  }
+  return clone;
+};
+
+copyProperties(Property.prototype, PropertyMixin.prototype);
+// copyProperties(PropertyGroup.prototype, PropertyMixin.prototype);
+// copyProperties(MaskPropertyGroup.prototype, PropertyMixin.prototype);
+
+////////////////////////////////////////////////////////////////////////////////
+
+Shape.prototype.toJSON =
+KeyframeEase.prototype.toJSON = function(){
+  return this;
+};
+
+}($.global));
