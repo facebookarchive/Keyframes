@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "keyframes-scripts",
+  "version": "0.1.0",
+  "description": "Scripts for Facebook Keyframes",
+  "scripts": {
+    "test":       "jest",
+    "test-watch": "jest --watch",
+    "compile":       "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes",
+    "compile-watch": "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes --watch"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-jest": "^14.1.0",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-react-native": "^1.9.0",
+    "jest-cli": "^14.1.0"
+  },
+  "babel": {
+    "comments": true,
+    "presets": [
+      "react-native"
+    ]
+  }
+}

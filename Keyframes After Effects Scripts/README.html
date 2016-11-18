@@ -1,0 +1,60 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>FB Keyframes After Effects Scripts</title>
+<style>
+html {
+  font-family: Helvetica Neue, Helvetica, sans-serif;
+}
+</style>
+
+<h1>Keyframes After Effects Scripts</h1>
+
+<h4><a href="https://helpx.adobe.com/after-effects/using/scripts.html" alt="After Effects Help / Scripts">How to enable scripts to read/write files/internet</a></h4>
+
+<blockquote>By default scripts are not allowed to write files or send or receive communication over a network. To allow scripts to write files and communicate over a network, choose Edit > Preferences > General (Windows) or After Effects > Preferences > General (Mac OS), and select the Allow Scripts To Write Files And Access Network option.</blockquote>
+
+<h2>FB Keyframes Exporter.jsx</h2>
+<p>Export the current After Effects comp to FB Keyframes Animation Descriptor JSON document.
+
+<blockquote><small><i>Requires "<b>Allow Scripts To Write Files And Access Network</b>"</i></small></blockquote>
+
+<h3>How to run</h3>
+
+<ol>
+<li>Open an After Effects project
+<li>Open the comp you want to export
+<li>Menu item: <b>File / Scripts / Run Script File…</b>
+<li>Choose <tt>FB Keyframes Exporter.jsx</tt><br>
+  <small>The exporter palette window will open</small>
+<li>Press Export
+</ol>
+
+<p>You'll see a bunch of progress messages.<br>
+  Eventually the folder with the exported JSON will open.<br>
+  You'll see three new files:
+
+<ul>
+  <li><p><tt>Project.aep.comp-###-Comp Name.kf.json</tt><br>
+    FB Keyframes compatible animation descriptor.
+  <li><p><tt>Project.aep.comp-###-Comp Name.json</tt><br>
+    Raw JSON description.
+  <li><p><tt>Project.aep.comp-###-Comp Name.log</tt><br>
+    Export progress messages and warnings with timestamps.<br>
+    Check this file for warnings about incompatible features.<br>
+    Also useful for diagnosing performance issues.
+</ul>
+
+<h3>How to install</h3>
+
+<ol>
+<li>Quit After Effects
+<li>Move the folder <tt>Keyframes After Effects Scripts</tt> into your AE Scripts folder<br>
+  <small>e.g. <tt>/Applications/Adobe After Effects CC 2015/Scripts</tt> on macOS</small>
+<li>Launch After Effects
+<li>Open an After Effects project
+<li>Menu item: <b>File / Scripts / FB Keyframes Exporter.jsx</b><br>
+  <small>The exporter palette window will open</small>
+<li>Press Export
+</ol>
+
+<p>You can keep the palette window open and press Export multiple times.

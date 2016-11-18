@@ -1,0 +1,26 @@
+# Copyright (c) 2016, Facebook, Inc.
+# All rights reserved.
+#
+# This source code is licensed under the license found in the LICENSE file in
+# the root directory of this source tree.
+#
+
+KFVectorFeature includes(RMCoding) {
+   NSString *name;
+   CGSize featureSize;
+   NSInteger animationGroupId;
+   NSUInteger fromFrame;
+   NSUInteger toFrame;
+   %import library=UIKit name=UIColor
+   UIColor *fillColor;
+   %import library=UIKit name=UIColor
+   UIColor *strokeColor;
+   CGFloat strokeWidth;
+   NSString *strokeLineCap;
+   NSArray *keyFrames;
+   NSArray *timingCurves;
+   NSArray *featureAnimations;
+   NSString *backedImage;
+   %import library=keyframes name=KFVectorGradientEffect
+   KFVectorGradientEffect *gradientEffect;
+}
