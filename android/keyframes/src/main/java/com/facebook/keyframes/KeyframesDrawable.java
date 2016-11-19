@@ -36,6 +36,7 @@ import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
+import com.facebook.keyframes.util.MatrixUtils;
 
 /**
  * This drawable will render a KFImage model by painting paths to the supplied canvas in
@@ -54,9 +55,9 @@ public class KeyframesDrawable extends Drawable
    */
   private final KFImage mKFImage;
   /**
-   * A recyclable {@link Paint} object used to draw all of the features.
+   * A {@link KFFeatureDrawer}, for drawing all features to the canvas.
    */
-  private final Paint mDrawingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+  private final KFFeatureDrawer mKFFeatureDrawer = new KFFeatureDrawer();
   /**
    * The list of all {@link FeatureState}s, containing all information needed to render a feature
    * for the current progress of animation.
@@ -79,7 +80,6 @@ public class KeyframesDrawable extends Drawable
    * The scale matrix to be applied for the final size of this drawable.
    */
   private final Matrix mScaleMatrix;
-  private final Matrix mInverseScaleMatrix;
 
   /**
    * The currently set width and height of this drawable.
@@ -110,10 +110,7 @@ public class KeyframesDrawable extends Drawable
 
     mRecyclableTransformMatrix = new Matrix();
     mScaleMatrix = new Matrix();
-    mInverseScaleMatrix = new Matrix();
     mKeyframesDrawableAnimationCallback = KeyframesDrawableAnimationCallback.create(this, mKFImage);
-
-    mDrawingPaint.setStrokeCap(Paint.Cap.ROUND);
 
     // Setup feature state list
     List<FeatureState> featureStateList = new ArrayList<>();
@@ -170,92 +167,8 @@ public class KeyframesDrawable extends Drawable
   public void draw(Canvas canvas) {
     Rect currBounds = getBounds();
     canvas.translate(currBounds.left, currBounds.top);
-    KFPath pathToDraw;
-    FeatureState featureState;
-    for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
-      featureState = mFeatureStateList.get(i);
-      if (!featureState.isVisible()) {
-        continue;
-      }
-
-      final FeatureConfig config = featureState.getConfig();
-      final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
-      if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
-        // This block is for the experimental particle effects.
-        canvas.save();
-        canvas.concat(mScaleMatrix);
-        canvas.concat(uniqueFeatureMatrix);
-
-        final boolean shouldApplyMatrix = config.matrix != null && !config.matrix.isIdentity();
-        if (shouldApplyMatrix) {
-          canvas.save();
-          canvas.concat(config.matrix);
-        }
-        config.drawable.draw(canvas);
-        if (shouldApplyMatrix) {
-          canvas.restore();
-        }
-
-        canvas.restore();
-        continue;
-      }
-
-      pathToDraw = featureState.getCurrentPathForDrawing();
-      if (pathToDraw == null || pathToDraw.isEmpty()) {
-        continue;
-      }
-      if (featureState.getCurrentMaskPath() != null) {
-        canvas.save();
-        applyScaleAndClipCanvas(canvas, featureState.getCurrentMaskPath(), Region.Op.INTERSECT);
-      }
-      mDrawingPaint.setShader(null);
-      mDrawingPaint.setStrokeCap(featureState.getStrokeLineCap());
-      if (featureState.getFillColor() != Color.TRANSPARENT) {
-        mDrawingPaint.setStyle(Paint.Style.FILL);
-        if (featureState.getCurrentShader() == null) {
-          mDrawingPaint.setColor(featureState.getFillColor());
-          mDrawingPaint.setAlpha(featureState.getAlpha());
-          applyScaleAndDrawPath(canvas, pathToDraw, mDrawingPaint);
-        } else {
-          mDrawingPaint.setShader(featureState.getCurrentShader());
-          applyScaleToCanvasAndDrawPath(canvas, pathToDraw, mDrawingPaint);
-        }
-      }
-      if (featureState.getStrokeColor() != Color.TRANSPARENT && featureState.getStrokeWidth() > 0) {
-        mDrawingPaint.setColor(featureState.getStrokeColor());
-        mDrawingPaint.setAlpha(featureState.getAlpha());
-        mDrawingPaint.setStyle(Paint.Style.STROKE);
-        mDrawingPaint.setStrokeWidth(
-                featureState.getStrokeWidth() * mScale * mScaleFromCenter * mScaleFromEnd);
-        applyScaleAndDrawPath(canvas, pathToDraw, mDrawingPaint);
-      }
-      if (featureState.getCurrentMaskPath() != null) {
-        canvas.restore();
-      }
-    }
+    mKFFeatureDrawer.drawFeaturesToCanvas(canvas, mFeatureStateList, mScaleMatrix);
     canvas.translate(-currBounds.left, -currBounds.top);
-  }
-
-  private void applyScaleAndClipCanvas(Canvas canvas, KFPath path, Region.Op op) {
-    path.transform(mScaleMatrix);
-    canvas.clipPath(path.getPath(), op);
-    path.transform(mInverseScaleMatrix);
-  }
-
-  private void applyScaleAndDrawPath(Canvas canvas, KFPath path, Paint paint) {
-    path.transform(mScaleMatrix);
-    canvas.drawPath(path.getPath(), paint);
-    path.transform(mInverseScaleMatrix);
-  }
-
-  /**
-   * Note: This method is only necessary because of cached gradient shaders with a fixed size.  We
-   * need to scale the canvas in this case rather than scaling the path.
-   */
-  private void applyScaleToCanvasAndDrawPath(Canvas canvas, KFPath path, Paint paint) {
-    canvas.concat(mScaleMatrix);
-    canvas.drawPath(path.getPath(), paint);
-    canvas.concat(mInverseScaleMatrix);
   }
 
   /**
@@ -357,7 +270,6 @@ public class KeyframesDrawable extends Drawable
     if (scaleFromCenter == 1 && scaleFromEnd == 1) {
       mScaleFromCenter = 1;
       mScaleFromEnd = 1;
-      mScaleMatrix.invert(mInverseScaleMatrix);
       return;
     }
 
@@ -367,7 +279,6 @@ public class KeyframesDrawable extends Drawable
 
     mScaleFromCenter = scaleFromCenter;
     mScaleFromEnd = scaleFromEnd;
-    mScaleMatrix.invert(mInverseScaleMatrix);
   }
 
   /**
@@ -379,7 +290,7 @@ public class KeyframesDrawable extends Drawable
     mKeyframesDrawableAnimationCallback.setMaxFrameRate(maxFrameRate);
   }
 
-  private class FeatureState {
+  class FeatureState {
     private final KFFeature mFeature;
 
     // Reuseable modifiable objects for drawing
@@ -388,7 +299,6 @@ public class KeyframesDrawable extends Drawable
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final KeyFramedOpacity.Opacity mOpacity;
     private final Matrix mFeatureMatrix;
-    private final float[] mMatrixValueRecyclableArray = new float[9];
     private final Matrix mFeatureMaskMatrix;
 
     private boolean mIsVisible;
@@ -452,7 +362,7 @@ public class KeyframesDrawable extends Drawable
       mPath.transform(mFeatureMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
-      mStrokeWidth.adjustScale(extractScaleFromMatrix(mFeatureMatrix));
+      mStrokeWidth.adjustScale(MatrixUtils.extractScaleFromMatrix(mFeatureMatrix));
       mFeature.setOpacity(mOpacity, frameProgress);
       if (mFeature.getEffect() != null) {
         prepareShadersForFeature(mFeature);
@@ -551,12 +461,6 @@ public class KeyframesDrawable extends Drawable
     private boolean hasCustomDrawable() {
       final FeatureConfig config = getConfig();
       return config != null && config.drawable != null;
-    }
-
-    private float extractScaleFromMatrix(Matrix matrix) {
-      matrix.getValues(mMatrixValueRecyclableArray);
-      return (Math.abs(mMatrixValueRecyclableArray[0]) +
-          Math.abs(mMatrixValueRecyclableArray[4])) / 2f;
     }
   }
 
