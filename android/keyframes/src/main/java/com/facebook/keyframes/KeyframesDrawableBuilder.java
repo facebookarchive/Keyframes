@@ -66,7 +66,7 @@ public class KeyframesDrawableBuilder {
    * Experimental features that are subject to drastic changes.  Use with care!
    */
   public class ExperimentalFeatures {
-    private Map<String, KeyframesDrawable.FeatureConfig> mParticleFeatureConfigs;
+    private Map<String, KFImageStateProcessor.FeatureConfig> mParticleFeatureConfigs;
 
     public KeyframesDrawable build() {
       return KeyframesDrawableBuilder.this.build();
@@ -78,12 +78,12 @@ public class KeyframesDrawableBuilder {
       for (Pair<String, Pair<Drawable, Matrix>> config : configs) {
         mParticleFeatureConfigs.put(
             config.first,
-            new KeyframesDrawable.FeatureConfig(config.second.first, config.second.second));
+            new KFImageStateProcessor.FeatureConfig(config.second.first, config.second.second));
       }
       return ExperimentalFeatures.this;
     }
 
-    Map<String, KeyframesDrawable.FeatureConfig> getParticleFeatureConfigs() {
+    Map<String, KFImageStateProcessor.FeatureConfig> getParticleFeatureConfigs() {
       return mParticleFeatureConfigs;
     }
   }

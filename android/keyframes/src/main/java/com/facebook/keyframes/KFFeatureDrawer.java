@@ -18,7 +18,7 @@ import com.facebook.keyframes.util.MatrixUtils;
 import java.util.List;
 
 /**
- * A utility class for drawing a list of {@link KeyframesDrawable.FeatureState}s onto a canvas.
+ * A utility class for drawing a list of {@link KFImageStateProcessor.FeatureState}s onto a canvas.
  */
 public class KFFeatureDrawer {
 
@@ -34,19 +34,19 @@ public class KFFeatureDrawer {
    */
   public void drawFeaturesToCanvas(
       Canvas canvas,
-      List<KeyframesDrawable.FeatureState> featureStateList,
+      List<KFImageStateProcessor.FeatureState> featureStateList,
       Matrix scaleMatrix) {
     scaleMatrix.invert(mRecyclableInverseMatrix);
 
     KFPath pathToDraw;
-    KeyframesDrawable.FeatureState featureState;
+    KFImageStateProcessor.FeatureState featureState;
     for (int i = 0, len = featureStateList.size(); i < len; i++) {
       featureState = featureStateList.get(i);
       if (!featureState.isVisible()) {
         continue;
       }
 
-      final KeyframesDrawable.FeatureConfig config = featureState.getConfig();
+      final KFImageStateProcessor.FeatureConfig config = featureState.getConfig();
       final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
       if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
         // This block is for the experimental particle effects.
