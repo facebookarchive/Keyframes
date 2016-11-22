@@ -312,4 +312,32 @@ public class KFFeature {
   public String getConfigClassName() {
     return mClassName;
   }
+
+  /**
+   * Updates this {@link KFFeature} with the frame rate of the entire animation. This
+   * allows the constituent {@link KFAnimation}s to update with the right frame rate.
+   *
+   * @param frameRate {@code int} that specifies the frame rate of the entire animation
+   */
+  public void postProcess(int frameRate) {
+    // This logic needs some refactoring. Until then, please update each animation / KeyFramedObject
+    // here with the right frame rate, otherwise the animation will be really wonky because
+    // some objects won't have the right list of interpolators.
+    postProcessInternal(mStrokeWidthAnimation, frameRate);
+    postProcessInternal(mAnchorPoint, frameRate);
+    postProcessInternal(mOpacityAnimation, frameRate);
+    for (int i = 0; i < mFeatureMatrixAnimations.size(); i++) {
+      postProcessInternal(mFeatureMatrixAnimations.get(i), frameRate);
+    }
+    if (mKeyFramedPath != null) {
+      mKeyFramedPath.updateWithFrameRate(frameRate);
+    }
+  }
+
+  private static void postProcessInternal(KFAnimation animation, int frameRate) {
+    if (animation == null) {
+      return;
+    }
+    animation.setFrameRate(frameRate);
+  }
 }

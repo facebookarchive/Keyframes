@@ -8,6 +8,7 @@
 package com.facebook.keyframes.model;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
 import com.facebook.keyframes.util.AnimationHelper;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
@@ -86,5 +87,25 @@ public class KFAnimationGroup {
       return null;
     }
     return (KeyFramedAnchorPoint) mAnchorPoint.getAnimation();
+  }
+
+  /**
+   * Updates this {@link KFAnimationGroup} with the frame rate of the entire animation. This
+   * allows the internal list of {@link KFAnimation}s to update with the right frame rate.
+   *
+   * @param frameRate {@code int} that specifies the frame rate of the entire animation
+   */
+  public void postProcess(int frameRate) {
+    if (getAnchorPoint() != null) {
+      mAnchorPoint.setFrameRate(frameRate);
+    }
+
+    if (mAnimations == null || mAnimations.isEmpty()) {
+      return;
+    }
+
+    for (int i = 0; i < mAnimations.size(); i++) {
+      mAnimations.get(i).setFrameRate(frameRate);
+    }
   }
 }

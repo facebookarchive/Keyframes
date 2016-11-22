@@ -170,4 +170,14 @@ public class KFAnimation {
   public KeyFramedObject getAnimation() {
     return mKeyFramedAnimation;
   }
+
+  /**
+   * Updates this {@link KFAnimation} object with the frame rate of the entire animation. This
+   * allows the animation to update its {@link KeyFramedObject} with the right frame rate.
+   *
+   * @param frameRate {@code int} that specifies the frame rate of the entire animation
+   */
+  public void setFrameRate(int frameRate) {
+    mKeyFramedAnimation.updateWithFrameRate(frameRate);
+  }
 }
