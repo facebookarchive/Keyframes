@@ -21,7 +21,7 @@ For detailed steps on running the ExtendScript script on your AE comp, please re
 
 Use the provided deserializers on the generated JSON blob from the **Image Data Extraction** step to create a `KFVector` model object.  If your JSON blob lives in the assets directory, this might look like:
 
-```
+```objc
 NSString *filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"asset_name" ofType:@"json" inDirectory:nil];
 NSData *data = [NSData dataWithContentsOfFile:filePath];
 NSDictionary *vectorDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
@@ -30,7 +30,7 @@ KFVector *vector = KFVectorFromDictionary(vectorDictionary);
 
 Then a `KFVectorLayer` can be created using this `KFVector`, `KFVectorLayer` can be used as normal `CALayer`.
 
-```
+```objc
 KFVectorLayer *layer = [KFVectorLayer layer];
 // Set a non-zero layer frame before setting the KFVector is required.
 layer.frame = $AnyNonZeroCGRect$;
@@ -38,14 +38,14 @@ layer.faceModel = vector;
 ```
 
 If you don't want the control of animation and prefer a `UIView`, `KFVectorView` can also be created using `KFVector`.
-```
+```objc
 KFVectorView *view = [[KFVectorView alloc] initWithFrame:$AnyNonZeroCGRect$ faceVector:vector];
 ```
 
 #### Play!
 Use `startAnimation`, `pauseAnimation`, `resumeAnimation` and `seekToProgress` on `KFVectorLayer` to control the animation.
 
-```
+```objc
 // Animation will start from beginning.
 [layer startAnimation];
 
@@ -64,12 +64,12 @@ Use `startAnimation`, `pauseAnimation`, `resumeAnimation` and `seekToProgress` o
 #### Rendering setup
 
 Use the provided deserializers on the generated JSON blob from the **Image Data Extraction** step to create a `KFImage` model object.  If your JSON blob lives in the assets directory, this might look like:
-```
+```java
 InputStream stream = getResources().getAssets().open("asset_name");
 KFImage kfImage = KFImageDeserializer.deserialize(stream);
 ```
 A KeyframesDrawable object can be created now using this `KFImage`, and this drawable can be used as a normal drawable.  It is highly recommended to use the software layer on any views displaying Keyframes animations.
-```
+```java
 Drawable kfDrawable = new KeyframesDrawableBuilder().withImage(kfImage).build();
 
 ImageView imageView = (ImageView) findViewById(R.id.some_image_view);
@@ -79,7 +79,7 @@ imageView.setImageDrawable(kfDrawable);
 
 #### Play!
 Use the start and stop animations on the drawable when appropriate to begin playback of the animation or end it after the end of the current loop.
-```
+```java
 // Starts a loop that progresses animation and invalidates the drawable.
 kfDrawable.startAnimation();
 
