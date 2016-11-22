@@ -20,7 +20,6 @@ android {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile project(path: ':keyframes')
 }
