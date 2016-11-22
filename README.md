@@ -137,4 +137,4 @@ With these fields from an `Image` object, as well as a progress value, we can bu
 
 ## Contributing
 
-See [`~/CONTRIBUTING.md`](/CONTRIBUTING.md) for how to help us by improving this library!
+See [`CONTRIBUTING.md`](/CONTRIBUTING.md) for how to help us by improving this library!
