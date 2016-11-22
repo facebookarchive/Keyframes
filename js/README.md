@@ -2,7 +2,7 @@
 
 ## How to export animations from After Effects
 
-See Keyframes After Effects Scripts/README.html
+See [Keyframes After Effects Scripts/README.html](../Keyframes After Effects Scripts/README.html)
 
 ---
 
