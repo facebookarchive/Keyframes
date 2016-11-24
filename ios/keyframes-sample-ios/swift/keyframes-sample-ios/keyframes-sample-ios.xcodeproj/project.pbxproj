@@ -194,9 +194,8 @@
 				TargetAttributes = {
 					DB68E7C61DE69F1500AEF0AF = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = 6K4KHD4NQF;
 						LastSwiftMigration = 0810;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					DB68E7DA1DE69F1500AEF0AF = {
 						CreatedOnToolsVersion = 8.1;
@@ -419,13 +418,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 6K4KHD4NQF;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "keyframes-sample-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fb.keyframes-sample-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cc937768-5b79-4461-80a3-ca545bf96505";
-				PROVISIONING_PROFILE_SPECIFIER = WILDCARD;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -437,13 +437,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 6K4KHD4NQF;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "keyframes-sample-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fb.keyframes-sample-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cc937768-5b79-4461-80a3-ca545bf96505";
-				PROVISIONING_PROFILE_SPECIFIER = WILDCARD;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
@@ -496,6 +497,7 @@
 				DB68E7E61DE69F1500AEF0AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DB68E7E71DE69F1500AEF0AF /* Build configuration list for PBXNativeTarget "keyframes-sample-iosTests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +506,7 @@
 				DB68E7E91DE69F1500AEF0AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
