@@ -1,10 +1,9 @@
-//
-//  keyframes_sample_iosTests.swift
-//  keyframes-sample-iosTests
-//
-//  Created by Hans Knoechel on 23/11/2016.
-//  Copyright © 2016 Appcelerator. All rights reserved.
-//
+/* Copyright 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE-sample file in the root directory of this source tree.
+ */
 
 import XCTest
 @testable import keyframes_sample_ios
