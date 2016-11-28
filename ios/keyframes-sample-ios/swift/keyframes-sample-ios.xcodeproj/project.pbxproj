@@ -7,17 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; };
 		DB68E7CB1DE69F1500AEF0AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CA1DE69F1500AEF0AF /* AppDelegate.swift */; };
 		DB68E7CD1DE69F1500AEF0AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CC1DE69F1500AEF0AF /* ViewController.swift */; };
 		DB68E7D01DE69F1500AEF0AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB68E7CE1DE69F1500AEF0AF /* Main.storyboard */; };
 		DB68E7D21DE69F1500AEF0AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB68E7D11DE69F1500AEF0AF /* Assets.xcassets */; };
 		DB68E7D51DE69F1500AEF0AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB68E7D31DE69F1500AEF0AF /* LaunchScreen.storyboard */; };
-		DB68E7E01DE69F1500AEF0AF /* keyframes_sample_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7DF1DE69F1500AEF0AF /* keyframes_sample_iosTests.swift */; };
-		DB68E8021DE69FD000AEF0AF /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7FD1DE69F7500AEF0AF /* keyframes.framework */; };
 		DB68E80D1DE6A86500AEF0AF /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = DB68E80C1DE6A86500AEF0AF /* sample_logo.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DB3942091DECB9A300448055 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ADBA24B01D2C3C9400D2549E;
+			remoteInfo = keyframes;
+		};
+		DB39420B1DECB9A300448055 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
+			remoteInfo = keyframesTests;
+		};
+		DB39420D1DECBA7400448055 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ADBA24AF1D2C3C9400D2549E;
+			remoteInfo = keyframes;
+		};
 		DB68E7DC1DE69F1500AEF0AF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DB68E7BF1DE69F1500AEF0AF /* Project object */;
@@ -25,30 +45,10 @@
 			remoteGlobalIDString = DB68E7C61DE69F1500AEF0AF;
 			remoteInfo = "keyframes-sample-ios";
 		};
-		DB68E7FC1DE69F7500AEF0AF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = ADBA24B01D2C3C9400D2549E;
-			remoteInfo = keyframes;
-		};
-		DB68E7FE1DE69F7500AEF0AF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
-			remoteInfo = keyframesTests;
-		};
-		DB68E8001DE69FCD00AEF0AF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = ADBA24AF1D2C3C9400D2549E;
-			remoteInfo = keyframes;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DB3942041DECB9A300448055 /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
 		DB68E7C71DE69F1500AEF0AF /* keyframes-sample-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB68E7CA1DE69F1500AEF0AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DB68E7CC1DE69F1500AEF0AF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,9 +57,6 @@
 		DB68E7D41DE69F1500AEF0AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DB68E7D61DE69F1500AEF0AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB68E7DB1DE69F1500AEF0AF /* keyframes-sample-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "keyframes-sample-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB68E7DF1DE69F1500AEF0AF /* keyframes_sample_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = keyframes_sample_iosTests.swift; sourceTree = "<group>"; };
-		DB68E7E11DE69F1500AEF0AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
 		DB68E8071DE6A05E00AEF0AF /* keyframes-sample-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "keyframes-sample-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		DB68E80C1DE6A86500AEF0AF /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = sample_logo.json; path = "keyframes-sample-ios/Assets/sample_logo.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB68E8021DE69FD000AEF0AF /* keyframes.framework in Frameworks */,
+				DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,12 +80,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB3942051DECB9A300448055 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB39420A1DECB9A300448055 /* keyframes.framework */,
+				DB39420C1DECB9A300448055 /* keyframesTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DB68E7BE1DE69F1500AEF0AF = {
 			isa = PBXGroup;
 			children = (
-				DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */,
+				DB3942041DECB9A300448055 /* keyframes.xcodeproj */,
 				DB68E7C91DE69F1500AEF0AF /* keyframes-sample-ios */,
-				DB68E7DE1DE69F1500AEF0AF /* keyframes-sample-iosTests */,
 				DB68E8041DE69FFE00AEF0AF /* Supporting Files */,
 				DB68E7C81DE69F1500AEF0AF /* Products */,
 			);
@@ -116,24 +121,6 @@
 			path = "keyframes-sample-ios";
 			sourceTree = "<group>";
 		};
-		DB68E7DE1DE69F1500AEF0AF /* keyframes-sample-iosTests */ = {
-			isa = PBXGroup;
-			children = (
-				DB68E7DF1DE69F1500AEF0AF /* keyframes_sample_iosTests.swift */,
-				DB68E7E11DE69F1500AEF0AF /* Info.plist */,
-			);
-			path = "keyframes-sample-iosTests";
-			sourceTree = "<group>";
-		};
-		DB68E7F81DE69F7500AEF0AF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DB68E7FD1DE69F7500AEF0AF /* keyframes.framework */,
-				DB68E7FF1DE69F7500AEF0AF /* keyframesTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		DB68E8041DE69FFE00AEF0AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,7 +144,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DB68E8011DE69FCD00AEF0AF /* PBXTargetDependency */,
+				DB39420E1DECBA7400448055 /* PBXTargetDependency */,
 			);
 			name = "keyframes-sample-ios";
 			productName = "keyframes-sample-ios";
@@ -217,8 +204,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DB68E7F81DE69F7500AEF0AF /* Products */;
-					ProjectRef = DB68E7F71DE69F7500AEF0AF /* keyframes.xcodeproj */;
+					ProductGroup = DB3942051DECB9A300448055 /* Products */;
+					ProjectRef = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -230,18 +217,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DB68E7FD1DE69F7500AEF0AF /* keyframes.framework */ = {
+		DB39420A1DECB9A300448055 /* keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = keyframes.framework;
-			remoteRef = DB68E7FC1DE69F7500AEF0AF /* PBXContainerItemProxy */;
+			remoteRef = DB3942091DECB9A300448055 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DB68E7FF1DE69F7500AEF0AF /* keyframesTests.xctest */ = {
+		DB39420C1DECB9A300448055 /* keyframesTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = keyframesTests.xctest;
-			remoteRef = DB68E7FE1DE69F7500AEF0AF /* PBXContainerItemProxy */;
+			remoteRef = DB39420B1DECB9A300448055 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -281,22 +268,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB68E7E01DE69F1500AEF0AF /* keyframes_sample_iosTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		DB39420E1DECBA7400448055 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = keyframes;
+			targetProxy = DB39420D1DECBA7400448055 /* PBXContainerItemProxy */;
+		};
 		DB68E7DD1DE69F1500AEF0AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DB68E7C61DE69F1500AEF0AF /* keyframes-sample-ios */;
 			targetProxy = DB68E7DC1DE69F1500AEF0AF /* PBXContainerItemProxy */;
-		};
-		DB68E8011DE69FCD00AEF0AF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = keyframes;
-			targetProxy = DB68E8001DE69FCD00AEF0AF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -345,7 +331,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTABILITY = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -426,6 +412,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -445,6 +432,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
