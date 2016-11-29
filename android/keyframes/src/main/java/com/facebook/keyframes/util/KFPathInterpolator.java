@@ -30,19 +30,29 @@ import android.view.animation.Interpolator;
  */
 public class KFPathInterpolator implements Interpolator {
   /**
-   * Governs the accuracy of the approximation of the {@link Path}.
+   * Specifies the max FPS an animation can run at. This should ideally be 60, but we're using 90
+   * to give us some buffer (at the expense of caching more values in the mX and mY float arrays.
+   * This value is used to calculate the accuracy of the approximation of the {@link Path}.
    */
-  private static final float PRECISION = 0.03f;
+  private static final float MAX_FPS = 90;
   private final float[] mX;
   private final float[] mY;
 
-  public KFPathInterpolator(float controlX1, float controlY1, float controlX2, float controlY2) {
+  public KFPathInterpolator(
+          float controlX1,
+          float controlY1,
+          float controlX2,
+          float controlY2,
+          int duration,
+          int frameRate) {
     Path path = new Path();
     path.moveTo(0, 0);
     path.cubicTo(controlX1, controlY1, controlX2, controlY2, 1f, 1f);
     final PathMeasure pathMeasure = new PathMeasure(path, false /* forceClosed */);
     final float pathLength = pathMeasure.getLength();
-    final int numPoints = (int) (pathLength / PRECISION) + 1;
+    // This value is calculated based on how long this timing curve is and dictates how many
+    // values along the curve will be cached. This can be tuned further,
+    final int numPoints = (int) (((float) duration / frameRate) * MAX_FPS) + 1;
     mX = new float[numPoints];
     mY = new float[numPoints];
     final float[] position = new float[2];

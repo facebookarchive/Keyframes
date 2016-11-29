@@ -68,6 +68,12 @@ public class KFImage {
     public int key;
 
     public KFImage build() {
+      for (int i = 0; i < features.size(); i++) {
+        features.get(i).postProcess(frameRate);
+      }
+      for (int i = 0; i < animationGroups.size(); i++) {
+        animationGroups.get(i).postProcess(frameRate);
+      }
       return new KFImage(frameRate, frameCount, features, animationGroups, canvasSize, key);
     }
   }

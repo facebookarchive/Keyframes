@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.animation.Interpolator;
 import com.facebook.keyframes.model.HasKeyFrame;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,22 +24,28 @@ import java.util.List;
 public abstract class KeyFramedObject<T extends HasKeyFrame, M> {
 
   private final SparseArray<T> mObjects;
-  private final List<Interpolator> mInterpolators;
   private final int mFirstDescribedFrame;
   private final int mLastDescribedFrame;
+  private final int[] mKeyFrames;
+
+  private List<Interpolator> mInterpolators;
+  private float[][][] mTimingCurves;
 
   public KeyFramedObject(List<T> objects, float[][][] timingCurves) {
     int listSize = objects.size();
     mObjects = new SparseArray<>(listSize);
+    mKeyFrames = new int[listSize];
     T object;
     for (int i = 0; i < listSize; i++) {
       object = objects.get(i);
       mObjects.put(object.getKeyFrame(), object);
+      mKeyFrames[i] = object.getKeyFrame();
     }
 
     mFirstDescribedFrame = mObjects.keyAt(0);
     mLastDescribedFrame = mObjects.keyAt(listSize - 1);
-    mInterpolators = KeyFrameAnimationHelper.buildInterpolatorList(timingCurves);
+    mTimingCurves = timingCurves;
+    mInterpolators = Collections.emptyList();  // This is populated when frame rate is available
   }
 
   /**
@@ -49,6 +56,23 @@ public abstract class KeyFramedObject<T extends HasKeyFrame, M> {
     mInterpolators = null;
     mFirstDescribedFrame = 0;
     mLastDescribedFrame = 0;
+    mKeyFrames = null;
+  }
+
+  /**
+   * Updates this object with the integer {@code frameRate} when available. This allows the object
+   * to calculate an accurate list of interpolators internally based on the available timing curve
+   * of each key frame.
+   *
+   * @param frameRate {@code int} that specifies the frame rate of the entire animation
+   */
+  public void updateWithFrameRate(int frameRate) {
+    if (frameRate < 0 || mTimingCurves == null || mKeyFrames == null) {
+      return;
+    }
+
+    mInterpolators =
+            KeyFrameAnimationHelper.buildInterpolatorList(mTimingCurves, mKeyFrames, frameRate);
   }
 
   /**
