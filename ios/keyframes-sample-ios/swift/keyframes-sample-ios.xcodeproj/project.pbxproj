@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B8E78CF11DED74B50018CB18 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; };
+		B8E78CF21DED74B50018CB18 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; };
 		DB68E7CB1DE69F1500AEF0AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CA1DE69F1500AEF0AF /* AppDelegate.swift */; };
 		DB68E7CD1DE69F1500AEF0AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CC1DE69F1500AEF0AF /* ViewController.swift */; };
@@ -17,6 +19,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B8E78CF31DED74B50018CB18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ADBA24AF1D2C3C9400D2549E;
+			remoteInfo = keyframes;
+		};
 		DB3942091DECB9A300448055 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
@@ -47,6 +56,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		B8E78CF51DED74B50018CB18 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B8E78CF21DED74B50018CB18 /* keyframes.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		DB3942041DECB9A300448055 /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
 		DB68E7C71DE69F1500AEF0AF /* keyframes-sample-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8E78CF11DED74B50018CB18 /* keyframes.framework in Frameworks */,
 				DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,11 +164,13 @@
 				DB68E7C31DE69F1500AEF0AF /* Sources */,
 				DB68E7C41DE69F1500AEF0AF /* Frameworks */,
 				DB68E7C51DE69F1500AEF0AF /* Resources */,
+				B8E78CF51DED74B50018CB18 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DB39420E1DECBA7400448055 /* PBXTargetDependency */,
+				B8E78CF41DED74B50018CB18 /* PBXTargetDependency */,
 			);
 			name = "keyframes-sample-ios";
 			productName = "keyframes-sample-ios";
@@ -274,6 +300,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B8E78CF41DED74B50018CB18 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = keyframes;
+			targetProxy = B8E78CF31DED74B50018CB18 /* PBXContainerItemProxy */;
+		};
 		DB39420E1DECBA7400448055 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = keyframes;
