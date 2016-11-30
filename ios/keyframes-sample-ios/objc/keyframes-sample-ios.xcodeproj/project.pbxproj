@@ -14,7 +14,6 @@
 		ADBA23DC1D2C2A9200D2549E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DA1D2C2A9200D2549E /* Main.storyboard */; };
 		ADBA23DE1D2C2A9200D2549E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DD1D2C2A9200D2549E /* Assets.xcassets */; };
 		ADBA23E11D2C2A9200D2549E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DF1D2C2A9200D2549E /* LaunchScreen.storyboard */; };
-		B8E78CEB1DED74800018CB18 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* keyframes.framework */; };
 		B8E78CEC1DED74800018CB18 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DB68E7F61DE69F3300AEF0AF /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* keyframes.framework */; };
 /* End PBXBuildFile section */
@@ -84,7 +83,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8E78CEB1DED74800018CB18 /* keyframes.framework in Frameworks */,
 				DB68E7F61DE69F3300AEF0AF /* keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
