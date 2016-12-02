@@ -36,6 +36,12 @@ public class KFFeatureEffect {
         GRADIENT_JSON_FIELD);
   }
 
+  public void updateWithFrameRate(int frameRate) {
+    if (mGradient != null) {
+      mGradient.updateWithFrameRate(frameRate);
+    }
+  }
+
   public KFGradient getGradient() {
     return mGradient;
   }
