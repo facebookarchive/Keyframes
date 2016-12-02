@@ -67,4 +67,13 @@ public class KFGradient {
   public KeyFramedGradient getEndGradient() {
     return mEndGradient;
   }
+
+  public void updateWithFrameRate(int frameRate) {
+    if (mStartGradient != null) {
+      mStartGradient.updateWithFrameRate(frameRate);
+    }
+    if (mEndGradient != null) {
+      mEndGradient.updateWithFrameRate(frameRate);
+    }
+  }
 }

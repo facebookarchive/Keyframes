@@ -332,6 +332,9 @@ public class KFFeature {
     if (mKeyFramedPath != null) {
       mKeyFramedPath.updateWithFrameRate(frameRate);
     }
+    if (mEffect != null) {
+      mEffect.updateWithFrameRate(frameRate);
+    }
   }
 
   private static void postProcessInternal(KFAnimation animation, int frameRate) {
