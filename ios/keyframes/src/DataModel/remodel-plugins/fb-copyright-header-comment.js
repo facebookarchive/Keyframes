@@ -1,6 +1,6 @@
 "use strict";
 var HEADER_COMMENTS = [
-    { content: '/**\n* Copyright (c) 2016-present, Facebook, Inc.\n* All rights reserved.\n*\n* This source code is licensed under the BSD-style license found in the\n* LICENSE file in the root directory of this source tree. An additional grant\n* of patent rights can be found in the PATENTS file in the same directory.\n*/' }
+    { content: '/**\n * Copyright (c) 2016-present, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n */' }
 ];
 function createPlugin() {
     return {
