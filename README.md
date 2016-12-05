@@ -1,4 +1,9 @@
 ![Keyframes](/docs/images/doc-logo.png)
+
+[![Version](https://img.shields.io/cocoapods/v/keyframes.svg)](http://cocoapods.org/pods/keyframes)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-59C939.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![License](https://img.shields.io/cocoapods/l/keyframes.svg)](https://github.com/facebookincubator/Keyframes/blob/master/LICENSE)
+
 # Keyframes
 
 Keyframes is a combination of (1) an ExtendScript script that extracts image animation data from an After Effects file and (2) a corresponding rendering library for Android and iOS.  Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
