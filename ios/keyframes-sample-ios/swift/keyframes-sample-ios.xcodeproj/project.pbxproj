@@ -79,7 +79,6 @@
 		DB68E7D41DE69F1500AEF0AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DB68E7D61DE69F1500AEF0AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB68E7DB1DE69F1500AEF0AF /* keyframes-sample-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "keyframes-sample-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB68E8071DE6A05E00AEF0AF /* keyframes-sample-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "keyframes-sample-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		DB68E80C1DE6A86500AEF0AF /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = sample_logo.json; path = "keyframes-sample-ios/Assets/sample_logo.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,7 +146,6 @@
 			isa = PBXGroup;
 			children = (
 				DB68E80C1DE6A86500AEF0AF /* sample_logo.json */,
-				DB68E8071DE6A05E00AEF0AF /* keyframes-sample-ios-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
