@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		340F674E1DF716FC009A47B0 /* keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = 340F674D1DF716FC009A47B0 /* keyframes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		340F674E1DF716FC009A47B0 /* Keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = 340F674D1DF716FC009A47B0 /* Keyframes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		493741AF1DE4FEB6002141D1 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = 493741AE1DE4FEB6002141D1 /* sample_logo.json */; };
 		49A85F1D1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */; };
 		49A85F1E1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */; };
-		AD46D2FE1D3041AD0008AF78 /* keyframesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AD46D2FD1D3041AD0008AF78 /* keyframesTests.m */; };
-		AD46D3001D3041AD0008AF78 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBA24B01D2C3C9400D2549E /* keyframes.framework */; };
+		AD46D2FE1D3041AD0008AF78 /* KeyframesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AD46D2FD1D3041AD0008AF78 /* KeyframesTests.m */; };
+		AD46D3001D3041AD0008AF78 /* Keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBA24B01D2C3C9400D2549E /* Keyframes.framework */; };
 		AD8E72781D2C3DB100E3BA9D /* .valueObjectConfig in Resources */ = {isa = PBXBuildFile; fileRef = AD8E724B1D2C3DB100E3BA9D /* .valueObjectConfig */; };
 		AD8E72791D2C3DB100E3BA9D /* KFVector.h in Headers */ = {isa = PBXBuildFile; fileRef = AD8E724C1D2C3DB100E3BA9D /* KFVector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD8E727A1D2C3DB100E3BA9D /* KFVector.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8E724D1D2C3DB100E3BA9D /* KFVector.m */; };
@@ -67,13 +67,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		340F674D1DF716FC009A47B0 /* keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = keyframes.h; path = src/keyframes.h; sourceTree = SOURCE_ROOT; };
+		340F674D1DF716FC009A47B0 /* Keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keyframes.h; path = src/Keyframes.h; sourceTree = SOURCE_ROOT; };
 		493741AE1DE4FEB6002141D1 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_logo.json; sourceTree = "<group>"; };
 		49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorBitmapFeatureLayer.h; sourceTree = "<group>"; };
 		49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorBitmapFeatureLayer.m; sourceTree = "<group>"; };
 		AD205EB01D2C5A2100AE89A1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
-		AD46D2FB1D3041AD0008AF78 /* keyframesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = keyframesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD46D2FD1D3041AD0008AF78 /* keyframesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = keyframesTests.m; sourceTree = "<group>"; };
+		AD46D2FB1D3041AD0008AF78 /* KeyframesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyframesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD46D2FD1D3041AD0008AF78 /* KeyframesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyframesTests.m; sourceTree = "<group>"; };
 		AD46D2FF1D3041AD0008AF78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD8E724B1D2C3DB100E3BA9D /* .valueObjectConfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .valueObjectConfig; sourceTree = "<group>"; };
 		AD8E724C1D2C3DB100E3BA9D /* KFVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVector.h; sourceTree = "<group>"; };
@@ -116,7 +116,7 @@
 		AD8E72741D2C3DB100E3BA9D /* KFVectorParsingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorParsingHelper.m; sourceTree = "<group>"; };
 		AD8E72761D2C3DB100E3BA9D /* KFVectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorView.h; sourceTree = "<group>"; };
 		AD8E72771D2C3DB100E3BA9D /* KFVectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorView.m; sourceTree = "<group>"; };
-		ADBA24B01D2C3C9400D2549E /* keyframes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = keyframes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ADBA24B01D2C3C9400D2549E /* Keyframes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Keyframes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,7 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD46D3001D3041AD0008AF78 /* keyframes.framework in Frameworks */,
+				AD46D3001D3041AD0008AF78 /* Keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,13 +138,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AD46D2FC1D3041AD0008AF78 /* keyframesTests */ = {
+		AD46D2FC1D3041AD0008AF78 /* KeyframesTests */ = {
 			isa = PBXGroup;
 			children = (
 				AD46D3061D3042080008AF78 /* Assets */,
-				AD46D2FD1D3041AD0008AF78 /* keyframesTests.m */,
+				AD46D2FD1D3041AD0008AF78 /* KeyframesTests.m */,
 				AD46D2FF1D3041AD0008AF78 /* Info.plist */,
 			);
+			name = KeyframesTests;
 			path = keyframesTests;
 			sourceTree = "<group>";
 		};
@@ -249,8 +250,8 @@
 		ADBA24A61D2C3C9400D2549E = {
 			isa = PBXGroup;
 			children = (
-				ADBA24B21D2C3C9400D2549E /* keyframes */,
-				AD46D2FC1D3041AD0008AF78 /* keyframesTests */,
+				ADBA24B21D2C3C9400D2549E /* Keyframes */,
+				AD46D2FC1D3041AD0008AF78 /* KeyframesTests */,
 				ADBA24B11D2C3C9400D2549E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -258,19 +259,20 @@
 		ADBA24B11D2C3C9400D2549E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ADBA24B01D2C3C9400D2549E /* keyframes.framework */,
-				AD46D2FB1D3041AD0008AF78 /* keyframesTests.xctest */,
+				ADBA24B01D2C3C9400D2549E /* Keyframes.framework */,
+				AD46D2FB1D3041AD0008AF78 /* KeyframesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ADBA24B21D2C3C9400D2549E /* keyframes */ = {
+		ADBA24B21D2C3C9400D2549E /* Keyframes */ = {
 			isa = PBXGroup;
 			children = (
 				AD205EB01D2C5A2100AE89A1 /* Info.plist */,
-				340F674D1DF716FC009A47B0 /* keyframes.h */,
+				340F674D1DF716FC009A47B0 /* Keyframes.h */,
 				AD8E72491D2C3DB100E3BA9D /* src */,
 			);
+			name = Keyframes;
 			path = keyframes;
 			sourceTree = "<group>";
 		};
@@ -291,7 +293,7 @@
 				AD8E72921D2C3DB100E3BA9D /* KFVectorFeatureLayer.h in Headers */,
 				AD8E72851D2C3DB100E3BA9D /* KFVectorFeature.h in Headers */,
 				AD8E729B1D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.h in Headers */,
-				340F674E1DF716FC009A47B0 /* keyframes.h in Headers */,
+				340F674E1DF716FC009A47B0 /* Keyframes.h in Headers */,
 				AD8E72821D2C3DB100E3BA9D /* KFVectorAnimationKeyValue.h in Headers */,
 				AD8E727C1D2C3DB100E3BA9D /* KFVectorAnimation.h in Headers */,
 				AD8E72951D2C3DB100E3BA9D /* KFVectorGradientFeatureLayer.h in Headers */,
@@ -306,9 +308,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		AD46D2FA1D3041AD0008AF78 /* keyframesTests */ = {
+		AD46D2FA1D3041AD0008AF78 /* KeyframesTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AD46D3051D3041AD0008AF78 /* Build configuration list for PBXNativeTarget "keyframesTests" */;
+			buildConfigurationList = AD46D3051D3041AD0008AF78 /* Build configuration list for PBXNativeTarget "KeyframesTests" */;
 			buildPhases = (
 				AD46D2F71D3041AD0008AF78 /* Sources */,
 				AD46D2F81D3041AD0008AF78 /* Frameworks */,
@@ -319,14 +321,14 @@
 			dependencies = (
 				AD46D3021D3041AD0008AF78 /* PBXTargetDependency */,
 			);
-			name = keyframesTests;
+			name = KeyframesTests;
 			productName = keyframesTests;
-			productReference = AD46D2FB1D3041AD0008AF78 /* keyframesTests.xctest */;
+			productReference = AD46D2FB1D3041AD0008AF78 /* KeyframesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		ADBA24AF1D2C3C9400D2549E /* keyframes */ = {
+		ADBA24AF1D2C3C9400D2549E /* Keyframes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = ADBA24B81D2C3C9400D2549E /* Build configuration list for PBXNativeTarget "keyframes" */;
+			buildConfigurationList = ADBA24B81D2C3C9400D2549E /* Build configuration list for PBXNativeTarget "Keyframes" */;
 			buildPhases = (
 				ADBA24AB1D2C3C9400D2549E /* Sources */,
 				ADBA24AC1D2C3C9400D2549E /* Frameworks */,
@@ -337,9 +339,9 @@
 			);
 			dependencies = (
 			);
-			name = keyframes;
+			name = Keyframes;
 			productName = keyframes;
-			productReference = ADBA24B01D2C3C9400D2549E /* keyframes.framework */;
+			productReference = ADBA24B01D2C3C9400D2549E /* Keyframes.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -359,7 +361,7 @@
 					};
 				};
 			};
-			buildConfigurationList = ADBA24AA1D2C3C9400D2549E /* Build configuration list for PBXProject "keyframes" */;
+			buildConfigurationList = ADBA24AA1D2C3C9400D2549E /* Build configuration list for PBXProject "Keyframes" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -371,8 +373,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				ADBA24AF1D2C3C9400D2549E /* keyframes */,
-				AD46D2FA1D3041AD0008AF78 /* keyframesTests */,
+				ADBA24AF1D2C3C9400D2549E /* Keyframes */,
+				AD46D2FA1D3041AD0008AF78 /* KeyframesTests */,
 			);
 		};
 /* End PBXProject section */
@@ -408,7 +410,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD46D2FE1D3041AD0008AF78 /* keyframesTests.m in Sources */,
+				AD46D2FE1D3041AD0008AF78 /* KeyframesTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,7 +443,7 @@
 /* Begin PBXTargetDependency section */
 		AD46D3021D3041AD0008AF78 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = ADBA24AF1D2C3C9400D2549E /* keyframes */;
+			target = ADBA24AF1D2C3C9400D2549E /* Keyframes */;
 			targetProxy = AD46D3011D3041AD0008AF78 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -600,7 +602,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AD46D3051D3041AD0008AF78 /* Build configuration list for PBXNativeTarget "keyframesTests" */ = {
+		AD46D3051D3041AD0008AF78 /* Build configuration list for PBXNativeTarget "KeyframesTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AD46D3031D3041AD0008AF78 /* Debug */,
@@ -609,7 +611,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ADBA24AA1D2C3C9400D2549E /* Build configuration list for PBXProject "keyframes" */ = {
+		ADBA24AA1D2C3C9400D2549E /* Build configuration list for PBXProject "Keyframes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ADBA24B61D2C3C9400D2549E /* Debug */,
@@ -618,7 +620,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ADBA24B81D2C3C9400D2549E /* Build configuration list for PBXNativeTarget "keyframes" */ = {
+		ADBA24B81D2C3C9400D2549E /* Build configuration list for PBXNativeTarget "Keyframes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ADBA24B91D2C3C9400D2549E /* Debug */,
