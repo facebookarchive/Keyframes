@@ -46,7 +46,7 @@
 
 ## Effects
 
-### Gradient (Experimental Feature)
+### Gradient (WIP, not fully supported)
 
 - LINEAR gradient supported by choosing 'Effect/Gradient Ramp'
 - DO NOT USE 'Gradient Fill' 
