@@ -14,8 +14,8 @@
 		ADBA23DC1D2C2A9200D2549E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DA1D2C2A9200D2549E /* Main.storyboard */; };
 		ADBA23DE1D2C2A9200D2549E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DD1D2C2A9200D2549E /* Assets.xcassets */; };
 		ADBA23E11D2C2A9200D2549E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADBA23DF1D2C2A9200D2549E /* LaunchScreen.storyboard */; };
-		B8E78CEC1DED74800018CB18 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DB68E7F61DE69F3300AEF0AF /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* keyframes.framework */; };
+		B8E78CEC1DED74800018CB18 /* Keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* Keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB68E7F61DE69F3300AEF0AF /* Keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB68E7F11DE69F2200AEF0AF /* Keyframes.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +56,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B8E78CEC1DED74800018CB18 /* keyframes.framework in Embed Frameworks */,
+				B8E78CEC1DED74800018CB18 /* Keyframes.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB68E7F61DE69F3300AEF0AF /* keyframes.framework in Frameworks */,
+				DB68E7F61DE69F3300AEF0AF /* Keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +135,8 @@
 		DB68E7EC1DE69F2200AEF0AF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB68E7F11DE69F2200AEF0AF /* keyframes.framework */,
-				DB68E7F31DE69F2200AEF0AF /* keyframesTests.xctest */,
+				DB68E7F11DE69F2200AEF0AF /* Keyframes.framework */,
+				DB68E7F31DE69F2200AEF0AF /* KeyframesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,7 +170,7 @@
 		ADBA23C61D2C2A9100D2549E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = facebook;
 				TargetAttributes = {
 					ADBA23CD1D2C2A9200D2549E = {
@@ -204,17 +204,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DB68E7F11DE69F2200AEF0AF /* keyframes.framework */ = {
+		DB68E7F11DE69F2200AEF0AF /* Keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = keyframes.framework;
+			path = Keyframes.framework;
 			remoteRef = DB68E7F01DE69F2200AEF0AF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DB68E7F31DE69F2200AEF0AF /* keyframesTests.xctest */ = {
+		DB68E7F31DE69F2200AEF0AF /* KeyframesTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = keyframesTests.xctest;
+			path = KeyframesTests.xctest;
 			remoteRef = DB68E7F21DE69F2200AEF0AF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -294,8 +294,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -339,8 +341,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

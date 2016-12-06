@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import <keyframes/KFUtilities.h>
+#import "KFUtilities.h"
 
 @class KFVector;
 

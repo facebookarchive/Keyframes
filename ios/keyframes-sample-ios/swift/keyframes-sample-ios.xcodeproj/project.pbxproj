@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B8E78CF21DED74B50018CB18 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB39420A1DECB9A300448055 /* keyframes.framework */; };
 		DB68E7CB1DE69F1500AEF0AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CA1DE69F1500AEF0AF /* AppDelegate.swift */; };
 		DB68E7CD1DE69F1500AEF0AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68E7CC1DE69F1500AEF0AF /* ViewController.swift */; };
 		DB68E7D01DE69F1500AEF0AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB68E7CE1DE69F1500AEF0AF /* Main.storyboard */; };
@@ -18,33 +16,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B8E78CF31DED74B50018CB18 /* PBXContainerItemProxy */ = {
+		34C2639D1DF7606300DE73B8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = ADBA24AF1D2C3C9400D2549E;
-			remoteInfo = keyframes;
-		};
-		DB3942091DECB9A300448055 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			containerPortal = DB3942041DECB9A300448055 /* Keyframes.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = ADBA24B01D2C3C9400D2549E;
-			remoteInfo = keyframes;
+			remoteInfo = Keyframes;
 		};
-		DB39420B1DECB9A300448055 /* PBXContainerItemProxy */ = {
+		34C2639F1DF7606300DE73B8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+			containerPortal = DB3942041DECB9A300448055 /* Keyframes.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
-			remoteInfo = keyframesTests;
-		};
-		DB39420D1DECBA7400448055 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = ADBA24AF1D2C3C9400D2549E;
-			remoteInfo = keyframes;
+			remoteInfo = KeyframesTests;
 		};
 		DB68E7DC1DE69F1500AEF0AF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -62,7 +46,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B8E78CF21DED74B50018CB18 /* keyframes.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,7 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		DB3942041DECB9A300448055 /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
+		DB3942041DECB9A300448055 /* Keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Keyframes.xcodeproj; path = ../../keyframes/Keyframes.xcodeproj; sourceTree = "<group>"; };
 		DB68E7C71DE69F1500AEF0AF /* keyframes-sample-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB68E7CA1DE69F1500AEF0AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DB68E7CC1DE69F1500AEF0AF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -87,7 +70,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB39420F1DECBA7E00448055 /* keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,11 +83,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DB3942051DECB9A300448055 /* Products */ = {
+		34C263991DF7606200DE73B8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DB39420A1DECB9A300448055 /* keyframes.framework */,
-				DB39420C1DECB9A300448055 /* keyframesTests.xctest */,
+				34C2639E1DF7606300DE73B8 /* Keyframes.framework */,
+				34C263A01DF7606300DE73B8 /* KeyframesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,7 +95,7 @@
 		DB68E7BE1DE69F1500AEF0AF = {
 			isa = PBXGroup;
 			children = (
-				DB3942041DECB9A300448055 /* keyframes.xcodeproj */,
+				DB3942041DECB9A300448055 /* Keyframes.xcodeproj */,
 				DB68E7C91DE69F1500AEF0AF /* keyframes-sample-ios */,
 				DB68E8041DE69FFE00AEF0AF /* Supporting Files */,
 				DB68E7C81DE69F1500AEF0AF /* Products */,
@@ -165,8 +147,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				DB39420E1DECBA7400448055 /* PBXTargetDependency */,
-				B8E78CF41DED74B50018CB18 /* PBXTargetDependency */,
 			);
 			name = "keyframes-sample-ios";
 			productName = "keyframes-sample-ios";
@@ -226,8 +206,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DB3942051DECB9A300448055 /* Products */;
-					ProjectRef = DB3942041DECB9A300448055 /* keyframes.xcodeproj */;
+					ProductGroup = 34C263991DF7606200DE73B8 /* Products */;
+					ProjectRef = DB3942041DECB9A300448055 /* Keyframes.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -239,18 +219,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DB39420A1DECB9A300448055 /* keyframes.framework */ = {
+		34C2639E1DF7606300DE73B8 /* Keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = keyframes.framework;
-			remoteRef = DB3942091DECB9A300448055 /* PBXContainerItemProxy */;
+			path = Keyframes.framework;
+			remoteRef = 34C2639D1DF7606300DE73B8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DB39420C1DECB9A300448055 /* keyframesTests.xctest */ = {
+		34C263A01DF7606300DE73B8 /* KeyframesTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = keyframesTests.xctest;
-			remoteRef = DB39420B1DECB9A300448055 /* PBXContainerItemProxy */;
+			path = KeyframesTests.xctest;
+			remoteRef = 34C2639F1DF7606300DE73B8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -296,16 +276,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B8E78CF41DED74B50018CB18 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = keyframes;
-			targetProxy = B8E78CF31DED74B50018CB18 /* PBXContainerItemProxy */;
-		};
-		DB39420E1DECBA7400448055 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = keyframes;
-			targetProxy = DB39420D1DECBA7400448055 /* PBXContainerItemProxy */;
-		};
 		DB68E7DD1DE69F1500AEF0AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DB68E7C61DE69F1500AEF0AF /* keyframes-sample-ios */;
@@ -440,7 +410,6 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -460,7 +429,6 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-ios-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

@@ -14,9 +14,9 @@
 #ifndef Keyframes_H
 #define Keyframes_H
 
-#import <keyframes/KFVector.h>
-#import <keyframes/KFVectorParsingHelper.h>
-#import <keyframes/KFVectorLayer.h>
-#import <keyframes/KFUtilities.h>
+#import "KFVector.h"
+#import "KFVectorParsingHelper.h"
+#import "KFVectorLayer.h"
+#import "KFUtilities.h"
 
 #endif /* Keyframes_H */
