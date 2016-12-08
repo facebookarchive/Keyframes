@@ -80,6 +80,7 @@ Drawable kfDrawable = new KeyframesDrawableBuilder().withImage(kfImage).build();
 ImageView imageView = (ImageView) findViewById(R.id.some_image_view);
 imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 imageView.setImageDrawable(kfDrawable);
+imageView.setImageAlpha(0);
 ```
 
 #### Play!
