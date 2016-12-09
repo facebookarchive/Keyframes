@@ -1,7 +1,7 @@
 ![Keyframes](/docs/images/doc-logo.png)
 
 [![Version](https://img.shields.io/cocoapods/v/keyframes.svg)](http://cocoapods.org/pods/keyframes)
-[![Version](https://img.shields.io/maven-central/v/com.facebook/keyframes.svg)](http://search.maven.org/#artifactdetails%7Ccom.facebook%7Ckeyframes%7C1.0%7Caar)
+[![Version](https://img.shields.io/maven-central/v/com.facebook.keyframes/keyframes.svg)](http://search.maven.org/#artifactdetails%7Ccom.facebook.keyframes%7Ckeyframes%7C1.0%7Caar)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-59C939.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/keyframes.svg)](https://github.com/facebookincubator/Keyframes/blob/master/LICENSE)
 
@@ -70,12 +70,12 @@ Use `startAnimation`, `pauseAnimation`, `resumeAnimation` and `seekToProgress` o
 ### Download
 Download [the latest JARs](https://github.com/facebookincubator/keyframes/releases/latest) or grab via Gradle:
 ```groovy
-compile 'com.facebook:keyframes:1.0'
+compile 'com.facebook.keyframes:keyframes:1.0'
 ```
 or Maven:
 ```xml
 <dependency>
-  <groupId>com.facebook</groupId>
+  <groupId>com.facebook.keyframes</groupId>
   <artifactId>keyframes</artifactId>
   <version>1.0</version>
 </dependency>
