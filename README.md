@@ -66,6 +66,20 @@ Use `startAnimation`, `pauseAnimation`, `resumeAnimation` and `seekToProgress` o
 
 ### Android Rendering
 
+### Download
+Download [the latest JARs](https://github.com/facebookincubator/keyframes/releases/latest) or grab via Gradle:
+```groovy
+compile 'com.facebook:keyframes:1.0'
+```
+or Maven:
+```xml
+<dependency>
+  <groupId>com.facebook</groupId>
+  <artifactId>keyframes</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
 #### Rendering setup
 
 Use the provided deserializers on the generated JSON blob from the **Image Data Extraction** step to create a `KFImage` model object.  If your JSON blob lives in the assets directory, this might look like:
