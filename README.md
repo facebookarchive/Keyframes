@@ -1,6 +1,7 @@
 ![Keyframes](/docs/images/doc-logo.png)
 
 [![Version](https://img.shields.io/cocoapods/v/keyframes.svg)](http://cocoapods.org/pods/keyframes)
+[![Version](https://img.shields.io/maven-central/v/com.facebook/keyframes.svg)](http://search.maven.org/#artifactdetails%7Ccom.facebook%7Ckeyframes%7C1.0%7Caar)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-59C939.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/keyframes.svg)](https://github.com/facebookincubator/Keyframes/blob/master/LICENSE)
 
