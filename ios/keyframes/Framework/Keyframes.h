@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "KFVector.h"
-#import "KFVectorParsingHelper.h"
-#import "KFVectorLayer.h"
-#import "KFUtilities.h"
+#import <Keyframes/KFVector.h>
+#import <Keyframes/KFVectorParsingHelper.h>
+#import <Keyframes/KFVectorLayer.h>
+#import <Keyframes/KFUtilities.h>

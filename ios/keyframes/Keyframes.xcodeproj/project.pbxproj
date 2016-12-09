@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		340F674E1DF716FC009A47B0 /* Keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = 340F674D1DF716FC009A47B0 /* Keyframes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		342484B41DFA143400A2471E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 342484B21DFA143400A2471E /* Info.plist */; };
+		342484B51DFA143400A2471E /* Keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = 342484B31DFA143400A2471E /* Keyframes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		493741AF1DE4FEB6002141D1 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = 493741AE1DE4FEB6002141D1 /* sample_logo.json */; };
 		49A85F1D1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */; };
 		49A85F1E1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */; };
@@ -67,11 +68,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		340F674D1DF716FC009A47B0 /* Keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keyframes.h; path = src/Keyframes.h; sourceTree = SOURCE_ROOT; };
+		342484B21DFA143400A2471E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Framework/Info.plist; sourceTree = SOURCE_ROOT; };
+		342484B31DFA143400A2471E /* Keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keyframes.h; path = Framework/Keyframes.h; sourceTree = SOURCE_ROOT; };
 		493741AE1DE4FEB6002141D1 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_logo.json; sourceTree = "<group>"; };
 		49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorBitmapFeatureLayer.h; sourceTree = "<group>"; };
 		49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorBitmapFeatureLayer.m; sourceTree = "<group>"; };
-		AD205EB01D2C5A2100AE89A1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		AD46D2FB1D3041AD0008AF78 /* KeyframesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyframesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD46D2FD1D3041AD0008AF78 /* KeyframesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyframesTests.m; sourceTree = "<group>"; };
 		AD46D2FF1D3041AD0008AF78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -138,6 +139,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		342484B11DFA142000A2471E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				342484B21DFA143400A2471E /* Info.plist */,
+				342484B31DFA143400A2471E /* Keyframes.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		AD46D2FC1D3041AD0008AF78 /* KeyframesTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -268,8 +278,7 @@
 		ADBA24B21D2C3C9400D2549E /* Keyframes */ = {
 			isa = PBXGroup;
 			children = (
-				AD205EB01D2C5A2100AE89A1 /* Info.plist */,
-				340F674D1DF716FC009A47B0 /* Keyframes.h */,
+				342484B11DFA142000A2471E /* Supporting Files */,
 				AD8E72491D2C3DB100E3BA9D /* src */,
 			);
 			name = Keyframes;
@@ -293,13 +302,13 @@
 				AD8E72921D2C3DB100E3BA9D /* KFVectorFeatureLayer.h in Headers */,
 				AD8E72851D2C3DB100E3BA9D /* KFVectorFeature.h in Headers */,
 				AD8E729B1D2C3DB100E3BA9D /* KFVectorBezierPathsHelper.h in Headers */,
-				340F674E1DF716FC009A47B0 /* Keyframes.h in Headers */,
 				AD8E72821D2C3DB100E3BA9D /* KFVectorAnimationKeyValue.h in Headers */,
 				AD8E727C1D2C3DB100E3BA9D /* KFVectorAnimation.h in Headers */,
 				AD8E72951D2C3DB100E3BA9D /* KFVectorGradientFeatureLayer.h in Headers */,
 				AD8E72941D2C3DB100E3BA9D /* KFVectorFeatureLayerInterface.h in Headers */,
 				AD8E728B1D2C3DB100E3BA9D /* KFVectorGradientEffect.h in Headers */,
 				AD8E729F1D2C3DB100E3BA9D /* KFVectorView.h in Headers */,
+				342484B51DFA143400A2471E /* Keyframes.h in Headers */,
 				AD8E727F1D2C3DB100E3BA9D /* KFVectorAnimationGroup.h in Headers */,
 				AD8E72881D2C3DB100E3BA9D /* KFVectorFeatureKeyFrame.h in Headers */,
 			);
@@ -394,6 +403,7 @@
 			files = (
 				AD8E72841D2C3DB100E3BA9D /* KFVectorAnimationKeyValue.value in Resources */,
 				AD8E72811D2C3DB100E3BA9D /* KFVectorAnimationGroup.value in Resources */,
+				342484B41DFA143400A2471E /* Info.plist in Resources */,
 				AD8E72871D2C3DB100E3BA9D /* KFVectorFeature.value in Resources */,
 				AD8E72781D2C3DB100E3BA9D /* .valueObjectConfig in Resources */,
 				AD8E727E1D2C3DB100E3BA9D /* KFVectorAnimation.value in Resources */,
@@ -571,12 +581,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.keyframes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -589,12 +599,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
+				INFOPLIST_FILE = ./Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.keyframes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
