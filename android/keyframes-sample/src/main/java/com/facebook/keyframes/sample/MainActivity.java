@@ -144,6 +144,7 @@ public class MainActivity extends Activity {
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
     imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     imageView.setImageDrawable(mKeyFramesDrawable);
+    imageView.setImageAlpha(0);
   }
 
   private KFImage getSampleImage() {
