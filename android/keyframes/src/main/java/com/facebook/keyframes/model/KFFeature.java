@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.AnimationHelper;
@@ -93,6 +94,12 @@ public class KFFeature {
   private final Paint.Cap mStrokeLineCap;
 
   /**
+   * Masking layer that can be used for this feature.
+   */
+  public static final String FEATURE_MASK_JSON_FIELD = "masking";
+  private final KFFeature mFeatureMask;
+
+  /**
    * A list of animations to apply to just this feature layer.
    */
   public static final String FEATURE_ANIMATIONS_JSON_FIELD = "feature_animations";
@@ -109,6 +116,10 @@ public class KFFeature {
    * The anchor point for all animations in this feature.
    */
   final KFAnimation mAnchorPoint;
+  /**
+   * The opacity for this feature.
+   */
+  private final KFAnimation mOpacityAnimation;
 
   /**
    * An optional effect that this feature layer can have.
@@ -140,6 +151,7 @@ public class KFFeature {
     public float[][][] timingCurves;
     public int animationGroup;
     public Paint.Cap strokeLineCap = Paint.Cap.ROUND;
+    public KFFeature featureMask;
     public List<KFAnimation> featureAnimations;
     public float[] anchorPoint;
     public KFFeatureEffect effect;
@@ -157,6 +169,7 @@ public class KFFeature {
           timingCurves,
           animationGroup,
           strokeLineCap,
+          featureMask,
           featureAnimations,
           anchorPoint,
           effect,
@@ -175,6 +188,7 @@ public class KFFeature {
       float[][][] timingCurves,
       int animationGroup,
       Paint.Cap strokeLineCap,
+      KFFeature featureMask,
       List<KFAnimation> featureAnimations,
       float[] anchorPoint,
       KFFeatureEffect effect,
@@ -192,6 +206,7 @@ public class KFFeature {
         TIMING_CURVES_JSON_FIELD);
     mAnimationGroup = animationGroup;
     mStrokeLineCap = strokeLineCap;
+    mFeatureMask = featureMask;
 
     mStrokeWidthAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
@@ -199,6 +214,9 @@ public class KFFeature {
     mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.ANCHOR_POINT);
+    mOpacityAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.OPACITY);
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
@@ -247,6 +265,10 @@ public class KFFeature {
     return mStrokeLineCap;
   }
 
+  public KFFeature getFeatureMask() {
+    return mFeatureMask;
+  }
+
   public void setStrokeWidth(
       KeyFramedStrokeWidth.StrokeWidth strokeWidth,
       float frameProgress) {
@@ -260,6 +282,15 @@ public class KFFeature {
     mStrokeWidthAnimation.getAnimation().apply(frameProgress, strokeWidth);
   }
 
+  public void setOpacity(
+      KeyFramedOpacity.Opacity opacity,
+      float frameProgress) {
+    if (opacity == null || mOpacityAnimation == null) {
+      return;
+    }
+    mOpacityAnimation.getAnimation().apply(frameProgress, opacity);
+  }
+
   public void setAnimationMatrix(Matrix featureMatrix, float frameProgress) {
     if (featureMatrix == null) {
       return;
@@ -269,7 +300,7 @@ public class KFFeature {
       return;
     }
     if (mAnchorPoint != null) {
-      ((KeyFramedAnchorPoint) mAnchorPoint.getAnimation()).apply(featureMatrix);
+      mAnchorPoint.getAnimation().apply(frameProgress, featureMatrix);
     }
     for (int i = 0, len = mFeatureMatrixAnimations.size(); i < len; i++) {
       mFeatureMatrixAnimations.get(i).getAnimation().apply(frameProgress, featureMatrix);
