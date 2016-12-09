@@ -16,4 +16,25 @@
         android:layout_centerInParent="true"
         android:onClick="resetImage"/>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="start"
+            android:onClick="onStartButtonClick"/>
+
+        <Button
+            android:id="@+id/toggle_pause_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="pause"
+            android:onClick="onTogglePauseButtonClick"/>
+    </LinearLayout>
+
 </RelativeLayout>

@@ -21,18 +21,19 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import com.facebook.keyframes.KeyframesDrawable;
+import com.facebook.keyframes.KeyframesDrawableBuilder;
+import com.facebook.keyframes.deserializers.KFImageDeserializer;
+import com.facebook.keyframes.model.KFImage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.facebook.keyframes.KeyframesDrawable;
-import com.facebook.keyframes.KeyframesDrawableBuilder;
-import com.facebook.keyframes.deserializers.KFImageDeserializer;
-import com.facebook.keyframes.model.KFImage;
 
 public class MainActivity extends Activity {
 
@@ -41,6 +42,8 @@ public class MainActivity extends Activity {
   private static final int TEST_CANVAS_SIZE_PX = 500;
 
   private KeyframesDrawable mKeyFramesDrawable;
+  private Boolean mPaused = false;
+  private Button mTogglePauseButton;
 
   private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
 
@@ -106,13 +109,30 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    setKFImage(getSampleImage());
+    mTogglePauseButton = (Button) findViewById(R.id.toggle_pause_button);
 
+    setKFImage(getSampleImage());
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
 
   public void resetImage(View view) {
     setKFImage(mKfImage);
+  }
+
+  public void onTogglePauseButtonClick(View view) {
+    if (mKeyFramesDrawable == null) {
+      return;
+    }
+
+    if (mPaused) {
+      resumeAnimation();
+    } else {
+      pauseAnimation();
+    }
+  }
+
+  public void onStartButtonClick(View view) {
+    startAnimation();
   }
 
   private void clearImage() {
@@ -121,6 +141,30 @@ public class MainActivity extends Activity {
     }
     mKeyFramesDrawable.stopAnimation();
     mKeyFramesDrawable = null;
+  }
+
+  private void startAnimation() {
+    mKeyFramesDrawable.startAnimation();
+    mTogglePauseButton.setText("Pause");
+    mPaused = false;
+  }
+
+  private void stopAnimation() {
+    mKeyFramesDrawable.stopAnimation();
+    mTogglePauseButton.setText("Start");
+    mPaused = true;
+  }
+
+  private void resumeAnimation() {
+    mKeyFramesDrawable.resumeAnimation();
+    mTogglePauseButton.setText("Pause");
+    mPaused = false;
+  }
+
+  private void pauseAnimation() {
+    mKeyFramesDrawable.pauseAnimation();
+    mTogglePauseButton.setText("Resume");
+    mPaused = true;
   }
 
 
@@ -139,7 +183,7 @@ public class MainActivity extends Activity {
               Pair.create("keyframes", Pair.create(logoDrawable, new Matrix())))
           .build();
     }
-    mKeyFramesDrawable.startAnimation();
+    startAnimation();
 
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);
     imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -169,7 +213,7 @@ public class MainActivity extends Activity {
   @Override
   public void onPause() {
     if (mKeyFramesDrawable != null) {
-      mKeyFramesDrawable.stopAnimation();
+      stopAnimation();
     }
     unregisterReceiver(mPreviewRenderReceiver);
     super.onPause();
@@ -180,7 +224,7 @@ public class MainActivity extends Activity {
     super.onResume();
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
     if (mKeyFramesDrawable != null) {
-      mKeyFramesDrawable.startAnimation();
+      startAnimation();
     }
   }
 }
