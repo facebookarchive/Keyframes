@@ -23,6 +23,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 import com.facebook.keyframes.KeyframesDrawable;
 import com.facebook.keyframes.KeyframesDrawableBuilder;
@@ -42,8 +43,10 @@ public class MainActivity extends Activity {
   private static final int TEST_CANVAS_SIZE_PX = 500;
 
   private KeyframesDrawable mKeyFramesDrawable;
-  private Boolean mPaused = false;
+  private Boolean mPaused;
   private Button mTogglePauseButton;
+  private SeekBar mSeekBar;
+  private Boolean mDraggingSeekBar;
 
   private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
 
@@ -110,7 +113,9 @@ public class MainActivity extends Activity {
     setContentView(R.layout.activity_main);
 
     mTogglePauseButton = (Button) findViewById(R.id.toggle_pause_button);
+    mSeekBar = (SeekBar) findViewById(R.id.seek_bar);
 
+    initSeekBar();
     setKFImage(getSampleImage());
     registerReceiver(mPreviewRenderReceiver, mPreviewKeyframesAnimation);
   }
@@ -135,6 +140,33 @@ public class MainActivity extends Activity {
     startAnimation();
   }
 
+  private void initSeekBar() {
+    mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (mDraggingSeekBar) {
+          mKeyFramesDrawable.seekToProgress((float) progress / 100);
+        }
+      }
+
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) {
+        mDraggingSeekBar = true;
+        mKeyFramesDrawable.setAnimationListener(new KeyframesDrawable.OnAnimationEnd() {
+          @Override
+          public void onAnimationEnd() {
+            stopAnimation(true);
+          }
+        });
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+        mDraggingSeekBar = false;
+      }
+    });
+  }
+
   private void clearImage() {
     if (mKeyFramesDrawable == null) {
       return;
@@ -144,15 +176,24 @@ public class MainActivity extends Activity {
   }
 
   private void startAnimation() {
+    mSeekBar.setProgress(0);
     mKeyFramesDrawable.startAnimation();
     mTogglePauseButton.setText("Pause");
+    mTogglePauseButton.setEnabled(true);
     mPaused = false;
   }
 
-  private void stopAnimation() {
-    mKeyFramesDrawable.stopAnimation();
-    mTogglePauseButton.setText("Start");
+  private void stopAnimation(Boolean alreadyStopped) {
+    if (!alreadyStopped) {
+      mKeyFramesDrawable.stopAnimation();
+    }
+    mTogglePauseButton.setText("Pause");
+    mTogglePauseButton.setEnabled(false);
     mPaused = true;
+  }
+
+  private void stopAnimation() {
+    stopAnimation(false);
   }
 
   private void resumeAnimation() {

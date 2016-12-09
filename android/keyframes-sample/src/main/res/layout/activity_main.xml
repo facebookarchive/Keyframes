@@ -22,6 +22,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
         <Button
             android:id="@+id/start_button"
             android:layout_width="match_parent"
@@ -35,6 +41,7 @@
             android:layout_height="wrap_content"
             android:text="pause"
             android:onClick="onTogglePauseButtonClick"/>
+
     </LinearLayout>
 
 </RelativeLayout>

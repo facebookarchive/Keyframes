@@ -298,7 +298,7 @@ public class KeyframesDrawable extends Drawable
   }
 
   /**
-   * Stops the animation callbacks for this drawable immediately.
+   * Pauses the animation callbacks for this drawable immediately.
    */
   public void pauseAnimation() {
     mKeyframesDrawableAnimationCallback.pause();
@@ -331,6 +331,11 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       mFeatureStateList.get(i).setupFeatureStateForProgress(frameProgress);
     }
+  }
+
+  public void seekToProgress(float progress) {
+    stopAnimation();
+    onProgressUpdate(progress * 100);
   }
 
   /**
