@@ -361,7 +361,6 @@ public class KeyframesDrawable extends Drawable
     mOnAnimationEnd.clear();
   }
 
-
   private WeakReference<OnAnimationEnd> mOnAnimationEnd;
 
   public void setAnimationListener(OnAnimationEnd listener) {
