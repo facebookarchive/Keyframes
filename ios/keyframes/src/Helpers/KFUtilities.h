@@ -20,7 +20,7 @@
 
 #endif
 
-#import <UIKit/UIKit.h>
+#import "Compatibility.h"
 
 typedef id (^KFMapArrayHandler)(id object);
 typedef id (^KFMapArrayWithIndexHandler)(id object, NSUInteger index);

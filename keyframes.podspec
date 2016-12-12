@@ -11,4 +11,5 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
   spec.social_media_url = 'https://twitter.com/fbOpenSource'
   spec.ios.deployment_target = '8.0'
+  spec.osx.deployment_target = '10.11'
 end

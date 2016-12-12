@@ -7,11 +7,19 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import "Compatibility.h"
 
 @class KFVector;
 
-@interface KFVectorView : UIView
+#if TARGET_OS_OSX
+    @interface KFView: NSView
+    @end
+#else
+    @interface KFView: UIView
+    @end
+#endif
+
+@interface KFVectorView : KFView
 
 - (instancetype)initWithFrame:(CGRect)frame faceVector:(KFVector *)faceVector NS_DESIGNATED_INITIALIZER;
 
