@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
@@ -335,7 +336,7 @@ public class KeyframesDrawable extends Drawable
 
   public void seekToProgress(float progress) {
     stopAnimation();
-    onProgressUpdate(progress * 100);
+    onProgressUpdate(progress * mKFImage.getFrameCount());
   }
 
   /**
