@@ -17,4 +17,8 @@
 
 - (instancetype)init __attribute__((unavailable("Must use designated initializer")));
 
+- (instancetype)initWithFrame:(CGRect)frame __attribute__((unavailable("Must use designated initializer")));
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("Must use designated initializer")));
+
 @end
