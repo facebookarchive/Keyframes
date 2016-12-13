@@ -1,0 +1,13 @@
+{
+  "name": "keyframes-cli",
+  "version": "1.0.0",
+  "description": "Keyframes Exporter CLI",
+  "main": "keyfames-cli.js",
+  "bin": "./keyframes-cli.js",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "JSONStream": "^1.2.1",
+    "lockfile": "^1.0.3",
+    "readable-stream": "^2.2.2"
+  }
+}
