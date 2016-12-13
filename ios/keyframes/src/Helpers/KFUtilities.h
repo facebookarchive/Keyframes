@@ -20,7 +20,15 @@
 
 #endif
 
-#import "Compatibility.h"
+#import <Foundation/Foundation.h>
+
+#import <TargetConditionals.h>
+
+#if TARGET_OS_OSX
+    @class NSColor;
+#else
+    @class UIColor;
+#endif
 
 typedef id (^KFMapArrayHandler)(id object);
 typedef id (^KFMapArrayWithIndexHandler)(id object, NSUInteger index);
@@ -28,7 +36,11 @@ typedef id (^KFMapArrayWithIndexHandler)(id object, NSUInteger index);
 NSArray *KFMapArray(NSArray *arrayToMap, KFMapArrayHandler mapBlock);
 NSArray *KFMapArrayWithIndex(NSArray *arrayToMap, KFMapArrayWithIndexHandler mapBlock);
 
-UIColor *KFColorWithHexString(NSString *hexString);
+#if TARGET_OS_OSX
+    NSColor *KFColorWithHexString(NSString *hexString);
+#else
+    UIColor *KFColorWithHexString(NSString *hexString);
+#endif
 
 BOOL KFVersionLessThan(NSString *versionA, NSString *versionB);
 

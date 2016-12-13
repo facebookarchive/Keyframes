@@ -9,6 +9,8 @@
 
 #import "KFUtilities.h"
 
+#import "Compatibility.h"
+
 NSArray *KFMapArray(NSArray *arrayToMap, KFMapArrayHandler mapBlock) {
   NSMutableArray *mappedArray = [NSMutableArray array];
   for (id object in arrayToMap) {
