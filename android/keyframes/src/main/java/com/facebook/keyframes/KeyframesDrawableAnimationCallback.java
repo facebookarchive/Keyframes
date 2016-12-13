@@ -16,9 +16,9 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.view.Choreographer;
 
-import java.lang.ref.WeakReference;
-
 import com.facebook.keyframes.model.KFImage;
+
+import java.lang.ref.WeakReference;
 
 /**
  * A simple callback that when run, will call back indefinitely with progress updates until
@@ -91,13 +91,15 @@ public abstract class KeyframesDrawableAnimationCallback {
   protected abstract void cancelCallback();
 
   /**
-   * Starts this animation callback.
+   * Starts this animation callback and resets the start time.
    *
-   * !IMPORTANT! This animator will run indefinitely, so it must be cancelled via #stop() when no
-   * longer in use!
+   * !IMPORTANT! This animator will run indefinitely, so it must be cancelled via #stop()
+   * or #pause() when no longer in use!
    */
   public void start() {
     mStopAtLoopEnd = false;
+    mStartTimeMillis = 0;
+    mCurrentLoopNumber = -1;
     cancelCallback();
     postCallback();
   }
@@ -111,6 +113,27 @@ public abstract class KeyframesDrawableAnimationCallback {
     mCurrentLoopNumber = -1;
     mListener.get().onStop();
   }
+
+  /**
+   * Pauses the callbacks animation and saves start time.
+   */
+  public void pause() {
+    cancelCallback();
+    mStartTimeMillis *= -1;
+  }
+
+  /**
+   * Resumes this animation callback.
+   *
+   * !IMPORTANT! This animator will run indefinitely, so it must be cancelled via #stop()
+   * or #pause() when no longer in use!
+   */
+  public void resume() {
+    mStopAtLoopEnd = false;
+    cancelCallback();
+    postCallback();
+  }
+
 
   /**
    * Stops looping the animation, but finishes the current animation.
@@ -129,7 +152,12 @@ public abstract class KeyframesDrawableAnimationCallback {
     }
     if (mStartTimeMillis == 0) {
       mStartTimeMillis = frameTimeMillis;
+    } else if (mStartTimeMillis < 0) {
+      long pausedTimeMillis = frameTimeMillis - mPreviousProgressMillis;
+      mStartTimeMillis = mStartTimeMillis * -1 + pausedTimeMillis;
+      mPreviousProgressMillis += pausedTimeMillis;
     }
+
     int currentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
     final boolean loopHasEnded = currentLoopNumber > mCurrentLoopNumber;
     if (mStopAtLoopEnd && loopHasEnded) {
@@ -145,6 +173,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     } else {
       mPreviousProgressMillis = frameTimeMillis;
     }
+
     if (shouldUpdateProgress) {
       mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
     }
