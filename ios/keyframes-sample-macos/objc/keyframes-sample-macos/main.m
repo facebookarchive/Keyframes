@@ -1,10 +1,9 @@
-//
-//  main.m
-//  keyframes-sample-macos
-//
-//  Created by Guilherme Rambo on 12/12/16.
-//  Copyright © 2016 Guilherme Rambo. All rights reserved.
-//
+/* Copyright 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE-sample file in the root directory of this source tree.
+ */
 
 #import <Cocoa/Cocoa.h>
 
