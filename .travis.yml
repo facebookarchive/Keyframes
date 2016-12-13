@@ -1,0 +1,3 @@
+language: objective-c
+script:
+  - xctool test -project ios/keyframes/keyframes.xcodeproj -scheme KeyframesTests
