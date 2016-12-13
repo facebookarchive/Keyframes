@@ -1,13 +1,13 @@
 {
   "private": true,
   "name": "keyframes-scripts",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scripts for Facebook Keyframes",
   "scripts": {
     "test":       "jest",
     "test-watch": "jest --watch",
-    "compile":       "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes",
-    "compile-watch": "rm -rf ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../Keyframes\\ After\\ Effects\\ Scripts/\\(lib\\)/keyframes --watch"
+    "compile":       "rm -rf ../scripts/lib/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/lib/keyframes",
+    "compile-watch": "rm -rf ../scripts/lib/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/lib/keyframes --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",

@@ -2,11 +2,11 @@
 
 ## How to export animations from After Effects
 
-See [Keyframes After Effects Scripts/README.html](../Keyframes After Effects Scripts/README.html)
+See [scripts/README.html](../scripts/README.html)
 
 ---
 
-*The following are instructions for making changes to the JS code.*  
+*The following are instructions for making changes to the JS code.*
 ***You don't need to do any of this stuff if you just want to run the script.***
 
 ## Setup
@@ -43,4 +43,4 @@ Usage example: *Convert an After Effects Comp JSON file into a Keyframes Animati
     fs.writeFileSync(exportPath, JSON.stringify(AECompToKeyframesAnimation(fs.readFileSync(importPath))));
 
 Usually this code is used by the Keyframes After Effects Scripts/FB Keyframes Exporter.jsx run by Adobe After Effects.
-`/Keyframes After Effects Scripts/(lib)/keyframes/AECompToKeyframesAnimation.js` is a compiled version of this code. Compile using the instructions in the setup section above.
+`/scripts/lib/keyframes/AECompToKeyframesAnimation.js` is a compiled version of this code. Compile using the instructions in the setup section above.
