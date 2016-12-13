@@ -105,6 +105,7 @@
 		DD28B2AA1DFF1996000DA813 /* NSImage+PlatformCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = DD28B2A41DFF1996000DA813 /* NSImage+PlatformCompatibility.m */; };
 		DD28B2AB1DFF1996000DA813 /* NSValue+PlatformCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = DD28B2A51DFF1996000DA813 /* NSValue+PlatformCompatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD28B2AC1DFF1996000DA813 /* NSValue+PlatformCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = DD28B2A61DFF1996000DA813 /* NSValue+PlatformCompatibility.m */; };
+		DD96A38F1E003FF1004E1209 /* Keyframes.h in Headers */ = {isa = PBXBuildFile; fileRef = 342484B31DFA143400A2471E /* Keyframes.h */; };
 		DDA2DDE01DFF1E2E006155E3 /* Compatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = DD28B2A01DFF184E000DA813 /* Compatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DDA2DDE11DFF1E33006155E3 /* Compatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = DD28B2A01DFF184E000DA813 /* Compatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -409,6 +410,7 @@
 				DDA2DDE11DFF1E33006155E3 /* Compatibility.h in Headers */,
 				DD28B2A71DFF1996000DA813 /* NSBezierPath+PlatformCompatibility.h in Headers */,
 				DD28B2AB1DFF1996000DA813 /* NSValue+PlatformCompatibility.h in Headers */,
+				DD96A38F1E003FF1004E1209 /* Keyframes.h in Headers */,
 				DD28B2A91DFF1996000DA813 /* NSImage+PlatformCompatibility.h in Headers */,
 				DD28B2821DFF17A0000DA813 /* KFVectorBitmapFeatureLayer.h in Headers */,
 				DD28B2831DFF17A0000DA813 /* KFVectorLayerHelper.h in Headers */,
@@ -795,6 +797,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = keyframes;
 				PRODUCT_NAME = Keyframes;
 				PUBLIC_HEADERS_FOLDER_PATH = include/keyframes;
@@ -816,6 +819,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = keyframes;
 				PRODUCT_NAME = Keyframes;
 				PUBLIC_HEADERS_FOLDER_PATH = include/keyframes;
