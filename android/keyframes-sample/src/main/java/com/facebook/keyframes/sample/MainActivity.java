@@ -43,10 +43,10 @@ public class MainActivity extends Activity {
   private static final int TEST_CANVAS_SIZE_PX = 500;
 
   private KeyframesDrawable mKeyFramesDrawable;
-  private Boolean mPaused;
+  private boolean mPaused;
   private Button mTogglePauseButton;
   private SeekBar mSeekBar;
-  private Boolean mDraggingSeekBar;
+  private boolean mDraggingSeekBar;
 
   private final IntentFilter mPreviewKeyframesAnimation = new IntentFilter("PreviewKeyframesAnimation");
 
@@ -183,7 +183,7 @@ public class MainActivity extends Activity {
     mPaused = false;
   }
 
-  private void stopAnimation(Boolean alreadyStopped) {
+  private void stopAnimation(boolean alreadyStopped) {
     if (!alreadyStopped) {
       mKeyFramesDrawable.stopAnimation();
     }
