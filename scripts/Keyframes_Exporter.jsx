@@ -12,14 +12,14 @@ var __dirname = File($.fileName).parent.fsName;
 
 $.level = 0; // disable debugging
 
-// JS alternative to #include "./(lib)/MudBrickLayer/index.jsxinc"
-$.evalFile(File(__dirname + '/(lib)/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
+// JS alternative to #include "./lib/MudBrickLayer/index.jsxinc"
+$.evalFile(File(__dirname + '/lib/MudBrickLayer/ExtendScript/AE/index-ae.jsxinc'));
 require.wasIncludedFrom($.fileName); // make relative requires work
 
 ;(function(){
 
-var AECompToKeyframesAnimation = require('./(lib)/keyframes/AECompToKeyframesAnimation');
-var UI = require('./(lib)/MudBrickLayer/ExtendScript/common/ui');
+var AECompToKeyframesAnimation = require('./lib/keyframes/AECompToKeyframesAnimation');
+var UI = require('./lib/MudBrickLayer/ExtendScript/common/ui');
 
 // Set this to true if you want to VERY VERY SLOWLY export a "keyframeTweens"
 // array with the computed values of every property that has keyframes
@@ -133,7 +133,7 @@ var Hooks = {
     isSupported: function(){
       return $.os.indexOf('Macintosh OS') === 0;
     },
-    _file: File(__dirname + '/(lib)/hooks-macos/after-creation.sh'),
+    _file: File(__dirname + '/lib/hooks-macos/after-creation.sh'),
     fire: function(exportedFilePath){
       if (!this._file.exists) {
         console.error('After Creation Hook disabled. Enable by creating "' + this._file.fsName + '"');
