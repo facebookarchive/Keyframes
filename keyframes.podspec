@@ -7,7 +7,7 @@ Pod::Spec.new do |spec|
   spec.summary          = 'Vector+keyframe rendering framework for iOS'
   spec.source           = { :git => 'https://github.com/facebookincubator/Keyframes.git', :tag => "v#{spec.version}" }
   spec.source_files     = 'ios/keyframes/src/**/*.{h,m,mm,cpp}'
-  spec.public_header_files = 'ios/keyframes/src/{Keyframes,DataModel/KFVector,Layers/KFVectorLayer,ParsingHelpers/KFVectorParsingHelper,Views/KFVectorView,Helpers/KFUtilities}.h'
+  spec.public_header_files = 'ios/keyframes/src/{Keyframes,DataModel/KFVector,Layers/KFVectorLayer,ParsingHelpers/KFVectorParsingHelper,Views/KFVectorView,Helpers/KFUtilities,Compatibility/*}.h'
   spec.requires_arc = true
   spec.social_media_url = 'https://twitter.com/fbOpenSource'
   spec.ios.deployment_target = '8.0'
