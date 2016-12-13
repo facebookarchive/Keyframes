@@ -7,16 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD7143471E00AEBD0032AF2C /* Keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD7143461E00AEBD0032AF2C /* Keyframes.framework */; };
+		DD7143481E00AEBD0032AF2C /* Keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD7143461E00AEBD0032AF2C /* Keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDA2DDBA1DFF1D64006155E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDB91DFF1D64006155E3 /* AppDelegate.swift */; };
 		DDA2DDBC1DFF1D64006155E3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDBB1DFF1D64006155E3 /* ViewController.swift */; };
 		DDA2DDBE1DFF1D64006155E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDBD1DFF1D64006155E3 /* Assets.xcassets */; };
 		DDA2DDC11DFF1D64006155E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDBF1DFF1D64006155E3 /* Main.storyboard */; };
-		DDA2DDD51DFF1DBD006155E3 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA2DDD41DFF1DB7006155E3 /* keyframes.framework */; };
-		DDA2DDD61DFF1DBD006155E3 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DDA2DDD41DFF1DB7006155E3 /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDA2DDE41DFF1EEE006155E3 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDE31DFF1EEE006155E3 /* sample_logo.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DD7143451E00AEBD0032AF2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD7143361E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
+		DD7143491E00AEBD0032AF2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = DD7143001E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
 		DDA2DDCF1DFF1DB7006155E3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */;
@@ -31,20 +45,6 @@
 			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
 			remoteInfo = keyframesTests;
 		};
-		DDA2DDD31DFF1DB7006155E3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DD28B29D1DFF17A0000DA813;
-			remoteInfo = "keyframes-macOS";
-		};
-		DDA2DDD71DFF1DBD006155E3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = DD28B2691DFF17A0000DA813;
-			remoteInfo = "keyframes-macOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,7 +54,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DDA2DDD61DFF1DBD006155E3 /* keyframes.framework in Embed Frameworks */,
+				DD7143481E00AEBD0032AF2C /* Keyframes.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,7 +69,6 @@
 		DDA2DDC01DFF1D64006155E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DDA2DDC21DFF1D64006155E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
-		DDA2DDDA1DFF1DCE006155E3 /* keyframes-sample-macos-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "keyframes-sample-macos-Bridging-Header.h"; path = "keyframes-sample-macos/keyframes-sample-macos-Bridging-Header.h"; sourceTree = "<group>"; };
 		DDA2DDE31DFF1EEE006155E3 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_logo.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,7 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDA2DDD51DFF1DBD006155E3 /* keyframes.framework in Frameworks */,
+				DD7143471E00AEBD0032AF2C /* Keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +89,6 @@
 			children = (
 				DDA2DDC91DFF1DB7006155E3 /* keyframes.xcodeproj */,
 				DDA2DDB81DFF1D64006155E3 /* keyframes-sample-macos */,
-				DDA2DDDF1DFF1DE1006155E3 /* Supporting Files */,
 				DDA2DDB71DFF1D64006155E3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,19 +117,11 @@
 		DDA2DDCA1DFF1DB7006155E3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DDA2DDD01DFF1DB7006155E3 /* keyframes.framework */,
-				DDA2DDD21DFF1DB7006155E3 /* keyframesTests.xctest */,
-				DDA2DDD41DFF1DB7006155E3 /* keyframes.framework */,
+				DDA2DDD01DFF1DB7006155E3 /* Keyframes.framework */,
+				DDA2DDD21DFF1DB7006155E3 /* KeyframesTests.xctest */,
+				DD7143461E00AEBD0032AF2C /* Keyframes.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DDA2DDDF1DFF1DE1006155E3 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				DDA2DDDA1DFF1DCE006155E3 /* keyframes-sample-macos-Bridging-Header.h */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		DDA2DDE21DFF1EEE006155E3 /* Assets */ = {
@@ -157,7 +147,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DDA2DDD81DFF1DBD006155E3 /* PBXTargetDependency */,
+				DD71434A1E00AEBD0032AF2C /* PBXTargetDependency */,
 			);
 			name = "keyframes-sample-macos";
 			productName = "keyframes-sample-macos";
@@ -207,25 +197,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DDA2DDD01DFF1DB7006155E3 /* keyframes.framework */ = {
+		DD7143461E00AEBD0032AF2C /* Keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = keyframes.framework;
+			path = Keyframes.framework;
+			remoteRef = DD7143451E00AEBD0032AF2C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DDA2DDD01DFF1DB7006155E3 /* Keyframes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Keyframes.framework;
 			remoteRef = DDA2DDCF1DFF1DB7006155E3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DDA2DDD21DFF1DB7006155E3 /* keyframesTests.xctest */ = {
+		DDA2DDD21DFF1DB7006155E3 /* KeyframesTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = keyframesTests.xctest;
+			path = KeyframesTests.xctest;
 			remoteRef = DDA2DDD11DFF1DB7006155E3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DDA2DDD41DFF1DB7006155E3 /* keyframes.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = keyframes.framework;
-			remoteRef = DDA2DDD31DFF1DB7006155E3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -256,10 +246,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DDA2DDD81DFF1DBD006155E3 /* PBXTargetDependency */ = {
+		DD71434A1E00AEBD0032AF2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "keyframes-macOS";
-			targetProxy = DDA2DDD71DFF1DBD006155E3 /* PBXContainerItemProxy */;
+			name = "Keyframes-macOS";
+			targetProxy = DD7143491E00AEBD0032AF2C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -376,7 +366,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-macos/keyframes-sample-macos-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -393,7 +383,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "keyframes-sample-macos/keyframes-sample-macos-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

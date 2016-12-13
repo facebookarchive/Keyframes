@@ -6,6 +6,7 @@
  */
 
 import Cocoa
+import Keyframes
 
 class ViewController: NSViewController {
 
