@@ -170,7 +170,7 @@
 		AD8E72761D2C3DB100E3BA9D /* KFVectorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorView.h; sourceTree = "<group>"; };
 		AD8E72771D2C3DB100E3BA9D /* KFVectorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorView.m; sourceTree = "<group>"; };
 		ADBA24B01D2C3C9400D2549E /* Keyframes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Keyframes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD28B29D1DFF17A0000DA813 /* keyframes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = keyframes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD28B29D1DFF17A0000DA813 /* Keyframes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Keyframes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD28B2A01DFF184E000DA813 /* Compatibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Compatibility.h; sourceTree = "<group>"; };
 		DD28B2A11DFF1996000DA813 /* NSBezierPath+PlatformCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+PlatformCompatibility.h"; sourceTree = "<group>"; };
 		DD28B2A21DFF1996000DA813 /* NSBezierPath+PlatformCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+PlatformCompatibility.m"; sourceTree = "<group>"; };
@@ -339,7 +339,7 @@
 			children = (
 				ADBA24B01D2C3C9400D2549E /* Keyframes.framework */,
 				AD46D2FB1D3041AD0008AF78 /* KeyframesTests.xctest */,
-				DD28B29D1DFF17A0000DA813 /* keyframes.framework */,
+				DD28B29D1DFF17A0000DA813 /* Keyframes.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -466,9 +466,9 @@
 			productReference = ADBA24B01D2C3C9400D2549E /* Keyframes.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DD28B2691DFF17A0000DA813 /* keyframes-macOS */ = {
+		DD28B2691DFF17A0000DA813 /* Keyframes-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD28B29A1DFF17A0000DA813 /* Build configuration list for PBXNativeTarget "keyframes-macOS" */;
+			buildConfigurationList = DD28B29A1DFF17A0000DA813 /* Build configuration list for PBXNativeTarget "Keyframes-macOS" */;
 			buildPhases = (
 				DD28B26A1DFF17A0000DA813 /* Sources */,
 				DD28B27C1DFF17A0000DA813 /* Frameworks */,
@@ -479,9 +479,9 @@
 			);
 			dependencies = (
 			);
-			name = "keyframes-macOS";
+			name = "Keyframes-macOS";
 			productName = keyframes;
-			productReference = DD28B29D1DFF17A0000DA813 /* keyframes.framework */;
+			productReference = DD28B29D1DFF17A0000DA813 /* Keyframes.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -515,7 +515,7 @@
 			targets = (
 				ADBA24AF1D2C3C9400D2549E /* Keyframes */,
 				AD46D2FA1D3041AD0008AF78 /* KeyframesTests */,
-				DD28B2691DFF17A0000DA813 /* keyframes-macOS */,
+				DD28B2691DFF17A0000DA813 /* Keyframes-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -796,7 +796,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = keyframes;
-				PRODUCT_NAME = keyframes;
+				PRODUCT_NAME = Keyframes;
 				PUBLIC_HEADERS_FOLDER_PATH = include/keyframes;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -817,7 +817,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = keyframes;
-				PRODUCT_NAME = keyframes;
+				PRODUCT_NAME = Keyframes;
 				PUBLIC_HEADERS_FOLDER_PATH = include/keyframes;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -856,7 +856,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD28B29A1DFF17A0000DA813 /* Build configuration list for PBXNativeTarget "keyframes-macOS" */ = {
+		DD28B29A1DFF17A0000DA813 /* Build configuration list for PBXNativeTarget "Keyframes-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD28B29B1DFF17A0000DA813 /* Debug */,

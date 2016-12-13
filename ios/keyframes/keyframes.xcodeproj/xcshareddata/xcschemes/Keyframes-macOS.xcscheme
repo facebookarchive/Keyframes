@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DD28B2691DFF17A0000DA813"
                BuildableName = "keyframes.framework"
-               BlueprintName = "keyframes-macOS"
+               BlueprintName = "Keyframes-macOS"
                ReferencedContainer = "container:keyframes.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DD28B2691DFF17A0000DA813"
             BuildableName = "keyframes.framework"
-            BlueprintName = "keyframes-macOS"
+            BlueprintName = "Keyframes-macOS"
             ReferencedContainer = "container:keyframes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DD28B2691DFF17A0000DA813"
             BuildableName = "keyframes.framework"
-            BlueprintName = "keyframes-macOS"
+            BlueprintName = "Keyframes-macOS"
             ReferencedContainer = "container:keyframes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
