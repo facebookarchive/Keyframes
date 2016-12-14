@@ -19,7 +19,7 @@ For a detailed list of constraints for developing animations to use with the Key
 
 Use of the extraction script requires an installation of **Adobe After Effects** as well as **Adobe ExtendScript Toolkit**.  If Keyframes JSON files are already available, only the corresponding iOS and Android libraries are needed.
 
-For detailed steps on running the ExtendScript script on your AE comp, please refer to the instructions detailed [here](/Keyframes After Effects Scripts).
+For detailed steps on running the ExtendScript script on your AE comp, please refer to the instructions detailed [here](/scripts).
 
 ### iOS Rendering
 
@@ -101,8 +101,17 @@ imageView.setImageAlpha(0);
 #### Play!
 Use the start and stop animations on the drawable when appropriate to begin playback of the animation or end it after the end of the current loop.
 ```java
-// Starts a loop that progresses animation and invalidates the drawable.
+// Starts a loop that progresses animation from the beginning and invalidates the drawable.
 kfDrawable.startAnimation();
+
+// Pause the animation at current progress.
+kfDrawable.pauseAnimation();
+
+// Resume the animation from where we paused last time.
+kfDrawable.resumeAnimation();
+
+// Stops the animation.
+kfDrawable.stopAnimation();
 
 // Stops the animation when the current animation ends.
 kfDrawable.stopAnimationAtLoopEnd();

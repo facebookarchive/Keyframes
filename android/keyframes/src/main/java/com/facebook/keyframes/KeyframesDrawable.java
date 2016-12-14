@@ -20,15 +20,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.util.Pair;
 import android.util.SparseArray;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.facebook.keyframes.model.KFAnimationGroup;
 import com.facebook.keyframes.model.KFFeature;
@@ -38,6 +30,12 @@ import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This drawable will render a KFImage model by painting paths to the supplied canvas in
@@ -284,8 +282,9 @@ public class KeyframesDrawable extends Drawable
 
   /**
    * Starts the animation callbacks for this drawable.  A corresponding call to
-   * {@link #stopAnimationAtLoopEnd()} or {@link #stopAnimation()} needs to be called eventually,
-   * or the callback will continue to post callbacks for this drawable indefinitely.
+   * {@link #stopAnimationAtLoopEnd()}, {@link #stopAnimation() or {@link #pauseAnimation()}
+   * needs to be called eventually, or the callback will continue to post callbacks
+   * for this drawable indefinitely.
    */
   public void startAnimation() {
     mKeyframesDrawableAnimationCallback.start();
@@ -296,6 +295,23 @@ public class KeyframesDrawable extends Drawable
    */
   public void stopAnimation() {
     mKeyframesDrawableAnimationCallback.stop();
+  }
+
+  /**
+   * Pauses the animation callbacks for this drawable immediately.
+   */
+  public void pauseAnimation() {
+    mKeyframesDrawableAnimationCallback.pause();
+  }
+
+  /**
+   * Resumes the animation callbacks for this drawable.  A corresponding call to
+   * {@link #stopAnimationAtLoopEnd()}, {@link #stopAnimation() or {@link #pauseAnimation()}
+   * needs to be called eventually, or the callback will continue to post callbacks
+   * for this drawable indefinitely.
+   */
+  public void resumeAnimation() {
+    mKeyframesDrawableAnimationCallback.resume();
   }
 
   /**
@@ -315,6 +331,11 @@ public class KeyframesDrawable extends Drawable
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {
       mFeatureStateList.get(i).setupFeatureStateForProgress(frameProgress);
     }
+  }
+
+  public void seekToProgress(float progress) {
+    stopAnimation();
+    onProgressUpdate(progress * mKFImage.getFrameCount());
   }
 
   /**

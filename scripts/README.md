@@ -4,11 +4,25 @@
 
 > By default scripts are not allowed to write files or send or receive communication over a network. To allow scripts to write files and communicate over a network, choose Edit > Preferences > General (Windows) or After Effects > Preferences > General (Mac OS), and select the Allow Scripts To Write Files And Access Network option.
 
-## Keyframes_Exporter.jsx
-
 Export the current After Effects comp to FB Keyframes Animation Descriptor JSON document.
 
 > _Requires "**Allow Scripts To Write Files And Access Network**"_
+
+There are two options for exporting, a command line tool and an After Effects plugin.
+
+## 1. Command Line Interface
+
+### How to install
+1.  Under this folder run `npm install . -g`
+
+### How to run
+1.  Open an After Effects project
+2.  Open the comp you want to export
+3.  Run `keyframes-cli` in terminal
+
+A file named `${COMP_NAME}.kf.json` should show up under the same folder
+
+## 2. After Effects Plugin
 
 ### How to install
 
