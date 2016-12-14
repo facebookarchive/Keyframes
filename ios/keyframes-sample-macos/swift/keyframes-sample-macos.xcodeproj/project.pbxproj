@@ -162,7 +162,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = "Guilherme Rambo";
+				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					DDA2DDB51DFF1D64006155E3 = {
 						CreatedOnToolsVersion = 8.1;
@@ -364,7 +364,7 @@
 				DEVELOPMENT_TEAM = 8C7439RJLG;
 				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -381,7 +381,7 @@
 				DEVELOPMENT_TEAM = 8C7439RJLG;
 				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;

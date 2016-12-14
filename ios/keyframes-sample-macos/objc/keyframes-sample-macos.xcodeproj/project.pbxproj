@@ -176,7 +176,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = "Guilherme Rambo";
+				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					DDA2DDED1DFF1FC8006155E3 = {
 						CreatedOnToolsVersion = 8.1;
@@ -374,7 +374,7 @@
 				DEVELOPMENT_TEAM = 8C7439RJLG;
 				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -387,7 +387,7 @@
 				DEVELOPMENT_TEAM = 8C7439RJLG;
 				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "br.com.guilhermerambo.keyframes-sample-macos";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
