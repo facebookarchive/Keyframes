@@ -15,7 +15,7 @@
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-#import <UIKit/UIGeometry.h>
+#import "Compatibility.h"
 #import "KFVectorFeature.h"
 
 static __unsafe_unretained NSString * const kNameKey = @"NAME";

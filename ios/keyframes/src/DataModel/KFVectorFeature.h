@@ -11,10 +11,7 @@
  * The name of the input file is KFVectorFeature.value
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreGraphics/CGGeometry.h>
-#import <UIKit/UIColor.h>
-#import <CoreGraphics/CGBase.h>
+#import "Compatibility.h"
 #import <keyframes/KFVectorGradientEffect.h>
 
 /**

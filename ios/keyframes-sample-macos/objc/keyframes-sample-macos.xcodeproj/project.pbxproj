@@ -1,0 +1,419 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DD29EA0C1E01824C002DB6F4 /* Keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD29EA0B1E018248002DB6F4 /* Keyframes.framework */; };
+		DD29EA0D1E01824C002DB6F4 /* Keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD29EA0B1E018248002DB6F4 /* Keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DDA2DDF31DFF1FC8006155E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF21DFF1FC8006155E3 /* AppDelegate.m */; };
+		DDA2DDF61DFF1FC8006155E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF51DFF1FC8006155E3 /* main.m */; };
+		DDA2DDF91DFF1FC8006155E3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF81DFF1FC8006155E3 /* ViewController.m */; };
+		DDA2DDFB1DFF1FC8006155E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDFA1DFF1FC8006155E3 /* Assets.xcassets */; };
+		DDA2DDFE1DFF1FC8006155E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDFC1DFF1FC8006155E3 /* Main.storyboard */; };
+		DDA2DE071DFF1FE6006155E3 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DE061DFF1FE6006155E3 /* sample_logo.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DD29EA0A1E018248002DB6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD7143361E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
+		DD29EA0E1E01824C002DB6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = DD7143001E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
+		DDA2DE0E1DFF1FEC006155E3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ADBA24B01D2C3C9400D2549E;
+			remoteInfo = keyframes;
+		};
+		DDA2DE101DFF1FEC006155E3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
+			remoteInfo = keyframesTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DD29EA101E01824C002DB6F4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DD29EA0D1E01824C002DB6F4 /* Keyframes.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		DDA2DDEE1DFF1FC8006155E3 /* keyframes-sample-macos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "keyframes-sample-macos.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDA2DDF11DFF1FC8006155E3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		DDA2DDF21DFF1FC8006155E3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		DDA2DDF51DFF1FC8006155E3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DDA2DDF71DFF1FC8006155E3 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		DDA2DDF81DFF1FC8006155E3 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		DDA2DDFA1DFF1FC8006155E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DDA2DDFD1DFF1FC8006155E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DDA2DDFF1DFF1FC8006155E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DDA2DE061DFF1FE6006155E3 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_logo.json; sourceTree = "<group>"; };
+		DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = keyframes.xcodeproj; path = ../../keyframes/keyframes.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DDA2DDEB1DFF1FC8006155E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD29EA0C1E01824C002DB6F4 /* Keyframes.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DDA2DDE51DFF1FC8006155E3 = {
+			isa = PBXGroup;
+			children = (
+				DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */,
+				DDA2DDF01DFF1FC8006155E3 /* keyframes-sample-macos */,
+				DDA2DDEF1DFF1FC8006155E3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DDA2DDEF1DFF1FC8006155E3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDA2DDEE1DFF1FC8006155E3 /* keyframes-sample-macos.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DDA2DDF01DFF1FC8006155E3 /* keyframes-sample-macos */ = {
+			isa = PBXGroup;
+			children = (
+				DDA2DE051DFF1FE6006155E3 /* Assets */,
+				DDA2DDF11DFF1FC8006155E3 /* AppDelegate.h */,
+				DDA2DDF21DFF1FC8006155E3 /* AppDelegate.m */,
+				DDA2DDF71DFF1FC8006155E3 /* ViewController.h */,
+				DDA2DDF81DFF1FC8006155E3 /* ViewController.m */,
+				DDA2DDFA1DFF1FC8006155E3 /* Assets.xcassets */,
+				DDA2DDFC1DFF1FC8006155E3 /* Main.storyboard */,
+				DDA2DDFF1DFF1FC8006155E3 /* Info.plist */,
+				DDA2DDF41DFF1FC8006155E3 /* Supporting Files */,
+			);
+			path = "keyframes-sample-macos";
+			sourceTree = "<group>";
+		};
+		DDA2DDF41DFF1FC8006155E3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DDA2DDF51DFF1FC8006155E3 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DDA2DE051DFF1FE6006155E3 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				DDA2DE061DFF1FE6006155E3 /* sample_logo.json */,
+			);
+			path = Assets;
+			sourceTree = SOURCE_ROOT;
+		};
+		DDA2DE091DFF1FEC006155E3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDA2DE0F1DFF1FEC006155E3 /* Keyframes.framework */,
+				DDA2DE111DFF1FEC006155E3 /* KeyframesTests.xctest */,
+				DD29EA0B1E018248002DB6F4 /* Keyframes.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DDA2DDED1DFF1FC8006155E3 /* keyframes-sample-macos */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDA2DE021DFF1FC8006155E3 /* Build configuration list for PBXNativeTarget "keyframes-sample-macos" */;
+			buildPhases = (
+				DDA2DDEA1DFF1FC8006155E3 /* Sources */,
+				DDA2DDEB1DFF1FC8006155E3 /* Frameworks */,
+				DDA2DDEC1DFF1FC8006155E3 /* Resources */,
+				DD29EA101E01824C002DB6F4 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD29EA0F1E01824C002DB6F4 /* PBXTargetDependency */,
+			);
+			name = "keyframes-sample-macos";
+			productName = "keyframes-sample-macos";
+			productReference = DDA2DDEE1DFF1FC8006155E3 /* keyframes-sample-macos.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DDA2DDE61DFF1FC8006155E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					DDA2DDED1DFF1FC8006155E3 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 8C7439RJLG;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = DDA2DDE91DFF1FC8006155E3 /* Build configuration list for PBXProject "keyframes-sample-macos" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DDA2DDE51DFF1FC8006155E3;
+			productRefGroup = DDA2DDEF1DFF1FC8006155E3 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DDA2DE091DFF1FEC006155E3 /* Products */;
+					ProjectRef = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				DDA2DDED1DFF1FC8006155E3 /* keyframes-sample-macos */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DD29EA0B1E018248002DB6F4 /* Keyframes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Keyframes.framework;
+			remoteRef = DD29EA0A1E018248002DB6F4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DDA2DE0F1DFF1FEC006155E3 /* Keyframes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Keyframes.framework;
+			remoteRef = DDA2DE0E1DFF1FEC006155E3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DDA2DE111DFF1FEC006155E3 /* KeyframesTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = KeyframesTests.xctest;
+			remoteRef = DDA2DE101DFF1FEC006155E3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DDA2DDEC1DFF1FC8006155E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DDA2DE071DFF1FE6006155E3 /* sample_logo.json in Resources */,
+				DDA2DDFB1DFF1FC8006155E3 /* Assets.xcassets in Resources */,
+				DDA2DDFE1DFF1FC8006155E3 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DDA2DDEA1DFF1FC8006155E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DDA2DDF91DFF1FC8006155E3 /* ViewController.m in Sources */,
+				DDA2DDF61DFF1FC8006155E3 /* main.m in Sources */,
+				DDA2DDF31DFF1FC8006155E3 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DD29EA0F1E01824C002DB6F4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Keyframes-macOS";
+			targetProxy = DD29EA0E1E01824C002DB6F4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		DDA2DDFC1DFF1FC8006155E3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DDA2DDFD1DFF1FC8006155E3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DDA2DE001DFF1FC8006155E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		DDA2DE011DFF1FC8006155E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		DDA2DE031DFF1FC8006155E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 8C7439RJLG;
+				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DDA2DE041DFF1FC8006155E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 8C7439RJLG;
+				INFOPLIST_FILE = "keyframes-sample-macos/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fb.keyframes-sample-macos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DDA2DDE91DFF1FC8006155E3 /* Build configuration list for PBXProject "keyframes-sample-macos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDA2DE001DFF1FC8006155E3 /* Debug */,
+				DDA2DE011DFF1FC8006155E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DDA2DE021DFF1FC8006155E3 /* Build configuration list for PBXNativeTarget "keyframes-sample-macos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDA2DE031DFF1FC8006155E3 /* Debug */,
+				DDA2DE041DFF1FC8006155E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DDA2DDE61DFF1FC8006155E3 /* Project object */;
+}

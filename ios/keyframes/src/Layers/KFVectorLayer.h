@@ -7,9 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
-@class KFVector;
+@class KFVector, UIImage;
 
 /**
  * KFVectorFeatureLayer uses vector data to draw and animate reaction faces.

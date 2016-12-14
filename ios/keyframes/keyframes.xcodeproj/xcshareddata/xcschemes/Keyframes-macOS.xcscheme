@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ADBA24AF1D2C3C9400D2549E"
+               BlueprintIdentifier = "DD7143001E00AD7F0032AF2C"
                BuildableName = "Keyframes.framework"
-               BlueprintName = "Keyframes"
-               ReferencedContainer = "container:keyframes.xcodeproj">
+               BlueprintName = "Keyframes-macOS"
+               ReferencedContainer = "container:Keyframes.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ADBA24AF1D2C3C9400D2549E"
+            BlueprintIdentifier = "DD7143001E00AD7F0032AF2C"
             BuildableName = "Keyframes.framework"
-            BlueprintName = "Keyframes"
-            ReferencedContainer = "container:keyframes.xcodeproj">
+            BlueprintName = "Keyframes-macOS"
+            ReferencedContainer = "container:Keyframes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ADBA24AF1D2C3C9400D2549E"
+            BlueprintIdentifier = "DD7143001E00AD7F0032AF2C"
             BuildableName = "Keyframes.framework"
-            BlueprintName = "Keyframes"
-            ReferencedContainer = "container:keyframes.xcodeproj">
+            BlueprintName = "Keyframes-macOS"
+            ReferencedContainer = "container:Keyframes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

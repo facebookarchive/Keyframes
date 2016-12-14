@@ -50,3 +50,30 @@ static const CGFloat kInititialFaceSize = 64;
 }
 
 @end
+
+@implementation KFView
+
+#if TARGET_OS_OSX
+
+- (instancetype)initWithFrame:(NSRect)frameRect
+{
+    if (self = [super initWithFrame:frameRect]) {
+        [self setWantsLayer:YES];
+    }
+    
+    return self;
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
+}
+
+- (CALayer *)makeBackingLayer
+{
+    return [KFVectorLayer layer];
+}
+
+#endif
+
+@end
