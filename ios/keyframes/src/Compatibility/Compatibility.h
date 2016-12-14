@@ -10,21 +10,21 @@
 #import <TargetConditionals.h>
 
 #if TARGET_OS_OSX
-    #import <Cocoa/Cocoa.h>
-    #import <QuartzCore/QuartzCore.h>
+#import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 
-    #define UIBezierPath NSBezierPath
-    #define UIImage NSImage
-    #define UIColor NSColor
+#define UIBezierPath NSBezierPath
+#define UIImage NSImage
+#define UIColor NSColor
 
-    #define CGSizeFromString NSSizeFromString
-    #define NSStringFromCGSize NSStringFromSize
-    #define CGPointFromString NSPointFromString
-    #define NSStringFromCGPoint NSStringFromPoint
+#define CGSizeFromString NSSizeFromString
+#define NSStringFromCGSize NSStringFromSize
+#define CGPointFromString NSPointFromString
+#define NSStringFromCGPoint NSStringFromPoint
 
-    #import "NSBezierPath+PlatformCompatibility.h"
-    #import "NSImage+PlatformCompatibility.h"
-    #import "NSValue+PlatformCompatibility.h"
+#import "NSBezierPath+PlatformCompatibility.h"
+#import "NSImage+PlatformCompatibility.h"
+#import "NSValue+PlatformCompatibility.h"
 #else
-    #import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 #endif

@@ -15,12 +15,12 @@
 
 + (instancetype)valueWithCGPoint:(NSPoint)point
 {
-    return [self valueWithPoint:point];
+  return [self valueWithPoint:point];
 }
 
 - (CGPoint)CGPointValue
 {
-    return [self pointValue];
+  return [self pointValue];
 }
 
 @end
