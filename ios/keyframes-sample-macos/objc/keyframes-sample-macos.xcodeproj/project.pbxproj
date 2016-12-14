@@ -7,17 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD29EA0C1E01824C002DB6F4 /* Keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD29EA0B1E018248002DB6F4 /* Keyframes.framework */; };
+		DD29EA0D1E01824C002DB6F4 /* Keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD29EA0B1E018248002DB6F4 /* Keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDA2DDF31DFF1FC8006155E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF21DFF1FC8006155E3 /* AppDelegate.m */; };
 		DDA2DDF61DFF1FC8006155E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF51DFF1FC8006155E3 /* main.m */; };
 		DDA2DDF91DFF1FC8006155E3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA2DDF81DFF1FC8006155E3 /* ViewController.m */; };
 		DDA2DDFB1DFF1FC8006155E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDFA1DFF1FC8006155E3 /* Assets.xcassets */; };
 		DDA2DDFE1DFF1FC8006155E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DDFC1DFF1FC8006155E3 /* Main.storyboard */; };
 		DDA2DE071DFF1FE6006155E3 /* sample_logo.json in Resources */ = {isa = PBXBuildFile; fileRef = DDA2DE061DFF1FE6006155E3 /* sample_logo.json */; };
-		DDA2DE141DFF1FF0006155E3 /* keyframes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA2DE131DFF1FEC006155E3 /* keyframes.framework */; };
-		DDA2DE151DFF1FF0006155E3 /* keyframes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DDA2DE131DFF1FEC006155E3 /* keyframes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DD29EA0A1E018248002DB6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD7143361E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
+		DD29EA0E1E01824C002DB6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = DD7143001E00AD7F0032AF2C;
+			remoteInfo = "Keyframes-macOS";
+		};
 		DDA2DE0E1DFF1FEC006155E3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
@@ -32,30 +46,16 @@
 			remoteGlobalIDString = AD46D2FB1D3041AD0008AF78;
 			remoteInfo = keyframesTests;
 		};
-		DDA2DE121DFF1FEC006155E3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DD28B29D1DFF17A0000DA813;
-			remoteInfo = "keyframes-macOS";
-		};
-		DDA2DE161DFF1FF0006155E3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DDA2DE081DFF1FEC006155E3 /* keyframes.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = DD28B2691DFF17A0000DA813;
-			remoteInfo = "keyframes-macOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		DDA2DE181DFF1FF0006155E3 /* Embed Frameworks */ = {
+		DD29EA101E01824C002DB6F4 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DDA2DE151DFF1FF0006155E3 /* keyframes.framework in Embed Frameworks */,
+				DD29EA0D1E01824C002DB6F4 /* Keyframes.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDA2DE141DFF1FF0006155E3 /* keyframes.framework in Frameworks */,
+				DD29EA0C1E01824C002DB6F4 /* Keyframes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,9 +140,9 @@
 		DDA2DE091DFF1FEC006155E3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DDA2DE0F1DFF1FEC006155E3 /* keyframes.framework */,
-				DDA2DE111DFF1FEC006155E3 /* keyframesTests.xctest */,
-				DDA2DE131DFF1FEC006155E3 /* keyframes.framework */,
+				DDA2DE0F1DFF1FEC006155E3 /* Keyframes.framework */,
+				DDA2DE111DFF1FEC006155E3 /* KeyframesTests.xctest */,
+				DD29EA0B1E018248002DB6F4 /* Keyframes.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,12 +157,12 @@
 				DDA2DDEA1DFF1FC8006155E3 /* Sources */,
 				DDA2DDEB1DFF1FC8006155E3 /* Frameworks */,
 				DDA2DDEC1DFF1FC8006155E3 /* Resources */,
-				DDA2DE181DFF1FF0006155E3 /* Embed Frameworks */,
+				DD29EA101E01824C002DB6F4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				DDA2DE171DFF1FF0006155E3 /* PBXTargetDependency */,
+				DD29EA0F1E01824C002DB6F4 /* PBXTargetDependency */,
 			);
 			name = "keyframes-sample-macos";
 			productName = "keyframes-sample-macos";
@@ -210,25 +210,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DDA2DE0F1DFF1FEC006155E3 /* keyframes.framework */ = {
+		DD29EA0B1E018248002DB6F4 /* Keyframes.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = keyframes.framework;
+			path = Keyframes.framework;
+			remoteRef = DD29EA0A1E018248002DB6F4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DDA2DE0F1DFF1FEC006155E3 /* Keyframes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Keyframes.framework;
 			remoteRef = DDA2DE0E1DFF1FEC006155E3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DDA2DE111DFF1FEC006155E3 /* keyframesTests.xctest */ = {
+		DDA2DE111DFF1FEC006155E3 /* KeyframesTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = keyframesTests.xctest;
+			path = KeyframesTests.xctest;
 			remoteRef = DDA2DE101DFF1FEC006155E3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DDA2DE131DFF1FEC006155E3 /* keyframes.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = keyframes.framework;
-			remoteRef = DDA2DE121DFF1FEC006155E3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -260,10 +260,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DDA2DE171DFF1FF0006155E3 /* PBXTargetDependency */ = {
+		DD29EA0F1E01824C002DB6F4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "keyframes-macOS";
-			targetProxy = DDA2DE161DFF1FF0006155E3 /* PBXContainerItemProxy */;
+			name = "Keyframes-macOS";
+			targetProxy = DD29EA0E1E01824C002DB6F4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -7,9 +7,7 @@
 
 #import "ViewController.h"
 
-#import <Keyframes/KFVector.h>
-#import <Keyframes/KFVectorLayer.h>
-#import <Keyframes/KFVectorParsingHelper.h>
+@import Keyframes;
 
 @implementation ViewController
 {
