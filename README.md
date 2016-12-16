@@ -22,6 +22,20 @@ Use of the extraction script requires an installation of **Adobe After Effects**
 For detailed steps on running the ExtendScript script on your AE comp, please refer to the instructions detailed [here](/scripts).
 
 ### iOS Rendering
+#### Installation
+##### CocoaPods
+Keyframes is available on CocoaPods. Add the following to your Podfile:
+```
+target 'MyApp' do
+  pod "Keyframes"
+end
+```
+
+Quit Xcode compeletly before running
+```
+pod install
+```
+in the project directory in terminal.
 
 #### Rendering Setup
 
