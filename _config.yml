@@ -1,9 +1,8 @@
 # Site settings
 permalink: /blog/:year/:month/:day/:title.html
-title: ProjectName
-tagline: This is a brief one-liner about the project
-description: >
-  This is a longer description of the project, a bit of a sales-pitch with a bit of technical information included.
+title: Keyframes
+tagline: A library for converting Adobe AE shape based animations to a data format and playing it back on Android and iOS devices.
+description: Keyframes is a combination of (1) an ExtendScript script that extracts image animation data from an After Effects file and (2) a corresponding rendering library for Android and iOS. Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
 fbappid: "1615782811974223"
 gacode: "UA-12345-6"
 
@@ -30,12 +29,12 @@ url: "http://facebook.github.io"
 # https://github.com/blog/2277-what-s-new-in-github-pages-with-jekyll-3-3
 
 # The GitHub repo for your project
-ghrepo: "facebook/keyframes"
+ghrepo: "facebookincubator/keyframes"
 
 # Use these color settings to determine your colour scheme for the site.
 color:
   # primary should be a vivid color that reflects the project's brand
-  primary: "#3b5998"
+  primary: "#0c2a63"
   # secondary should be a subtle light or dark color used on page backgrounds
   secondary: "#f9f9f9"
   # Use the following to specify whether the previous two colours are 'light'
@@ -57,9 +56,6 @@ collections:
   docs:
     output: true
     permalink: /docs/:name/
-  top-level:
-    output: true
-    permalink: :name.html
 
 # DO NOT ADJUST BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE CHANGING
 

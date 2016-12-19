@@ -67,7 +67,7 @@ $primary-overlay-special:		lighten($primary-bg, 30%);
 
 // $secondary-bg overlays
 {% if site.color.secondary-overlay == 'light' %}
-$text:              #393939;
+$text:              #000;
 $sidenav: 				  darken($secondary-bg, 20%);
 $sidenav-text: 			$text;
 $sidenav-overlay: 	darken($sidenav, 10%);
