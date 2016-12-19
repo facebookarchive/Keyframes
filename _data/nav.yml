@@ -2,6 +2,10 @@
   href: /docs/
   category: docs
 
+- title: Roadmap
+  href: /roadmap
+  category: top-level
+
 - title: GitHub
   href: https://github.com/facebookincubator/Keyframes
   category: external
