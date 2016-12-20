@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Example - You can over-ride the default title here
+title: Keyframes
 id: home
 ---
 
