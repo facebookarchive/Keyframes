@@ -10,9 +10,12 @@ Keyframes is a combination of (1) an exporting script that extracts image animat
 
 #### Why Keyframes?
 
-Why indeed
+Keyframes allows teams to deliver scalable, high-quality animations to mobile clients with a highly compressable data file.  Keyframes was initially developed for Reactions, and Facebook is now using Keyframes to drive various animations in different features and products!
 
-Some examples of usage: reactions, choose love, more
+<div align="center">
+  <img src="/keyframes/static/images/keyframes-reactions.gif" align="center">
+  <img src="/keyframes/static/images/keyframes-love.gif" align="center">
+</div>
 
 To get started, checkout our [Getting Started](docs/getting-started) guide!
 
