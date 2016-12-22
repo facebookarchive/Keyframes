@@ -239,7 +239,7 @@
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
   if ([anim valueForKey:@"animationKey"] == [_mockAnimation valueForKey:@"animationKey"] && _animationDidStopBlock) {
-    _animationDidStopBlock();
+    _animationDidStopBlock(flag);
   }
 }
 
