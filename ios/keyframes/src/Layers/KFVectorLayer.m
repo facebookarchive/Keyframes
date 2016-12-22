@@ -33,6 +33,17 @@
   return self;
 }
 
+- (CABasicAnimation *)_createMockAnimation {
+  CABasicAnimation *mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
+  mockAnimation.fromValue = @(NO);
+  mockAnimation.toValue = @(NO);
+  mockAnimation.duration = _faceModel.animationFrameCount * 1.0 / _faceModel.frameRate;
+  mockAnimation.repeatCount = 1;
+  mockAnimation.delegate = self;
+  [mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
+  return mockAnimation;
+}
+
 - (void)setFaceModel:(KFVector *)faceModel
 {
   NSAssert(_faceModel == nil, @"Do not call this method multiple times.");
@@ -165,13 +176,7 @@
   }];
 
   // 6) Add a mock animation for invoking stop callback.
-  _mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
-  _mockAnimation.fromValue = @(NO);
-  _mockAnimation.toValue = @(NO);
-  _mockAnimation.duration = vector.animationFrameCount * 1.0 / vector.frameRate;
-  _mockAnimation.repeatCount = 1;
-  _mockAnimation.delegate = self;
-  [_mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
+  _mockAnimation = [self _createMockAnimation];
 
   [self _resetAnimations];
 }
@@ -240,6 +245,11 @@
 {
   if ([anim valueForKey:@"animationKey"] == [_mockAnimation valueForKey:@"animationKey"] && _animationDidStopBlock) {
     _animationDidStopBlock(flag);
+  }
+  if (flag) {
+    // Recreating mock animation for invoking stop callback again
+    _mockAnimation = [self _createMockAnimation];
+    [self addAnimation:_mockAnimation forKey:[_mockAnimation valueForKey:@"animationKey"]];
   }
 }
 
