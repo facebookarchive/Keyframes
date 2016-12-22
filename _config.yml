@@ -56,9 +56,12 @@ collections:
   docs:
     output: true
     permalink: /docs/:name/
-  top-level:
+  roadmap:
     output: true
-    permalink: :name.html
+    permalink: /roadmap
+  faq:
+    output: true
+    permalink: /faq
 
 # DO NOT ADJUST BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE CHANGING
 

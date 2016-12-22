@@ -1,6 +1,24 @@
-- title: Grouping 1
+- title: Quick Start
   items:
-  - id: hello-world
+  - id: getting-started
+  - id: sample-files
+
+- title: After Effects
+  items:
+  - id: ae-guidelines
+  - id: ae-exporting
+
+- title: iOS
+  items:
+  - id: ios-rendering
+
+- title: Android
+  items:
+  - id: android-rendering
+
+- title: Keyframes
+  items:
+  - id: keyframes-overview
 
 # n title:, 1 items: per title:, n id: per items:
 # - title: A

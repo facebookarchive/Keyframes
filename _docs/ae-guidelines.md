@@ -1,0 +1,59 @@
+---
+docid: ae-guidelines
+title: Guidelines for After Effects
+layout: docs
+permalink: /docs/ae/guidelines
+---
+
+## Software Version
+
+- Adobe After Effects CC 2015
+
+
+## Compositions
+
+- pre-composition is NOT supported
+- No restrictions on frame rate, but an integer frame rate is highly recommended
+
+## Layers
+
+#### Layer Parenting
+
+- Only NULL layers can be used as parent layer of other layers
+- NULL layers can also be used as parent of other NULL layers
+
+#### Shape Layer
+- Path merging is NOT supported.
+    - At most one path per group
+    - At most one stroke per group
+    - At most one group per layer
+
+- A typical shape layer looks like
+![Typical Layer](/keyframes/static/images/ae-guidelines/doc-ae-typical-layer.png)
+
+- Please DO NOT scale, skew, rotate or set opacity under the shape's transformation. DO IT in layers Transform Section
+![Layer Transform](/keyframes/static/images/ae-guidelines/doc-ae-layer-transform.png)
+
+- Path trim is NOT supported
+- Polystar is NOT supported
+- Rectangles and Ellipses are NOT supported
+
+#### Image Layer (Experimental Feature)
+
+- A layer simply backed by a PNG image is supported
+
+## Animations
+
+- expressions is NOT supported
+- Only use interpolate type 'LINEAR' and 'BEZIER' on your keyframes
+- DO NOT USE overshoot or undershoot bezier, in other words two control points should always stay in the red rectangle formed by two keyframes.
+![Bezier Overshoot and Undershoot](/keyframes/static/images/ae-guidelines/doc-ae-wrong-bezier.png)
+
+## Effects
+
+ Gradient (WIP, not fully supported)
+
+- LINEAR gradient supported by choosing 'Effect/Gradient Ramp'
+- DO NOT USE 'Gradient Fill'
+![Right Linear Gradient](/keyframes/static/images/ae-guidelines/doc-ae-right-gradient.png)
+![Wrong Linear Gradient](/keyframes/static/images/ae-guidelines/doc-ae-wrong-gradient.png)
