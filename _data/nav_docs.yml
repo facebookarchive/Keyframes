@@ -19,6 +19,7 @@
 - title: Keyframes
   items:
   - id: keyframes-overview
+  - id: keyframes-model
 
 # n title:, 1 items: per title:, n id: per items:
 # - title: A

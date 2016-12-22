@@ -4,46 +4,18 @@ title: Keyframes
 id: home
 ---
 
-## Gridblocks 
+#### What is Keyframes?
 
-You can use the gridblocks sub-template to arrange information into nice responsive grids. There are two ways to add a grid block, the first is by adding a yml file to the `_data` folder and then using it as a data source:
+Keyframes is a combination of (1) an exporting script that extracts image animation data from an After Effects composition and (2) a corresponding rendering library for Android and iOS. Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
 
-{% include content/gridblocks.html data_source=site.data.features align="center" %}
+#### Why Keyframes?
 
-The second is simply to use the raw HTML of the grid blocks:
+Why indeed
 
-<div class="gridBlock">
-  <div class="blockElement twoByGridBlock alignCenter">
-    <div class="blockContent">
-    <h3>Feature 1</h3>
-    <p>This is a description of the feature.</p>
-    </div>
-  </div>
+Some examples of usage: reactions, choose love, more
 
-  <div class="blockElement twoByGridBlock alignCenter">
-    <div class="blockContent">
-    <h3>Feature 2</h3>
-    <p>This is another description of a feature.</p>
-    </div>
-  </div>
-</div>
+To get started, checkout our [Getting Started](docs/getting-started) guide!
 
-Use the first option as a preference, because it will make your site easier for non-technical folks to edit and update.
+#### Contributing
 
-Gridblocks have additional options for layout compared to the above:
-
-Left aligned:
-
-{% include content/gridblocks.html data_source=site.data.features align="left" %}
-
-Right aligned: 
-
-{% include content/gridblocks.html data_source=site.data.features align="right" %}
-
-Images on the side: 
-
-{% include content/gridblocks.html data_source=site.data.features imagealign="side" %}
-
-Four column layout:
-
-{% include content/gridblocks.html data_source=site.data.features layout="fourColumn" align="center" %}
+See [`CONTRIBUTING.md`](https://github.com/facebookincubator/Keyframes/blob/master/CONTRIBUTING.md) for how to help us by improving this library!

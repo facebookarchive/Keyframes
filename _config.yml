@@ -2,9 +2,9 @@
 permalink: /blog/:year/:month/:day/:title.html
 title: Keyframes
 tagline: A library for converting Adobe AE shape based animations to a data format and playing it back on Android and iOS devices.
-description: Keyframes is a combination of (1) an ExtendScript script that extracts image animation data from an After Effects file and (2) a corresponding rendering library for Android and iOS. Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
+description:
 fbappid: "1615782811974223"
-gacode: "UA-12345-6"
+gacode: "UA-44373548-23"
 
 # baseurl determines the subpath of your site. For example if you're using an
 # organisation.github.io/reponame/ basic site URL, then baseurl would be set
