@@ -37,6 +37,26 @@ pod install
 ```
 in the project directory in terminal.
 
+##### Carthage
+Keyframes is also available through [Carthage](https://github.com/Carthage/Carthage).
+
+Add the following to your Cartfile to get the **latest release** branch:
+```
+github "facebookincubator/Keyframes"
+```
+
+Or, to get the **master** branch:
+```
+github "facebookincubator/Keyframes" "master"
+```
+
+Run
+```
+> carthage update
+```
+
+In Xcode, on your application targets’ **"General"** settings tab, in the **"Linked Frameworks and Libraries"** section, drag and drop the framework from the `Carthage/Build` folder.
+
 #### Rendering Setup
 
 Use the provided deserializers on the generated JSON blob from the **Image Data Extraction** step to create a `KFVector` model object.  If your JSON blob lives in the assets directory, this might look like:
