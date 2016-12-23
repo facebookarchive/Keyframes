@@ -6,7 +6,12 @@ id: home
 
 #### What is Keyframes?
 
-Keyframes is a combination of (1) an exporting script that extracts image animation data from an After Effects composition and (2) a corresponding rendering library for Android and iOS. Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
+Keyframes is a combination of:
+
+1. An exporting script that extracts image animation data from an After Effects composition.
+1. A corresponding rendering library for Android and iOS. 
+
+Keyframes can be used to export and render high quality, vector based animations with complex shape and path curves, all with minimal file footprint.
 
 #### Why Keyframes?
 

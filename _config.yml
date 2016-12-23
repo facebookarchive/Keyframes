@@ -1,8 +1,8 @@
 # Site settings
 permalink: /blog/:year/:month/:day/:title.html
 title: Keyframes
-tagline: A library for converting Adobe AE shape based animations to a data format and playing it back on Android and iOS devices.
-description:
+tagline: A conversion library for Adobe After Effects
+description: Keyframes is a library for converting Adobe After Effect shape based animations to a data format that allows rendering on Android and iOS devices.
 fbappid: "1615782811974223"
 gacode: "UA-44373548-23"
 
