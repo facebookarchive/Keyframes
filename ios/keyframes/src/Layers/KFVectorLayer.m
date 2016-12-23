@@ -19,7 +19,8 @@
 #import "KFVectorFeatureLayer.h"
 #import "KFVectorGradientFeatureLayer.h"
 
-@implementation KFVectorLayer {
+@implementation KFVectorLayer
+{
   CALayer *_containerLayer;
   CABasicAnimation *_mockAnimation;
 }
@@ -31,17 +32,6 @@
     self.repeatCount = HUGE_VALF;
   }
   return self;
-}
-
-- (CABasicAnimation *)_createMockAnimation {
-  CABasicAnimation *mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
-  mockAnimation.fromValue = @(NO);
-  mockAnimation.toValue = @(NO);
-  mockAnimation.duration = _faceModel.animationFrameCount * 1.0 / _faceModel.frameRate;
-  mockAnimation.repeatCount = 1;
-  mockAnimation.delegate = self;
-  [mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
-  return mockAnimation;
 }
 
 - (void)setFaceModel:(KFVector *)faceModel
@@ -179,6 +169,18 @@
   _mockAnimation = [self _createMockAnimation];
 
   [self _resetAnimations];
+}
+
+- (CABasicAnimation *)_createMockAnimation
+{
+  CABasicAnimation *mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
+  mockAnimation.fromValue = @(NO);
+  mockAnimation.toValue = @(NO);
+  mockAnimation.duration = _faceModel.animationFrameCount * 1.0 / _faceModel.frameRate;
+  mockAnimation.repeatCount = 1;
+  mockAnimation.delegate = self;
+  [mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
+  return mockAnimation;
 }
 
 - (void)_resetAnimations
