@@ -19,7 +19,8 @@
 #import "KFVectorFeatureLayer.h"
 #import "KFVectorGradientFeatureLayer.h"
 
-@implementation KFVectorLayer {
+@implementation KFVectorLayer
+{
   CALayer *_containerLayer;
   CABasicAnimation *_mockAnimation;
 }
@@ -165,15 +166,21 @@
   }];
 
   // 6) Add a mock animation for invoking stop callback.
-  _mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
-  _mockAnimation.fromValue = @(NO);
-  _mockAnimation.toValue = @(NO);
-  _mockAnimation.duration = vector.animationFrameCount * 1.0 / vector.frameRate;
-  _mockAnimation.repeatCount = 1;
-  _mockAnimation.delegate = self;
-  [_mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
+  _mockAnimation = [self _createMockAnimation];
 
   [self _resetAnimations];
+}
+
+- (CABasicAnimation *)_createMockAnimation
+{
+  CABasicAnimation *mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
+  mockAnimation.fromValue = @(NO);
+  mockAnimation.toValue = @(NO);
+  mockAnimation.duration = _faceModel.animationFrameCount * 1.0 / _faceModel.frameRate;
+  mockAnimation.repeatCount = 1;
+  mockAnimation.delegate = self;
+  [mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
+  return mockAnimation;
 }
 
 - (void)_resetAnimations
@@ -236,10 +243,15 @@
 
 #pragma mark - CAAnimationDelegate
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)finished
 {
   if ([anim valueForKey:@"animationKey"] == [_mockAnimation valueForKey:@"animationKey"] && _animationDidStopBlock) {
-    _animationDidStopBlock();
+    _animationDidStopBlock(finished);
+  }
+  if (finished) {
+    // Recreating mock animation for invoking stop callback again
+    _mockAnimation = [self _createMockAnimation];
+    [self addAnimation:_mockAnimation forKey:[_mockAnimation valueForKey:@"animationKey"]];
   }
 }
 

@@ -24,7 +24,7 @@
 
 @property (strong, nonatomic) KFVector *faceModel;
 @property (copy, nonatomic) NSDictionary<NSString *, UIImage *> *imageAssets;
-@property (copy, nonatomic) void (^animationDidStopBlock)(void);
+@property (copy, nonatomic) void (^animationDidStopBlock)(BOOL finished);
 
 /**
  * Path based face view initially starts off with frame stuck at 0.
