@@ -243,12 +243,12 @@
 
 #pragma mark - CAAnimationDelegate
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)finished
 {
   if ([anim valueForKey:@"animationKey"] == [_mockAnimation valueForKey:@"animationKey"] && _animationDidStopBlock) {
-    _animationDidStopBlock(flag);
+    _animationDidStopBlock(finished);
   }
-  if (flag) {
+  if (finished) {
     // Recreating mock animation for invoking stop callback again
     _mockAnimation = [self _createMockAnimation];
     [self addAnimation:_mockAnimation forKey:[_mockAnimation valueForKey:@"animationKey"]];
