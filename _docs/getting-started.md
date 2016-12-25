@@ -39,7 +39,7 @@ in the project directory in terminal.
 
 ## Android Installation
 
-Download [the latest JARs](https://github.com/facebookincubator/keyframes/releases/latest) or grab via Gradle:
+Download [the latest JARs](https://github.com/facebookincubator/Keyframes/releases/latest) or grab via Gradle:
 
 ```groovy
 compile 'com.facebook.keyframes:keyframes:1.0'

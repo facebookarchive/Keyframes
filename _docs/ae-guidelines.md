@@ -29,10 +29,10 @@ permalink: /docs/ae/guidelines
     - At most one group per layer
 
 - A typical shape layer looks like
-![Typical Layer](/keyframes/static/images/ae-guidelines/doc-ae-typical-layer.png)
+![Typical Layer]({{ '/static/images/ae-guidelines/doc-ae-typical-layer.png' | relative_url }})
 
 - Please DO NOT scale, skew, rotate or set opacity under the shape's transformation. DO IT in layers Transform Section
-![Layer Transform](/keyframes/static/images/ae-guidelines/doc-ae-layer-transform.png)
+![Layer Transform]({{ '/static/images/ae-guidelines/doc-ae-layer-transform.png' | relative_url }})
 
 - Path trim is NOT supported
 - Polystar is NOT supported
@@ -47,7 +47,7 @@ permalink: /docs/ae/guidelines
 - expressions is NOT supported
 - Only use interpolate type 'LINEAR' and 'BEZIER' on your keyframes
 - DO NOT USE overshoot or undershoot bezier, in other words two control points should always stay in the red rectangle formed by two keyframes.
-![Bezier Overshoot and Undershoot](/keyframes/static/images/ae-guidelines/doc-ae-wrong-bezier.png)
+![Bezier Overshoot and Undershoot]({{ '/static/images/ae-guidelines/doc-ae-wrong-bezier.png' | relative_url }})
 
 ## Effects
 
@@ -55,5 +55,5 @@ permalink: /docs/ae/guidelines
 
 - LINEAR gradient supported by choosing 'Effect/Gradient Ramp'
 - DO NOT USE 'Gradient Fill'
-![Right Linear Gradient](/keyframes/static/images/ae-guidelines/doc-ae-right-gradient.png)
-![Wrong Linear Gradient](/keyframes/static/images/ae-guidelines/doc-ae-wrong-gradient.png)
+![Right Linear Gradient]({{ '/static/images/ae-guidelines/doc-ae-right-gradient.png' | relative_url }})
+![Wrong Linear Gradient]({{ '/static/images/ae-guidelines/doc-ae-wrong-gradient.png' | relative_url }})

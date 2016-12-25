@@ -10,11 +10,11 @@ permalink: /docs/keyframes/overview
 An `Image` in Keyframes consists of a number of important fields, which together, describe an animated and scalable image.  At the top level, an image contains information about how to scale (`canvas_size`) an image, as well as how to play back an animation at the correct speed (`frame_rate`, `frame_count`).  The animation itself is not bound to the discrete `frame_rate` that the image was extracted at, as the Keyframes rendering library supports fractional frames.  In addition to these global parameters of an `Image`, an `Image` also contains a number of `Feature`s, which describe different shapes to be drawn, as well as `Animation Group`s, which describe transforms that can be applied to multiple `Feature`s or even other `Animation Group`s at once.
 
 Let's break down this simple image of a star against a circle scaling up and down.  The animation was exported at 24FPS, and the frame number is shown in the top left corner as well as the scale of the star on the bottom.
-![Star, Real Time](/keyframes/static/images/keyframes-overview/doc-star-realtime.gif)
+![Star, Real Time]({{ '/static/images/keyframes-overview/doc-star-realtime.gif' | relative_url }})
 
 Let's slow that down a bit, frame by frame.
 
-![Star, Slowwwww](/keyframes/static/images/keyframes-overview/doc-star-slow.gif)
+![Star, Slowwwww]({{ '/static/images/keyframes-overview/doc-star-slow.gif' | relative_url }})
 
 ### **Features**
 
@@ -26,8 +26,8 @@ A shape is any list of line drawing commands, which strung together, describe a 
 
 Here are the important shapes for the above image, along with vertices (squares) and control points (circles), if relevant.
 
-![Circle Shape](/keyframes/static/images/keyframes-overview/doc-circle-shape.png)
-![Star Shape](/keyframes/static/images/keyframes-overview/doc-star-shape.png)
+![Circle Shape]({{ '/static/images/keyframes-overview/doc-circle-shape.png' | relative_url }})
+![Star Shape]({{ '/static/images/keyframes-overview/doc-star-shape.png' | relative_url }})
 
 ### **Animations**
 
@@ -45,7 +45,7 @@ The values of a transform of an animation and how they change during the playbac
 
 For our scaling star image, the graph of scale change over time looks like this, with vertices and timing curve in/out values shown.
 
-![Scale Animation Curve](/keyframes/static/images/keyframes-overview/doc-scale-curve.png)
+![Scale Animation Curve]({{ '/static/images/keyframes-overview/doc-scale-curve.png' | relative_url }})
 
 ### **Tying it all together**
 

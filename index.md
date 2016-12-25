@@ -18,8 +18,8 @@ Keyframes can be used to export and render high quality, vector based animations
 Keyframes allows teams to deliver scalable, high-quality animations to mobile clients with a highly compressible data file.  Keyframes was initially developed for Reactions, and Facebook is now using Keyframes to drive various animations in different features and products!
 
 <div align="center">
-  <img src="/keyframes/static/images/keyframes-reactions.gif" align="center">
-  <img src="/keyframes/static/images/keyframes-love.gif" align="center">
+  <img src="{{ '/static/images/keyframes-reactions.gif' | relative_url }}" align="center">
+  <img src="{{ '/static/images/keyframes-love.gif' | relative_url }}" align="center">
 </div>
 
 To get started, checkout our [Getting Started](docs/getting-started) guide!
