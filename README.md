@@ -159,7 +159,7 @@ Existing implementations for mobile frameworks:
 | Appcelerator Titanium | iOS         | [Hans Knoechel](https://github.com/hansemannn/)   | https://github.com/hansemannn/ti.keyframes                      |
 | Appcelerator Titanium | Android     | [Michael Gangolf](https://github.com/m1ga/) | https://github.com/m1ga/ti.keyframes                            |
 | React Native          | Android/iOS | [Underscope](https://github.com/underscopeio/)      | https://github.com/underscopeio/react-native-facebook-keyframes |
-
+| NativeScript          | Android/IOS |  [Eddy Verbruggen](https://github.com/EddyVerbruggen/)| https://github.com/EddyVerbruggen/nativescript-keyframes
 ## Understanding Keyframes Model Objects
 
 ### **Image**
