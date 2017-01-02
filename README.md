@@ -149,6 +149,9 @@ kfDrawable.stopAnimation();
 
 // Stops the animation when the current animation ends.
 kfDrawable.stopAnimationAtLoopEnd();
+
+// Starts the animation and plays it once. Will stop at the end
+kfDrawable.playOnce();
 ```
 
 ### Mobile Frameworks
