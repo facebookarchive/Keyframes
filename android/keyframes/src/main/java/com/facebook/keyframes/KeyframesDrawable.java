@@ -291,6 +291,13 @@ public class KeyframesDrawable extends Drawable
   }
 
   /**
+   * Starts the animation and plays it once
+   */
+  public void playOnce() {
+    mKeyframesDrawableAnimationCallback.playOnce();
+  }
+
+  /**
    * Stops the animation callbacks for this drawable immediately.
    */
   public void stopAnimation() {
