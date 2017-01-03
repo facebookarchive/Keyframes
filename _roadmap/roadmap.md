@@ -21,3 +21,5 @@ category: roadmap
 * (Android) Pre-render to Picture
 * Tint drawables w/ Porter/Duff
 * API sync / mismatch on iOS and Android
+* Tests suite, testing the different features cross platform individually
+* A better roadmap page
