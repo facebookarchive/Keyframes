@@ -9,6 +9,8 @@ For setup and installation, we've provided some sample files with the Keyframes 
 
 ### Keyframes Logo
 
+![Keyframes Logo]({{ '/static/images/samples/keyframes-logo.gif' | relative_url }})
+
 [After Effects Composition](https://github.com/facebookincubator/Keyframes/blob/master/scripts/sample/KeyframesLogo.aep)
 
 [Extracted JSON](https://raw.githubusercontent.com/facebookincubator/Keyframes/master/android/keyframes-sample/src/main/assets/sample_file)
