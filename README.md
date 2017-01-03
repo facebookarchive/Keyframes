@@ -97,6 +97,9 @@ Use `startAnimation`, `pauseAnimation`, `resumeAnimation` and `seekToProgress` o
 
 // Seek to a given progress in range [0, 1]
 [layer seekToProgress:0.5]; // seek to the mid point of the animation
+
+// Play the keyframe animation only once and stop it afterwards.
+[layer playOnce];
 ```
 
 ### Android Rendering

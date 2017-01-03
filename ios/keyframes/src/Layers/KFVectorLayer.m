@@ -202,6 +202,17 @@
   self.beginTime = 0.0;
 }
 
+- (void)playOnce
+{
+  [self startAnimation];
+    
+  dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * _faceModel.animationFrameCount / _faceModel.frameRate);
+  dispatch_after(delay, dispatch_get_main_queue(), ^(void) {
+    [self seekToProgress:1.0];
+    [self pauseAnimation];
+  });
+}
+
 - (void)resumeAnimation
 {
   if (self.speed > 0) {
