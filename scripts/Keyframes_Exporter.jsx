@@ -82,9 +82,7 @@ function AppWindow(appProps){
           var kfFile = File(File(getCompRawJSONFile().fsName).fsName.replace('.json', '.kf.json'));
           setStatusText(kfFile.toString());
           var results = KeyframesPreviewer.previewJSONAtPath(kfFile.fsName);
-          if (results) {
-            alert(results);
-          }
+          console.log(results);
         }},
 
         {type:'button', text:'Open Export Logs', onClick:function(){
