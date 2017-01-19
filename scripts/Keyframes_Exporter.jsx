@@ -186,9 +186,11 @@ function exportActiveComp(props) {
   console.log(filePathKf);
 
   var results;
-  if (props && props.shouldPreview && KeyframesPreviewer.isEnabled()) {
+  if (props && props.shouldPreview) {
     results = KeyframesPreviewer.previewJSONAtPath(filePathKf);
     console.log(results);
+  } else {
+    console.warn('KeyframesPreviewer is disabled');
   }
 
   fs_writeFileSync(filePathRaw, activeItemJSON);

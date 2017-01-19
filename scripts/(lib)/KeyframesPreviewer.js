@@ -24,10 +24,6 @@ var KeyframesPreviewer = {};
 
 KeyframesPreviewer.apkFile = File(__dirname + '/bin-android').getFiles('*.apk')[0];
 
-KeyframesPreviewer.isEnabled = function(){
-  return adb.isEnabled();
-};
-
 KeyframesPreviewer.install = function(path) {
   if (!(KeyframesPreviewer.apkFile && KeyframesPreviewer.apkFile.exists)) {
     throw Error("Android Sample app can't be installed. File not found in " + __dirname + '/bin-android');
