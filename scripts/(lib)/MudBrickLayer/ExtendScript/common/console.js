@@ -45,11 +45,11 @@ function argsToMessage(args) {
 };
 
 console.log = function(){
-  stdout.write(argsToMessage(arguments));
+  stdout.write(argsToMessage(Array.prototype.slice.call(arguments)));
 };
 
 console.warn = function(){
-  stderr.write(argsToMessage(arguments));
+  stderr.write(argsToMessage(Array.prototype.slice.call(arguments)));
 };
 
 console.error = function(error){
@@ -64,7 +64,7 @@ console.error = function(error){
     );
     stderr.write(argsToMessage(Array.prototype.slice.call(arguments, 1)));
   } else {
-    stderr.write(argsToMessage(arguments));
+    stderr.write(argsToMessage(Array.prototype.slice.call(arguments)));
   }
   typeof $ == 'object' && stderr.write($.stack);
 };
