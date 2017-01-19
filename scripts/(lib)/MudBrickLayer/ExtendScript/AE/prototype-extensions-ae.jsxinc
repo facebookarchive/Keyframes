@@ -399,10 +399,8 @@ HasPropertiesMixin.prototype.ao_properties = function(){
   var property, properties = [];
   for (var index = 1; index <= numProperties; index++) {
     property = this.property(index);
-    if (!property.isModified) {
-      if (!(property.parentProperty && property.parentProperty.isModified)) {
-        continue;
-      }
+    if (property instanceof PropertyGroup && !property.isModified) {
+      continue;
     }
     properties.push(property);
   }
