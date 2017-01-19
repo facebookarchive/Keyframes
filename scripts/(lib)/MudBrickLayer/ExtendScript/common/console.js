@@ -75,13 +75,14 @@ console.assert = function(True, message){
   }
 };
 
+var _timerCache = {};
+
 console.time = function(label) {
-  console.log(label + " starting...");
-  console.time['Timer ' + label] = Date.now();
+  _timerCache['Timer ' + label] = Date.now();
 };
 
 console.timeEnd = function(label) {
-  var duration = Date.now() - console.time['Timer ' + label];
-  console.log(label + " Time: " + (duration / 1000));
-  delete console.time['Timer ' + label];
+  var duration = Date.now() - _timerCache['Timer ' + label];
+  console.warn(label + ': ' + duration + 'ms');
+  delete _timerCache['Timer ' + label];
 };
