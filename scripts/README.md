@@ -22,12 +22,13 @@ There are two options for exporting, a command line tool and an After Effects pl
 
 A file named `${COMP_NAME}.kf.json` should show up under the same folder
 
-## 2. After Effects Plugin
+
+## 2. Export + Prevew Tool for After Effects
 
 ### How to install
 
 1.  Quit After Effects
-2.  Move all the files under this folder into your AE Scripts folder
+2.  Move (or symlink) this folder into your AE Scripts folder
     _e.g. `/Applications/Adobe After Effects CC 2015/Scripts/Keyframes` on macOS_
 3.  Launch After Effects
 4.  Open an After Effects project

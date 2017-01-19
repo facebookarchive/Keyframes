@@ -68,12 +68,13 @@ function AppWindow(appProps){
           var start = Date.now();
           var results = exportActiveComp({shouldPreview:true});
           setStatusText('Done. ' + Math.round((Date.now() - start) / 100) / 10 + ' seconds');
-          // alert(results);
         }},
 
         {ref:Ref('status'), type:'edittext', properties:{readonly:true}, text:'Ready', characters:40},
 
-        {type:'button', text:'Help', onClick:function(){ File(__dirname).execute(); }},
+        {type:'button', text:'Help', onClick:function(){
+          confirm('Open the README.html file for more info...') && File(__dirname).execute();
+        }},
       ]},
 
       {orientation:'row', children:[
@@ -182,7 +183,7 @@ function exportActiveComp(props) {
   console.log(filePathKf);
 
   var results;
-  if (props && props.shouldPreview) {
+  if (props && props.shouldPreview && KeyframesPreviewer.isEnabled()) {
     results = KeyframesPreviewer.previewJSONAtPath(filePathKf);
     console.log(results);
   }

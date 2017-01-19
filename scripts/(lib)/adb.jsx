@@ -10,11 +10,19 @@ var __dirname = File($.fileName).parent.fsName;
 var isMac = $.os.indexOf('Macintosh OS') === 0;
 
 var adb = {
-  file: File(__dirname + '/bin-android').getFiles(isMac ? 'adb' : 'adb.exe')[0],
+  executable: File(__dirname + '/bin-android/adb' + (isMac ? '' : '.exe')),
 
+  isEnabled: function(){
+    return adb.executable.exists;
+  },
+  
   call: function(){
+    if (!adb.isEnabled()) {
+      throw Error('Android Debug Bridge executable is not installed. Expected to find it at '
+        + JSON.stringify(adb.executable));
+    }
     var args = Array.prototype.slice.call(arguments, 0);
-    var command = '"' + adb.file.fsName + '" ' + args.map(function(arg){return JSON.stringify(arg);}).join(' ');
+    var command = '"' + adb.executable.fsName + '" ' + args.map(function(arg){return JSON.stringify(arg);}).join(' ');
     console.log(command);
     var results = system.callSystem(command);
     console.log(results);
