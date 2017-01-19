@@ -6,8 +6,8 @@
   "scripts": {
     "test":       "jest",
     "test-watch": "jest --watch",
-    "compile":       "rm -rf ../scripts/lib/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/lib/keyframes",
-    "compile-watch": "rm -rf ../scripts/lib/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/lib/keyframes --watch"
+    "compile":       "rm -rf ../scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/\\(lib\\)/keyframes",
+    "compile-watch": "rm -rf ../scripts/\\(lib\\)/keyframes/*; babel --ignore 'node_modules,**/__tests__,src/*types.js' src --out-dir ../scripts/\\(lib\\)/keyframes --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
