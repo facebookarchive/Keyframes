@@ -414,15 +414,6 @@ HasPropertiesMixin.prototype.ao_properties = function(){
 HasPropertiesMixin.prototype.ao_properties.runCount = 0;
 
 HasPropertiesMixin.prototype.toJSON = function(key){//$.writeln('HasPropertiesMixin.prototype.toJSON', key);
-  if (MudBrickLayer.debug) {
-    var names = [];
-    var thing = this;
-    while (thing) {
-      names.unshift(thing.name || thing.constructor.name);
-      thing = thing.parentProperty;
-    }
-    MudBrickLayer.debug(names.join('/'));
-  }
   if (Object.ao_shallowClone.BLACKLIST[key]) {
     $.writeln('ignoring blacklisted key: ' + key);
     return;
@@ -450,9 +441,20 @@ HasPropertiesMixin.prototype.toJSON = function(key){//$.writeln('HasPropertiesMi
   if (this.ao_properties) {
     clone.properties = this.ao_properties();
   }
+
+  MudBrickLayer.debug && MudBrickLayer.debugThis(this);
   return clone;
 };
 // HasPropertiesMixin.prototype.toJSON = Object.prototype.toJSON;
+
+MudBrickLayer.debugThis = function(thing){
+  var names = [];
+  while (thing) {
+    names.unshift(thing.name || thing.constructor.name);
+    thing = thing.parentProperty;
+  }
+  MudBrickLayer.debug(names.join('/'));
+}
 
 copyProperties(Layer.prototype, HasPropertiesMixin.prototype);
 copyProperties(AVLayer.prototype, HasPropertiesMixin.prototype);
@@ -562,6 +564,7 @@ PropertyMixin.prototype.toJSON = function(key){//$.writeln('PropertyMixin.protot
   if (this.ao_keyframeTweens) {
     clone.keyframeTweens = this.ao_keyframeTweens(clone.keyframes);
   }
+  MudBrickLayer.debug && MudBrickLayer.debugThis(this);
   return clone;
 };
 
