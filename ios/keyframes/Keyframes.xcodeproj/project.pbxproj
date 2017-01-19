@@ -333,6 +333,7 @@
 				AD46D2FC1D3041AD0008AF78 /* KeyframesTests */,
 				ADBA24B11D2C3C9400D2549E /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
 		};
 		ADBA24B11D2C3C9400D2549E /* Products */ = {
