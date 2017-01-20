@@ -7,7 +7,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import <Keyframes/Compatibility.h>
+#import <Keyframes/KFVectorAnimation.h>
+#import <Keyframes/KFVectorAnimationKeyValue.h>
+#import <Keyframes/KFVectorAnimationGroup.h>
 #import <Keyframes/KFVector.h>
+#import <Keyframes/KFVectorFeature.h>
+#import <Keyframes/KFVectorFeatureKeyFrame.h>
+#import <Keyframes/KFVectorGradientEffect.h>
 #import <Keyframes/KFVectorParsingHelper.h>
 #import <Keyframes/KFVectorLayer.h>
+#import <Keyframes/KFVectorView.h>
 #import <Keyframes/KFUtilities.h>
