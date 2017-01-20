@@ -94,7 +94,7 @@ public class KeyframesDrawable extends Drawable
   private float mScaleFromCenter;
   private float mScaleFromEnd;
   private final Map<String, FeatureConfig> mFeatureConfigs;
-
+  private boolean mClipToAECanvas;
 
   private boolean mHasInitialized = false;
 
@@ -130,6 +130,7 @@ public class KeyframesDrawable extends Drawable
     }
 
     setMaxFrameRate(builder.getMaxFrameRate());
+    mClipToAECanvas = builder.getExperimentalFeatures().getClipToAECanvas();
   }
 
   /**
@@ -170,6 +171,13 @@ public class KeyframesDrawable extends Drawable
   public void draw(Canvas canvas) {
     Rect currBounds = getBounds();
     canvas.translate(currBounds.left, currBounds.top);
+    if (mClipToAECanvas) {
+      canvas.clipRect(
+          0,
+          0,
+          mKFImage.getCanvasSize()[0] * mScale * mScaleFromEnd * mScaleFromCenter,
+          mKFImage.getCanvasSize()[1] * mScale * mScaleFromEnd * mScaleFromCenter);
+    }
     KFPath pathToDraw;
     FeatureState featureState;
     for (int i = 0, len = mFeatureStateList.size(); i < len; i++) {

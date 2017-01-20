@@ -69,6 +69,7 @@ public class KeyframesDrawableBuilder {
    */
   public class ExperimentalFeatures {
     private Map<String, KeyframesDrawable.FeatureConfig> mParticleFeatureConfigs;
+    private boolean mClipToAECanvas = false;
 
     public KeyframesDrawable build() {
       return KeyframesDrawableBuilder.this.build();
@@ -87,6 +88,15 @@ public class KeyframesDrawableBuilder {
 
     Map<String, KeyframesDrawable.FeatureConfig> getParticleFeatureConfigs() {
       return mParticleFeatureConfigs;
+    }
+
+    public ExperimentalFeatures clipToAECanvas() {
+      mClipToAECanvas = true;
+      return ExperimentalFeatures.this;
+    }
+
+    boolean getClipToAECanvas() {
+      return mClipToAECanvas;
     }
   }
 }
