@@ -279,24 +279,22 @@ typedef enum {
 }
 
 - (void)_applyRotationAnimation:(KFVectorAnimation *)rotationAnimation onAxis:(KFAxis)axis {
-  NSArray *rotationValues = KFMapArray(rotationAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+  NSArray *rotationValues = KFMapArray(rotationAnimation.keyValues,
+                                       ^id(KFVectorAnimationKeyValue *keyValue) {
     return @([[keyValue.keyValue firstObject] floatValue] * M_PI / 180);
   });
   if (rotationValues.count > 1) {
     NSString *axisString;
     switch (axis) {
-      case X:
-      {
+      case X: {
         axisString = @"x";
         break;
       }
-      case Y:
-      {
+      case Y: {
         axisString = @"y";
         break;
       }
-      case Z:
-      {
+      case Z: {
         axisString = @"z";
         break;
       }
@@ -307,13 +305,15 @@ typedef enum {
     anim.duration = self.frameCount * 1.0 / self.frameRate;
     anim.values = rotationValues;
     anim.repeatCount = self.repeatCount;
-    anim.keyTimes = KFMapArray(rotationAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyFrame) {
+    anim.keyTimes = KFMapArray(rotationAnimation.keyValues,
+                               ^id(KFVectorAnimationKeyValue *keyFrame) {
       return @(keyFrame.startFrame * 1.0 / self.frameCount);
     });
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(rotationAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    NSString *animationValue = [NSString stringWithFormat:@"rotation%@ animation", [axisString uppercaseString]];
+    NSString *animationValue = [NSString stringWithFormat:@"rotation%@ animation",
+                                                          [axisString uppercaseString]];
     [anim setValue:animationValue forKey:@"animationKey"];
     [_animations addObject:anim];
   }
