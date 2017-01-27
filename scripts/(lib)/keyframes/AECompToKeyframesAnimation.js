@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * 
+ * 
  */
 'use strict';var _slicedToArray=function(){function sliceIterator(arr,i){var _arr=[];var _n=true;var _d=false;var _e=undefined;try{for(var _i=arr[typeof Symbol==='function'?Symbol.iterator:'@@iterator'](),_s;!(_n=(_s=_i.next()).done);_n=true){_arr.push(_s.value);if(i&&_arr.length===i)break;}}catch(err){_d=true;_e=err;}finally{try{if(!_n&&_i["return"])_i["return"]();}finally{if(_d)throw _e;}}return _arr;}return function(arr,i){if(Array.isArray(arr)){return arr;}else if((typeof Symbol==='function'?Symbol.iterator:'@@iterator')in Object(arr)){return sliceIterator(arr,i);}else{throw new TypeError("Invalid attempt to destructure non-iterable instance");}};}();
 
@@ -161,7 +163,7 @@ throw'Root Vectors Group missing, corrupted input JSON';
 
 
 
-parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;
+parseRootVectorsGroup(rootVectorsGroup),vectorShape=_parseRootVectorsGrou.vectorShape,vectorFillColor=_parseRootVectorsGrou.vectorFillColor,vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor,vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth,vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap,vectorPosition=_parseRootVectorsGrou.vectorPosition,vectorScale=_parseRootVectorsGrou.vectorScale,vectorRotation=_parseRootVectorsGrou.vectorRotation,vectorOpacity=_parseRootVectorsGrou.vectorOpacity;
 
 var shapeOffset=[0,0];
 
@@ -173,11 +175,11 @@ shapeOffset=[vectorPosition.value[0],vectorPosition.value[1]];
 }
 if(vectorScale){
 var key_values=keyValuesFor(comp,vectorScale,function(value){return[value[0],value[1]];});
-warnIfUsingMissingFeature(key_values.filter(function(_ref){var _ref$data=_slicedToArray(_ref.data,2);var x=_ref$data[0];var y=_ref$data[1];return x!==100||y!==100;}).length>0,'Scale on vector',vectorScale,rootVectorsGroup,layer,comp);
+warnIfUsingMissingFeature(key_values.filter(function(_ref){var _ref$data=_slicedToArray(_ref.data,2),x=_ref$data[0],y=_ref$data[1];return x!==100||y!==100;}).length>0,'Scale on vector',vectorScale,rootVectorsGroup,layer,comp);
 }
 if(vectorRotation){
 var _key_values=keyValuesFor(comp,vectorRotation,function(value){return[value%360];});
-warnIfUsingMissingFeature(_key_values.filter(function(_ref2){var _ref2$data=_slicedToArray(_ref2.data,1);var value=_ref2$data[0];return value!==0;}).length>0,'Rotation on vector',vectorRotation,rootVectorsGroup,layer,comp);
+warnIfUsingMissingFeature(_key_values.filter(function(_ref2){var _ref2$data=_slicedToArray(_ref2.data,1),value=_ref2$data[0];return value!==0;}).length>0,'Rotation on vector',vectorRotation,rootVectorsGroup,layer,comp);
 }
 
 if(vectorStrokeLineCap){
@@ -242,7 +244,7 @@ function getHexColorStringFromRGB(_ref3)
 
 
 
-{var _ref4=_slicedToArray(_ref3,4);var r=_ref4[0];var g=_ref4[1];var b=_ref4[2];var a=_ref4[3];
+{var _ref4=_slicedToArray(_ref3,4),r=_ref4[0],g=_ref4[1],b=_ref4[2],a=_ref4[3];
 return"#"+componentToHex(a)+componentToHex(r)+componentToHex(g)+componentToHex(b);
 }
 
@@ -336,7 +338,7 @@ function hasTangent(_ref5)
 
 
 
-{var _ref6=_slicedToArray(_ref5,2);var x=_ref6[0];var y=_ref6[1];
+{var _ref6=_slicedToArray(_ref5,2),x=_ref6[0],y=_ref6[1];
 return!!x||!!y;
 }
 
@@ -363,7 +365,7 @@ shapeOffset)
 inTangents=
 
 
-shape.inTangents;var outTangents=shape.outTangents;var closed=shape.closed;
+shape.inTangents,outTangents=shape.outTangents,closed=shape.closed;
 
 var vertices=
 shape.vertices.map(function(vertex){return[vertex[0]+shapeOffset[0],vertex[1]+shapeOffset[1]];});
@@ -490,6 +492,8 @@ data:[0]}],
 timing_curves:[]};
 
 var kfAnimGroupPropRotationAnim=void 0;
+var kfAnimGroupPropRotationXAnim=void 0;
+var kfAnimGroupPropRotationYAnim=void 0;
 var kfAnimGroupPropScaleAnim=void 0;
 var kfAnimGroupPropOpacityAnim=void 0;
 
@@ -497,6 +501,7 @@ var animations=[];
 
 transformGroup.properties.forEach(function(tfProp){
 warnIfUsingMissingFeature(!!tfProp.expression,'expression',tfProp,transformGroup,layer,comp);
+console.warn("Adobe Prop Name: '"+tfProp.matchName+"'");
 switch(tfProp.matchName){
 
 case'ADBE Anchor Point':{
@@ -509,10 +514,10 @@ case'ADBE Position':{
 var _timing_curves=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var x_key_values=keyValuesFor(comp,tfProp,function(value){return[value[0]];});
 var y_key_values=keyValuesFor(comp,tfProp,function(value){return[value[1]];});
-if(x_key_values.filter(function(_ref7){var _ref7$data=_slicedToArray(_ref7.data,1);var value=_ref7$data[0];return value!==0;}).length>0){
+if(x_key_values.filter(function(_ref7){var _ref7$data=_slicedToArray(_ref7.data,1),value=_ref7$data[0];return value!==0;}).length>0){
 kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:x_key_values,timing_curves:_timing_curves};
 }
-if(y_key_values.filter(function(_ref8){var _ref8$data=_slicedToArray(_ref8.data,1);var value=_ref8$data[0];return value!==0;}).length>0){
+if(y_key_values.filter(function(_ref8){var _ref8$data=_slicedToArray(_ref8.data,1),value=_ref8$data[0];return value!==0;}).length>0){
 kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:y_key_values,timing_curves:_timing_curves};
 }
 }break;
@@ -520,7 +525,7 @@ kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:y_key_values,timi
 case'ADBE Position_0':{
 var _timing_curves2=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values2=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values2.filter(function(_ref9){var _ref9$data=_slicedToArray(_ref9.data,1);var value=_ref9$data[0];return value!==0;}).length>0){
+if(_key_values2.filter(function(_ref9){var _ref9$data=_slicedToArray(_ref9.data,1),value=_ref9$data[0];return value!==0;}).length>0){
 kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:_key_values2,timing_curves:_timing_curves2};
 }
 }break;
@@ -528,7 +533,7 @@ kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:_key_values2,timi
 case'ADBE Position_1':{
 var _timing_curves3=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values3=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values3.filter(function(_ref10){var _ref10$data=_slicedToArray(_ref10.data,1);var value=_ref10$data[0];return value!==0;}).length>0){
+if(_key_values3.filter(function(_ref10){var _ref10$data=_slicedToArray(_ref10.data,1),value=_ref10$data[0];return value!==0;}).length>0){
 kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:_key_values3,timing_curves:_timing_curves3};
 }
 }break;
@@ -536,7 +541,7 @@ kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:_key_values3,timi
 case'ADBE Scale':{
 var _timing_curves4=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values4=keyValuesFor(comp,tfProp,function(value){return[value[0],value[1]];});
-if(_key_values4.filter(function(_ref11){var _ref11$data=_slicedToArray(_ref11.data,2);var x=_ref11$data[0];var y=_ref11$data[1];return x!==100||y!==100;}).length>0){
+if(_key_values4.filter(function(_ref11){var _ref11$data=_slicedToArray(_ref11.data,2),x=_ref11$data[0],y=_ref11$data[1];return x!==100||y!==100;}).length>0){
 kfAnimGroupPropScaleAnim={property:'SCALE',key_values:_key_values4,timing_curves:_timing_curves4};
 }
 }break;
@@ -545,7 +550,7 @@ case'ADBE Opacity':{
 if(layer.matchName==='ADBE Vector Layer'){
 var _timing_curves5=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values5=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values5.filter(function(_ref12){var _ref12$data=_slicedToArray(_ref12.data,1);var value=_ref12$data[0];return value!==100;}).length>0){
+if(_key_values5.filter(function(_ref12){var _ref12$data=_slicedToArray(_ref12.data,1),value=_ref12$data[0];return value!==100;}).length>0){
 kfAnimGroupPropOpacityAnim={property:'OPACITY',key_values:_key_values5,timing_curves:_timing_curves5};
 }
 }
@@ -554,8 +559,24 @@ kfAnimGroupPropOpacityAnim={property:'OPACITY',key_values:_key_values5,timing_cu
 case'ADBE Rotate Z':{
 var _timing_curves6=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values6=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1);var value=_ref13$data[0];return value%360!==0;}).length>0){
+if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1),value=_ref13$data[0];return value%360!==0;}).length>0){
 kfAnimGroupPropRotationAnim={property:'ROTATION',key_values:_key_values6,timing_curves:_timing_curves6};
+}
+}break;
+
+case'ADBE Rotate X':{
+var _timing_curves7=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
+var _key_values7=keyValuesFor(comp,tfProp,function(value){return[value];});
+if(_key_values7.filter(function(_ref14){var _ref14$data=_slicedToArray(_ref14.data,1),value=_ref14$data[0];return value%360!==0;}).length>0){
+kfAnimGroupPropRotationXAnim={property:'X_ROTATION',key_values:_key_values7,timing_curves:_timing_curves7};
+}
+}break;
+
+case'ADBE Rotate Y':{
+var _timing_curves8=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
+var _key_values8=keyValuesFor(comp,tfProp,function(value){return[value];});
+if(_key_values8.filter(function(_ref15){var _ref15$data=_slicedToArray(_ref15.data,1),value=_ref15$data[0];return value%360!==0;}).length>0){
+kfAnimGroupPropRotationYAnim={property:'Y_ROTATION',key_values:_key_values8,timing_curves:_timing_curves8};
 }
 }break;
 
@@ -569,6 +590,8 @@ kfAnimGroupPropXPositionAnim&&animations.push(kfAnimGroupPropXPositionAnim);
 kfAnimGroupPropYPositionAnim&&animations.push(kfAnimGroupPropYPositionAnim);
 kfAnimGroupPropScaleAnim&&animations.push(kfAnimGroupPropScaleAnim);
 kfAnimGroupPropRotationAnim&&animations.push(kfAnimGroupPropRotationAnim);
+kfAnimGroupPropRotationXAnim&&animations.push(kfAnimGroupPropRotationXAnim);
+kfAnimGroupPropRotationYAnim&&animations.push(kfAnimGroupPropRotationYAnim);
 kfAnimGroupPropOpacityAnim&&animations.push(kfAnimGroupPropOpacityAnim);
 return animations;
 }
@@ -674,7 +697,7 @@ tfProp,
 convert)
 {
 var keyValues=[];
-tfProp.keyframes&&tfProp.keyframes.forEach(function(_ref14){var time=_ref14.time;var value=_ref14.value;
+tfProp.keyframes&&tfProp.keyframes.forEach(function(_ref16){var time=_ref16.time,value=_ref16.value;
 var data=convert(value);
 keyValues.push({start_frame:Math.round(time*comp.frameRate),data:data});
 });
@@ -689,7 +712,7 @@ function warnIfUsingMissingFeature(shouldWarn,feature){
 if(!shouldWarn){
 return;
 }for(var _len=arguments.length,objects=Array(_len>2?_len-2:0),_key=2;_key<_len;_key++){objects[_key-2]=arguments[_key];}
-var keyPath=objects.map(function(_ref15){var name=_ref15.name;return name;}).reverse().concat(feature);
+var keyPath=objects.map(function(_ref17){var name=_ref17.name;return name;}).reverse().concat(feature);
 var comp=objects[objects.length-1];
 keyPath.unshift(comp&&comp.parentFolder$name);
 console.warn('UNSUPPORTED: %s',keyPath.join(' → '));

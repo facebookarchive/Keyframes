@@ -492,6 +492,8 @@ function parseTransformGroup(
       timing_curves: [],
     };
   let kfAnimGroupPropRotationAnim: KfPropertyRotation;
+  let kfAnimGroupPropRotationXAnim: KfPropertyRotation;
+  let kfAnimGroupPropRotationYAnim: KfPropertyRotation;
   let kfAnimGroupPropScaleAnim: KfPropertyScale;
   let kfAnimGroupPropOpacityAnim: KfPropertyOpacity;
 
@@ -499,6 +501,7 @@ function parseTransformGroup(
 
   transformGroup.properties.forEach(tfProp => {
     warnIfUsingMissingFeature(!!tfProp.expression, 'expression', tfProp, transformGroup, layer, comp);
+
     switch (tfProp.matchName) {
 
     case 'ADBE Anchor Point': {
@@ -561,6 +564,22 @@ function parseTransformGroup(
       }
     } break;
 
+    case 'ADBE Rotate X': {
+      const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
+      const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
+      if (key_values.filter(({data:[value]}) => value % 360 !== 0).length > 0) {
+        kfAnimGroupPropRotationXAnim = {property: 'X_ROTATION', key_values, timing_curves};
+      }
+    } break;
+
+    case 'ADBE Rotate Y': {
+      const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
+      const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
+      if (key_values.filter(({data:[value]}) => value % 360 !== 0).length > 0) {
+        kfAnimGroupPropRotationYAnim = {property: 'Y_ROTATION', key_values, timing_curves};
+      }
+    } break;
+
     default:
       warnIfUsingMissingFeature(tfProp.isModified, tfProp.__type__, tfProp, transformGroup, layer, comp);
     }
@@ -571,6 +590,8 @@ function parseTransformGroup(
   kfAnimGroupPropYPositionAnim && animations.push(kfAnimGroupPropYPositionAnim);
   kfAnimGroupPropScaleAnim && animations.push(kfAnimGroupPropScaleAnim);
   kfAnimGroupPropRotationAnim && animations.push(kfAnimGroupPropRotationAnim);
+  kfAnimGroupPropRotationXAnim && animations.push(kfAnimGroupPropRotationXAnim);
+  kfAnimGroupPropRotationYAnim && animations.push(kfAnimGroupPropRotationYAnim);
   kfAnimGroupPropOpacityAnim && animations.push(kfAnimGroupPropOpacityAnim);
   return animations;
 }
