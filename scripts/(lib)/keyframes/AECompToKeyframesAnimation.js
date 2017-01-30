@@ -501,7 +501,7 @@ var animations=[];
 
 transformGroup.properties.forEach(function(tfProp){
 warnIfUsingMissingFeature(!!tfProp.expression,'expression',tfProp,transformGroup,layer,comp);
-console.warn("Adobe Prop Name: '"+tfProp.matchName+"'");
+
 switch(tfProp.matchName){
 
 case'ADBE Anchor Point':{
@@ -559,7 +559,7 @@ kfAnimGroupPropOpacityAnim={property:'OPACITY',key_values:_key_values5,timing_cu
 case'ADBE Rotate Z':{
 var _timing_curves6=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values6=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1),value=_ref13$data[0];return value%360!==0;}).length>0){
+if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1),value=_ref13$data[0];return value!==0;}).length>0){
 kfAnimGroupPropRotationAnim={property:'ROTATION',key_values:_key_values6,timing_curves:_timing_curves6};
 }
 }break;
@@ -567,7 +567,7 @@ kfAnimGroupPropRotationAnim={property:'ROTATION',key_values:_key_values6,timing_
 case'ADBE Rotate X':{
 var _timing_curves7=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values7=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values7.filter(function(_ref14){var _ref14$data=_slicedToArray(_ref14.data,1),value=_ref14$data[0];return value%360!==0;}).length>0){
+if(_key_values7.filter(function(_ref14){var _ref14$data=_slicedToArray(_ref14.data,1),value=_ref14$data[0];return value!==0;}).length>0){
 kfAnimGroupPropRotationXAnim={property:'X_ROTATION',key_values:_key_values7,timing_curves:_timing_curves7};
 }
 }break;
@@ -575,7 +575,7 @@ kfAnimGroupPropRotationXAnim={property:'X_ROTATION',key_values:_key_values7,timi
 case'ADBE Rotate Y':{
 var _timing_curves8=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values8=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values8.filter(function(_ref15){var _ref15$data=_slicedToArray(_ref15.data,1),value=_ref15$data[0];return value%360!==0;}).length>0){
+if(_key_values8.filter(function(_ref15){var _ref15$data=_slicedToArray(_ref15.data,1),value=_ref15$data[0];return value!==0;}).length>0){
 kfAnimGroupPropRotationYAnim={property:'Y_ROTATION',key_values:_key_values8,timing_curves:_timing_curves8};
 }
 }break;

@@ -559,7 +559,7 @@ function parseTransformGroup(
     case 'ADBE Rotate Z': {
       const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
       const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
-      if (key_values.filter(({data:[value]}) => value % 360 !== 0).length > 0) {
+      if (key_values.filter(({data:[value]}) => value !== 0).length > 0) {
         kfAnimGroupPropRotationAnim = {property: 'ROTATION', key_values, timing_curves};
       }
     } break;
@@ -567,7 +567,7 @@ function parseTransformGroup(
     case 'ADBE Rotate X': {
       const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
       const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
-      if (key_values.filter(({data:[value]}) => value % 360 !== 0).length > 0) {
+      if (key_values.filter(({data:[value]}) => value !== 0).length > 0) {
         kfAnimGroupPropRotationXAnim = {property: 'X_ROTATION', key_values, timing_curves};
       }
     } break;
@@ -575,7 +575,7 @@ function parseTransformGroup(
     case 'ADBE Rotate Y': {
       const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
       const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
-      if (key_values.filter(({data:[value]}) => value % 360 !== 0).length > 0) {
+      if (key_values.filter(({data:[value]}) => value !== 0).length > 0) {
         kfAnimGroupPropRotationYAnim = {property: 'Y_ROTATION', key_values, timing_curves};
       }
     } break;
