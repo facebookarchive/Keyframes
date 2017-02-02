@@ -31,7 +31,7 @@ target 'MyApp' do
 end
 ```
 
-Quit Xcode compeletly before running
+Quit Xcode completely before running
 ```
 pod install
 ```
