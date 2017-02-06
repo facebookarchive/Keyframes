@@ -13,7 +13,6 @@
 
 #import <Foundation/Foundation.h>
 #import <keyframes/KFVectorAnimation.h>
-#import "KFVectorAnimation.h"
 
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -28,8 +27,10 @@
 @property (nonatomic, readonly, copy) NSString *gradientTypeString;
 @property (nonatomic, readonly, copy) KFVectorAnimation *colorStart;
 @property (nonatomic, readonly, copy) KFVectorAnimation *colorEnd;
+@property (nonatomic, readonly, copy) KFVectorAnimation *rampStart;
+@property (nonatomic, readonly, copy) KFVectorAnimation *rampEnd;
 
-- (instancetype)initWithGradientTypeString:(NSString *)gradientTypeString colorStart:(KFVectorAnimation *)colorStart colorEnd:(KFVectorAnimation *)colorEnd;
+- (instancetype)initWithGradientTypeString:(NSString *)gradientTypeString colorStart:(KFVectorAnimation *)colorStart colorEnd:(KFVectorAnimation *)colorEnd rampStart:(KFVectorAnimation *)rampStart rampEnd:(KFVectorAnimation *)rampEnd;
 
 @end
 

@@ -20,6 +20,11 @@
   return CGImageSourceCreateImageAtIndex(source, 0, NULL);
 }
 
++ (NSImage *)imageWithData:(NSData *)data
+{
+  return [[NSImage alloc] initWithData:data];
+}
+
 @end
 
 #endif

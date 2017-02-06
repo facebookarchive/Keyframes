@@ -26,6 +26,7 @@ static __unsafe_unretained NSString * const kFrameRateKey = @"FRAME_RATE";
 static __unsafe_unretained NSString * const kAnimationFrameCountKey = @"ANIMATION_FRAME_COUNT";
 static __unsafe_unretained NSString * const kFeaturesKey = @"FEATURES";
 static __unsafe_unretained NSString * const kAnimationGroupsKey = @"ANIMATION_GROUPS";
+static __unsafe_unretained NSString * const kBitmapsKey = @"BITMAPS";
 
 static NSUInteger HashFloat(float givenFloat) {
   union {
@@ -84,7 +85,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 @implementation KFVector
 
-- (instancetype)initWithCanvasSize:(CGSize)canvasSize name:(NSString *)name formatVersion:(NSString *)formatVersion key:(NSInteger)key frameRate:(NSUInteger)frameRate animationFrameCount:(NSUInteger)animationFrameCount features:(NSArray *)features animationGroups:(NSArray *)animationGroups
+- (instancetype)initWithCanvasSize:(CGSize)canvasSize name:(NSString *)name formatVersion:(NSString *)formatVersion key:(NSInteger)key frameRate:(NSUInteger)frameRate animationFrameCount:(NSUInteger)animationFrameCount features:(NSArray *)features animationGroups:(NSArray *)animationGroups bitmaps:(NSDictionary *)bitmaps
 {
   if ((self = [super init])) {
     _canvasSize = canvasSize;
@@ -95,6 +96,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
     _animationFrameCount = animationFrameCount;
     _features = [features copy];
     _animationGroups = [animationGroups copy];
+    _bitmaps = [bitmaps copy];
   }
 
   return self;
@@ -111,6 +113,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
     _animationFrameCount = [aDecoder decodeIntegerForKey:kAnimationFrameCountKey];
     _features = [aDecoder decodeObjectForKey:kFeaturesKey];
     _animationGroups = [aDecoder decodeObjectForKey:kAnimationGroupsKey];
+    _bitmaps = [aDecoder decodeObjectForKey:kBitmapsKey];
   }
   return self;
 }
@@ -122,7 +125,7 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t canvasSize: %@; \n\t name: %@; \n\t formatVersion: %@; \n\t key: %zd; \n\t frameRate: %tu; \n\t animationFrameCount: %tu; \n\t features: %@; \n\t animationGroups: %@; \n", [super description], NSStringFromCGSize(_canvasSize), _name, _formatVersion, _key, _frameRate, _animationFrameCount, _features, _animationGroups];
+  return [NSString stringWithFormat:@"%@ - \n\t canvasSize: %@; \n\t name: %@; \n\t formatVersion: %@; \n\t key: %zd; \n\t frameRate: %tu; \n\t animationFrameCount: %tu; \n\t features: %@; \n\t animationGroups: %@; \n\t bitmaps: %@; \n", [super description], NSStringFromCGSize(_canvasSize), _name, _formatVersion, _key, _frameRate, _animationFrameCount, _features, _animationGroups, _bitmaps];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
@@ -135,13 +138,14 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
   [aCoder encodeInteger:_animationFrameCount forKey:kAnimationFrameCountKey];
   [aCoder encodeObject:_features forKey:kFeaturesKey];
   [aCoder encodeObject:_animationGroups forKey:kAnimationGroupsKey];
+  [aCoder encodeObject:_bitmaps forKey:kBitmapsKey];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {HashCGFloat(_canvasSize.width), HashCGFloat(_canvasSize.height), [_name hash], [_formatVersion hash], ABS(_key), _frameRate, _animationFrameCount, [_features hash], [_animationGroups hash]};
+  NSUInteger subhashes[] = {HashCGFloat(_canvasSize.width), HashCGFloat(_canvasSize.height), [_name hash], [_formatVersion hash], ABS(_key), _frameRate, _animationFrameCount, [_features hash], [_animationGroups hash], [_bitmaps hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 9; ++ii) {
+  for (int ii = 1; ii < 10; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -169,7 +173,8 @@ static NSUInteger HashCGFloat(CGFloat givenCGFloat) {
     (_name == object->_name ? YES : [_name isEqual:object->_name]) &&
     (_formatVersion == object->_formatVersion ? YES : [_formatVersion isEqual:object->_formatVersion]) &&
     (_features == object->_features ? YES : [_features isEqual:object->_features]) &&
-    (_animationGroups == object->_animationGroups ? YES : [_animationGroups isEqual:object->_animationGroups]);
+    (_animationGroups == object->_animationGroups ? YES : [_animationGroups isEqual:object->_animationGroups]) &&
+    (_bitmaps == object->_bitmaps ? YES : [_bitmaps isEqual:object->_bitmaps]);
 }
 
 @end

@@ -7,6 +7,7 @@
 
 KFVectorAnimation includes(RMCoding) {
    NSString *property;
+   # @deprecated since 1.0
    CGPoint anchor;
    NSArray *keyValues;
    NSArray *timingCurves;

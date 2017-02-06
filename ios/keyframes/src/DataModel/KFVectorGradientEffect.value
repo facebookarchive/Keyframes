@@ -9,5 +9,10 @@ KFVectorGradientEffect includes(RMCoding) {
   NSString *gradientTypeString;
   %import library=keyframes name=KFVectorAnimation
   KFVectorAnimation *colorStart;
+  %import library=keyframes name=KFVectorAnimation
   KFVectorAnimation *colorEnd;
+  %import library=keyframes name=KFVectorAnimation
+  KFVectorAnimation *rampStart;
+  %import library=keyframes name=KFVectorAnimation
+  KFVectorAnimation *rampEnd;
 }

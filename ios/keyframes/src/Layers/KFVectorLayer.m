@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant 
+ * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
@@ -23,6 +23,7 @@
 {
   CALayer *_containerLayer;
   CABasicAnimation *_mockAnimation;
+  CGFloat _duration;
 }
 
 - (instancetype)init
@@ -36,20 +37,19 @@
 
 - (void)setFaceModel:(KFVector *)faceModel
 {
-  NSAssert(_faceModel == nil, @"Do not call this method multiple times.");
   NSAssert(self.bounds.size.width > 0 && self.bounds.size.height > 0, @"Ensure layer has > 0 size.");
 
-  _faceModel = faceModel;
   _containerLayer = [CALayer layer];
   _containerLayer.frame = self.bounds;
   self.speed = 0.0;
   [self addSublayer:_containerLayer];
-  [self _setupFace:_faceModel];
+  [self _setupFace:faceModel];
 }
 
 - (void)_setupFace:(KFVector *)vector
 {
   self.name = vector.name;
+  _duration = vector.animationFrameCount * 1.0 / vector.frameRate;
 
   // Feature layers are in one array, and animation groups are in another array.
   // Feature arrays can be nested within animation groups (as a sublayer).
@@ -82,8 +82,8 @@
     KFVectorAnimationLayer<KFVectorFeatureLayerInterface> *featureLayer;
 
     if (feature.backedImage) {
-      NSAssert(self->_imageAssets[feature.backedImage] != nil, @"Image asset does not exist");
-      featureLayer = [[KFVectorBitmapFeatureLayer alloc] initWithImage:self->_imageAssets[feature.backedImage]];
+      NSAssert(vector.bitmaps[feature.backedImage] != nil, @"Image asset does not exist");
+      featureLayer = [[KFVectorBitmapFeatureLayer alloc] initWithImage:vector.bitmaps[feature.backedImage]];
     } else if (feature.gradientEffect) {
       featureLayer = [KFVectorGradientFeatureLayer layer];
     } else {
@@ -126,6 +126,39 @@
       [animatedFeatureLayer setAnimations:feature.featureAnimations
                             scaleToCanvas:[self _scaleFromSize:vector.canvasSize toSize:self.bounds.size]
                              scaleToLayer:[self _scaleFromSize:feature.featureSize toSize:animatedFeatureLayer.bounds.size]];
+
+      if (feature.masking) {
+        // handle masking
+        KFVectorFeatureLayer *maskLayer = [KFVectorFeatureLayer layer];
+        maskLayer.formatVersion = vector.formatVersion;
+        maskLayer.name = feature.name;
+        maskLayer.frameRate = vector.frameRate;
+        maskLayer.frameCount = vector.animationFrameCount;
+        maskLayer.frame = self.bounds;
+        maskLayer.repeatCount = self.repeatCount;
+        [maskLayer setFeature:feature.masking canvasSize:vector.canvasSize];
+        [maskLayer setLifespanFromFrame:feature.masking.fromFrame toFrom:feature.masking.toFrame];
+        [maskLayer setAnimations:feature.masking.featureAnimations
+                   scaleToCanvas:[self _scaleFromSize:vector.canvasSize toSize:self.bounds.size]
+                    scaleToLayer:[self _scaleFromSize:feature.masking.featureSize toSize:maskLayer.bounds.size]];
+
+        if (feature.masking.animationGroupId == feature.featureId) {
+          // masking under feature layer transforms
+          animatedFeatureLayer.mask = maskLayer;
+        } else {
+          // masking not under feature layer transforms
+          KFVectorAnimationLayer *parentLayer = [KFVectorAnimationLayer layer];
+          parentLayer.formatVersion = vector.formatVersion;
+          parentLayer.name = animatedFeatureLayer.name;
+          parentLayer.frameRate = vector.frameRate;
+          parentLayer.frameCount = vector.animationFrameCount;
+          parentLayer.frame = self.bounds;
+          parentLayer.repeatCount = self.repeatCount;
+          parentLayer.mask = maskLayer;
+          [parentLayer addSublayer:animatedFeatureLayer];
+          animatedFeatureLayer = parentLayer;
+        }
+      }
     }
 
     if (feature.animationGroupId == NSNotFound) {
@@ -176,10 +209,9 @@
   CABasicAnimation *mockAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
   mockAnimation.fromValue = @(NO);
   mockAnimation.toValue = @(NO);
-  mockAnimation.duration = _faceModel.animationFrameCount * 1.0 / _faceModel.frameRate;
+  mockAnimation.duration = _duration;
   mockAnimation.repeatCount = 1;
   mockAnimation.delegate = self;
-  [mockAnimation setValue:@"mock animation" forKey:@"animationKey"];
   return mockAnimation;
 }
 
@@ -190,7 +222,7 @@
   for (KFVectorAnimationLayer *sublayer in _containerLayer.sublayers) {
     [sublayer resetAnimations];
   }
-  [self addAnimation:_mockAnimation forKey:[_mockAnimation valueForKey:@"animationKey"]];
+  [self addAnimation:_mockAnimation forKey:_mockAnimation.keyPath];
 }
 
 - (void)startAnimation
@@ -225,7 +257,7 @@
 
 - (void)seekToProgress:(CGFloat)progress
 {
-  self.timeOffset = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+  self.timeOffset = progress * _duration;
 }
 
 - (void)layoutSublayers
@@ -241,17 +273,40 @@
   [CATransaction commit];
 }
 
+#pragma mark - NSCoding
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  self = [super initWithCoder:coder];
+  if (self) {
+    _containerLayer = [[self sublayers] firstObject];
+    _mockAnimation = [coder decodeObjectForKey:@"KFVectorLayer*_mockAnimation"];
+    _mockAnimation.delegate = self;
+    _duration = [[coder decodeObjectForKey:@"KFVectorLayer*_duration"] doubleValue];
+  }
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_mockAnimation forKey:@"KFVectorLayer*_mockAnimation"];
+  [aCoder encodeObject:@(_duration) forKey:@"KFVectorLayer*_duration"];
+}
+
 #pragma mark - CAAnimationDelegate
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)finished
 {
-  if ([anim valueForKey:@"animationKey"] == [_mockAnimation valueForKey:@"animationKey"] && _animationDidStopBlock) {
+  if (_animationDidStopBlock &&
+      [anim isKindOfClass:[CABasicAnimation class]] &&
+      [((CABasicAnimation *)anim).keyPath isEqualToString:_mockAnimation.keyPath]) {
     _animationDidStopBlock(finished);
   }
   if (finished) {
     // Recreating mock animation for invoking stop callback again
     _mockAnimation = [self _createMockAnimation];
-    [self addAnimation:_mockAnimation forKey:[_mockAnimation valueForKey:@"animationKey"]];
+    [self addAnimation:_mockAnimation forKey:_mockAnimation.keyPath];
   }
 }
 

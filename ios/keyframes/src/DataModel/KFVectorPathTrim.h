@@ -8,11 +8,11 @@
  */
 /**
  * This file is generated using the remodel generation script.
- * The name of the input file is KFVectorAnimation.value
+ * The name of the input file is KFVectorPathTrim.value
  */
 
 #import <Foundation/Foundation.h>
-#import <CoreGraphics/CGGeometry.h>
+#import <keyframes/KFVectorAnimation.h>
 
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
@@ -22,17 +22,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-@interface KFVectorAnimation : NSObject <NSCopying, NSCoding>
+@interface KFVectorPathTrim : NSObject <NSCopying, NSCoding>
 
-@property (nonatomic, readonly, copy) NSString *property;
-/**
- * @deprecated since 1.0
- */
-@property (nonatomic, readonly) CGPoint anchor;
-@property (nonatomic, readonly, copy) NSArray *keyValues;
-@property (nonatomic, readonly, copy) NSArray *timingCurves;
+@property (nonatomic, readonly, copy) KFVectorAnimation *pathTrimStart;
+@property (nonatomic, readonly, copy) KFVectorAnimation *pathTrimEnd;
+@property (nonatomic, readonly, copy) KFVectorAnimation *pathTrimOffset;
 
-- (instancetype)initWithProperty:(NSString *)property anchor:(CGPoint)anchor keyValues:(NSArray *)keyValues timingCurves:(NSArray *)timingCurves;
+- (instancetype)initWithPathTrimStart:(KFVectorAnimation *)pathTrimStart pathTrimEnd:(KFVectorAnimation *)pathTrimEnd pathTrimOffset:(KFVectorAnimation *)pathTrimOffset;
 
 @end
 

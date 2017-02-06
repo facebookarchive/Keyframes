@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant 
+ * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
@@ -13,7 +13,7 @@
 
 KF_EXTERN_C_BEGIN
 
-// Given array of command list, return UIBezierPath to use for drawing
+/// Given array of command list, return UIBezierPath to use for drawing
 UIBezierPath *KFVectorBezierPathsFromCommandList(NSArray *commandList, CGSize canvasSize, CGSize viewSize);
 
 KF_EXTERN_C_END
