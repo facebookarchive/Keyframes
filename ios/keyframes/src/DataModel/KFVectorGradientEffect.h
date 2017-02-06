@@ -13,7 +13,6 @@
 
 #import <Foundation/Foundation.h>
 #import <keyframes/KFVectorAnimation.h>
-#import "KFVectorAnimation.h"
 
 /**
  * Copyright (c) 2016-present, Facebook, Inc.
