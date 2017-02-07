@@ -9,7 +9,7 @@
 
 #import "Compatibility.h"
 
-#import <keyframes/KFUtilities.h>
+#import <Keyframes/KFUtilities.h>
 
 KF_EXTERN_C_BEGIN
 

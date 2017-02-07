@@ -9,8 +9,8 @@
 
 #import "Compatibility.h"
 
-#import <keyframes/KFVectorAnimationLayer.h>
-#import <keyframes/KFVectorFeatureLayerInterface.h>
+#import <Keyframes/KFVectorAnimationLayer.h>
+#import <Keyframes/KFVectorFeatureLayerInterface.h>
 
 /**
  * @discussion Use this class to draw the feature that is backed with still bitmaps.

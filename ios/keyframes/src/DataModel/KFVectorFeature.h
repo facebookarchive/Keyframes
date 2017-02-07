@@ -12,8 +12,8 @@
  */
 
 #import "Compatibility.h"
-#import <keyframes/KFVectorGradientEffect.h>
-#import <keyframes/KFVectorPathTrim.h>
+#import "KFVectorGradientEffect.h"
+#import "KFVectorPathTrim.h"
 
 @class KFVectorFeature;
 

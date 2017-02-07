@@ -9,8 +9,8 @@
 
 #import "Compatibility.h"
 
-#import <keyframes/KFVectorAnimation.h>
 #import <keyframes/KFUtilities.h>
+#import "KFVectorAnimation.h"
 
 KF_EXTERN_C_BEGIN
 

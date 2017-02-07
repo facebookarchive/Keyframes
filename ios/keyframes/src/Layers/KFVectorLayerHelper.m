@@ -10,7 +10,7 @@
 #import "KFVectorLayerHelper.h"
 
 #import <keyframes/CAMediaTimingFunction+KFVectorLayer.h>
-#import <keyframes/KFVectorAnimationKeyValue.h>
+#import "KFVectorAnimationKeyValue.h"
 
 NSArray<CAMediaTimingFunction *> *KFVectorLayerMediaTimingFunction(NSArray<NSArray *> *timingCurves)
 {
