@@ -199,7 +199,7 @@ The Keyframes rendering library includes support for the common matrix based tra
 
 The values of a transform of an animation and how they change during the playback of an animation are determined by two key fields, `Keyframe`s and `Timing Curves`.  Using the combination of the two fields, we can calculate back a value for a transform at any specified time in the animation.
 
-**Keyframes** are specific frames an the animation that have specific target vlaues.  For example, in scaling a shape up and back down over 10 frames, we will want to start and end at 100% scale at the 0th and 10th frame, and hit our max scale of 150% on the 7th frame.  In this example, our key frames for the `SCALE` transform for this shape would be `[0, 7, 10]` with the values `[100%, 150%, 100%` respectively.
+**Keyframes** are specific frames in the animation that have specific target values.  For example, in scaling a shape up and back down over 10 frames, we will want to start and end at 100% scale at the 0th and 10th frame, and hit our max scale of 150% on the 7th frame.  In this example, our key frames for the `SCALE` transform for this shape would be `[0, 7, 10]` with the values `[100%, 150%, 100%` respectively.
 
 **Timing Curves** describe the pace with which a transform changes between each keyframe.  Each timing curve is modeled as a cubic bezier curve from point `[0, 0]` to `[1, 1]`, where the X value is the progression in time from the origin keyframe to the destination keyframe, and the Y value describes the amount of change in the value at a given time: `origValue + (destValue - origValue) * Y`.
 
