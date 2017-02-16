@@ -7,13 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <keyframes/KFUtilities.h>
+#import "Compatibility.h"
 
-@class KFVector;
+@interface UIBezierPath (KFVectorLayer)
 
-KF_EXTERN_C_BEGIN
+/// Returns the trimmed path, start should be from 0..1 and end should be from 0..1
+- (UIBezierPath *)pathTrimFrom:(CGFloat)start to:(CGFloat)end;
 
-KFVector *KFVectorFromDictionary(NSDictionary *faceDictionary);
-KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger fromFrame, NSUInteger toFrame);
-
-KF_EXTERN_C_END
+@end

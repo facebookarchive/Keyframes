@@ -17,6 +17,8 @@
 
 @property (readonly) CGImageRef CGImage;
 
++ (NSImage *)imageWithData:(NSData *)data;
+
 @end
 
 #endif

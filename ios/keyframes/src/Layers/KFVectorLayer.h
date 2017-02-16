@@ -3,27 +3,30 @@
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant 
+ * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 #import <QuartzCore/QuartzCore.h>
 
-@class KFVector, UIImage;
+@class KFVector;
 
 /**
  * KFVectorFeatureLayer uses vector data to draw and animate reaction faces.
  * Since this is bezier path drawing, reaction type change
  * can be animated. Used for original single face input.
  */
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000 || KEYFRAMES_CALAYER_CAANIMATIONDELEGATE_PROTOCOL
 @interface KFVectorLayer : CALayer <CAAnimationDelegate>
 #else
 @interface KFVectorLayer : CALayer
 #endif
 
-@property (strong, nonatomic) KFVector *faceModel;
-@property (copy, nonatomic) NSDictionary<NSString *, UIImage *> *imageAssets;
+/**
+ * Setup layers based on the vector model.
+ */
+- (void)setFaceModel:(KFVector *)faceModel;
+
 @property (copy, nonatomic) void (^animationDidStopBlock)(BOOL finished);
 
 /**
