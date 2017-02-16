@@ -3,10 +3,10 @@
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant 
+ * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
- 
+
 #import "KFVectorAnimationLayer.h"
 
 #import "KFUtilities.h"
@@ -19,6 +19,7 @@
   CGPoint _scaleToCanvas;
   CGPoint _scaleToLayer;
   NSMutableArray *_animations;
+  BOOL _hasHiddenAnimation;
 }
 
 - (instancetype)init
@@ -71,13 +72,19 @@
       [self _applyYPositionAnimation:animation];
     } else if ([animation.property isEqualToString:@"OPACITY"]) {
       [self _applyOpacityAnimation:animation];
+    } else if ([animation.property isEqualToString:@"STROKE_COLOR"]) {
+      [self _applyStrokeColorAnimation:animation];
+    } else if ([animation.property isEqualToString:@"FILL_COLOR"]) {
+      [self _applyFillColorAnimation:animation];
+    } else if ([animation.property isEqualToString:@"HIDDEN"]) {
+      [self _applyHiddenAnimation:animation];
     }
   }
 }
 
 - (void)setLifespanFromFrame:(NSUInteger)fromFrame toFrom:(NSUInteger)toFrame
 {
-  if (fromFrame != 0 || toFrame != self.frameCount) {
+  if (!_hasHiddenAnimation && (fromFrame != 0 || toFrame != self.frameCount)) {
     NSMutableArray *values = [NSMutableArray new];
     NSMutableArray *keyTimes = [NSMutableArray new];
     if (fromFrame != 0) {
@@ -101,7 +108,6 @@
     lifespanAnimation.keyTimes = keyTimes;
     lifespanAnimation.fillMode = kCAFillModeBoth;
     lifespanAnimation.removedOnCompletion = NO;
-    [lifespanAnimation setValue:@"lifespan animation" forKey:@"animationKey"];
     [_animations addObject:lifespanAnimation];
   }
 }
@@ -109,13 +115,16 @@
 - (void)resetAnimations
 {
   [self removeAllAnimations];
+  if (self.mask && [self.mask isKindOfClass:[KFVectorAnimationLayer class]]) {
+    [(KFVectorAnimationLayer *)self.mask resetAnimations];
+  }
   for (CALayer *sublayer in self.sublayers) {
     if ([sublayer isKindOfClass:[KFVectorAnimationLayer class]]) {
       [(KFVectorAnimationLayer *)sublayer resetAnimations];
     }
   }
   for (CAPropertyAnimation *animation in _animations) {
-    [self addAnimation:animation forKey:[animation valueForKey:@"animationKey"]];
+    [self addAnimation:animation forKey:animation.keyPath];
   }
 }
 
@@ -147,7 +156,6 @@
     scaleXAnim.timingFunctions = timingFunctions;
     scaleXAnim.fillMode = kCAFillModeBoth;
     scaleXAnim.removedOnCompletion = NO;
-    [scaleXAnim setValue:@"scale x animation" forKey:@"animationKey"];
     [_animations addObject:scaleXAnim];
 
     CAKeyframeAnimation *scaleYAnim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale.y"];
@@ -158,15 +166,14 @@
     scaleYAnim.timingFunctions = timingFunctions;
     scaleYAnim.fillMode = kCAFillModeBoth;
     scaleYAnim.removedOnCompletion = NO;
-    [scaleYAnim setValue:@"scale y animation" forKey:@"animationKey"];
     [_animations addObject:scaleYAnim];
   }
 
   // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
-  self.transform = CATransform3DScale(self.transform,
-                                      [[xValues firstObject] floatValue],
-                                      [[yValues firstObject] floatValue],
-                                      1.0);
+  self.transform = CATransform3DConcat(self.transform,
+                                       CATransform3DMakeScale([[xValues firstObject] floatValue],
+                                                              [[yValues firstObject] floatValue],
+                                                              1.0));
 }
 
 - (void)_applyPositionAnimation:(KFVectorAnimation *)positionAnimation
@@ -190,7 +197,6 @@
   anim.timingFunctions = KFVectorLayerMediaTimingFunction(positionAnimation.timingCurves);
   anim.fillMode = kCAFillModeBoth;
   anim.removedOnCompletion = NO;
-  [anim setValue:@"position animation" forKey:@"animationKey"];
   [_animations addObject:anim];
 }
 
@@ -210,7 +216,6 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(xPositionAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"x position animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
@@ -234,7 +239,6 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(yPositionAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"y position animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
@@ -260,7 +264,6 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(anchorPointAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"anchor point animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
@@ -285,16 +288,15 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(rotationAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"rotation animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
   // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
-  self.transform = CATransform3DRotate(self.transform,
-                                       [[rotationValues firstObject] floatValue],
-                                       0.0,
-                                       0.0,
-                                       1.0);
+  self.transform = CATransform3DConcat(self.transform,
+                                       CATransform3DMakeRotation([[rotationValues firstObject] floatValue],
+                                                                 0.0,
+                                                                 0.0,
+                                                                 1.0));
 }
 
 - (void)_applyOpacityAnimation:(KFVectorAnimation *)opacityAnimation
@@ -314,7 +316,6 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(opacityAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"opacity animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
@@ -338,12 +339,97 @@
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(strokeWidthAnimation.timingCurves);
     anim.fillMode = kCAFillModeBoth;
     anim.removedOnCompletion = NO;
-    [anim setValue:@"stroke width animation" forKey:@"animationKey"];
     [_animations addObject:anim];
   }
 
   // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
   self.lineWidth = [[strokeWidthValues firstObject] floatValue];
+}
+
+- (void)_applyStrokeColorAnimation:(KFVectorAnimation *)strokeColorAnimation
+{
+  NSArray *strokeColorValues = KFMapArray(strokeColorAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+    return (__bridge id)KFColorWithHexString(keyValue.keyValue).CGColor;
+  });
+  if (strokeColorValues.count > 1) {
+    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"strokeColor"];
+    anim.duration = self.frameCount * 1.0 / self.frameRate;
+    anim.values = strokeColorValues;
+    anim.repeatCount = self.repeatCount;
+    anim.keyTimes = KFMapArray(strokeColorAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyFrame) {
+      return @(keyFrame.startFrame * 1.0 / self.frameCount);
+    });
+    anim.timingFunctions = KFVectorLayerMediaTimingFunction(strokeColorAnimation.timingCurves);
+    anim.fillMode = kCAFillModeBoth;
+    anim.removedOnCompletion = NO;
+    [_animations addObject:anim];
+  }
+
+  // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
+  self.strokeColor = (__bridge CGColorRef)[strokeColorValues firstObject];
+}
+
+- (void)_applyFillColorAnimation:(KFVectorAnimation *)fillColorAnimation
+{
+  NSArray *fillColorValues = KFMapArray(fillColorAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+    return (__bridge id)KFColorWithHexString(keyValue.keyValue).CGColor;
+  });
+  if (fillColorValues.count > 1) {
+    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"fillColor"];
+    anim.duration = self.frameCount * 1.0 / self.frameRate;
+    anim.values = fillColorValues;
+    anim.repeatCount = self.repeatCount;
+    anim.keyTimes = KFMapArray(fillColorAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyFrame) {
+      return @(keyFrame.startFrame * 1.0 / self.frameCount);
+    });
+    anim.timingFunctions = KFVectorLayerMediaTimingFunction(fillColorAnimation.timingCurves);
+    anim.fillMode = kCAFillModeBoth;
+    anim.removedOnCompletion = NO;
+    [_animations addObject:anim];
+  }
+
+  // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
+  self.fillColor = (__bridge CGColorRef)[fillColorValues firstObject];
+}
+
+- (void)_applyHiddenAnimation:(KFVectorAnimation *)hiddenAnimation
+{
+  NSArray *hiddenValues = KFMapArray(hiddenAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+    return @([keyValue.keyValue boolValue]);
+  });
+  if (hiddenValues.count > 1) {
+    _hasHiddenAnimation = YES;
+    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"hidden"];
+    anim.duration = self.frameCount * 1.0 / self.frameRate;
+    anim.values = hiddenValues;
+    anim.repeatCount = self.repeatCount;
+    anim.keyTimes = KFMapArray(hiddenAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyFrame) {
+      return @(keyFrame.startFrame * 1.0 / self.frameCount);
+    });
+    anim.fillMode = kCAFillModeBoth;
+    anim.removedOnCompletion = NO;
+    [_animations addObject:anim];
+  }
+
+  // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
+  self.hidden = [[hiddenValues firstObject] boolValue];
+}
+
+#pragma mark - NSCoding
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  self = [super initWithCoder:coder];
+  if (self) {
+    _animations = [coder decodeObjectForKey:@"KFVectorAnimationLayer*_animations"];
+  }
+  return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:_animations forKey:@"KFVectorAnimationLayer*_animations"];
 }
 
 @end

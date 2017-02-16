@@ -7,13 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <keyframes/KFUtilities.h>
+#import <QuartzCore/QuartzCore.h>
 
-@class KFVector;
+@interface CAMediaTimingFunction (KFVectorLayer)
 
-KF_EXTERN_C_BEGIN
+/// Returns y value at x
+- (CGFloat)valueAtX:(CGFloat)x inDuration:(CGFloat)duration;
 
-KFVector *KFVectorFromDictionary(NSDictionary *faceDictionary);
-KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger fromFrame, NSUInteger toFrame);
-
-KF_EXTERN_C_END
+@end

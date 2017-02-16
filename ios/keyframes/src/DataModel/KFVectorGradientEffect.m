@@ -20,6 +20,8 @@
 static __unsafe_unretained NSString * const kGradientTypeStringKey = @"GRADIENT_TYPE_STRING";
 static __unsafe_unretained NSString * const kColorStartKey = @"COLOR_START";
 static __unsafe_unretained NSString * const kColorEndKey = @"COLOR_END";
+static __unsafe_unretained NSString * const kRampStartKey = @"RAMP_START";
+static __unsafe_unretained NSString * const kRampEndKey = @"RAMP_END";
 
 @implementation KFVectorGradientEffect
 
@@ -29,16 +31,20 @@ static __unsafe_unretained NSString * const kColorEndKey = @"COLOR_END";
     _gradientTypeString = [aDecoder decodeObjectForKey:kGradientTypeStringKey];
     _colorStart = [aDecoder decodeObjectForKey:kColorStartKey];
     _colorEnd = [aDecoder decodeObjectForKey:kColorEndKey];
+    _rampStart = [aDecoder decodeObjectForKey:kRampStartKey];
+    _rampEnd = [aDecoder decodeObjectForKey:kRampEndKey];
   }
   return self;
 }
 
-- (instancetype)initWithGradientTypeString:(NSString *)gradientTypeString colorStart:(KFVectorAnimation *)colorStart colorEnd:(KFVectorAnimation *)colorEnd
+- (instancetype)initWithGradientTypeString:(NSString *)gradientTypeString colorStart:(KFVectorAnimation *)colorStart colorEnd:(KFVectorAnimation *)colorEnd rampStart:(KFVectorAnimation *)rampStart rampEnd:(KFVectorAnimation *)rampEnd
 {
   if ((self = [super init])) {
     _gradientTypeString = [gradientTypeString copy];
     _colorStart = [colorStart copy];
     _colorEnd = [colorEnd copy];
+    _rampStart = [rampStart copy];
+    _rampEnd = [rampEnd copy];
   }
 
   return self;
@@ -51,7 +57,7 @@ static __unsafe_unretained NSString * const kColorEndKey = @"COLOR_END";
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t gradientTypeString: %@; \n\t colorStart: %@; \n\t colorEnd: %@; \n", [super description], _gradientTypeString, _colorStart, _colorEnd];
+  return [NSString stringWithFormat:@"%@ - \n\t gradientTypeString: %@; \n\t colorStart: %@; \n\t colorEnd: %@; \n\t rampStart: %@; \n\t rampEnd: %@; \n", [super description], _gradientTypeString, _colorStart, _colorEnd, _rampStart, _rampEnd];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
@@ -59,13 +65,15 @@ static __unsafe_unretained NSString * const kColorEndKey = @"COLOR_END";
   [aCoder encodeObject:_gradientTypeString forKey:kGradientTypeStringKey];
   [aCoder encodeObject:_colorStart forKey:kColorStartKey];
   [aCoder encodeObject:_colorEnd forKey:kColorEndKey];
+  [aCoder encodeObject:_rampStart forKey:kRampStartKey];
+  [aCoder encodeObject:_rampEnd forKey:kRampEndKey];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_gradientTypeString hash], [_colorStart hash], [_colorEnd hash]};
+  NSUInteger subhashes[] = {[_gradientTypeString hash], [_colorStart hash], [_colorEnd hash], [_rampStart hash], [_rampEnd hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 3; ++ii) {
+  for (int ii = 1; ii < 5; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -88,7 +96,9 @@ static __unsafe_unretained NSString * const kColorEndKey = @"COLOR_END";
   return
     (_gradientTypeString == object->_gradientTypeString ? YES : [_gradientTypeString isEqual:object->_gradientTypeString]) &&
     (_colorStart == object->_colorStart ? YES : [_colorStart isEqual:object->_colorStart]) &&
-    (_colorEnd == object->_colorEnd ? YES : [_colorEnd isEqual:object->_colorEnd]);
+    (_colorEnd == object->_colorEnd ? YES : [_colorEnd isEqual:object->_colorEnd]) &&
+    (_rampStart == object->_rampStart ? YES : [_rampStart isEqual:object->_rampStart]) &&
+    (_rampEnd == object->_rampEnd ? YES : [_rampEnd isEqual:object->_rampEnd]);
 }
 
 @end

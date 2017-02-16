@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant 
+ * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
@@ -17,6 +17,7 @@
 #import "KFVectorFeature.h"
 #import "KFVectorFeatureKeyFrame.h"
 #import "KFVectorGradientEffect.h"
+#import "KFVectorPathTrim.h"
 
 #pragma mark - Internal structure helpers
 
@@ -46,7 +47,10 @@ static KFVectorAnimation *_buildAnimationModelFromDictionary(NSDictionary *anima
   }
 
   NSMutableArray *keyValues = [NSMutableArray new];
-  NSMutableArray *timingCurves = [NSMutableArray new];
+  NSMutableArray *timingCurves = nil;
+  if (animationDictionary[@"timing_curves"]) {
+    timingCurves = [NSMutableArray new];
+  }
   for (NSUInteger index = 0; index < [animationDictionary[@"key_values"] count]; ++index) {
     NSDictionary *keyFrameDictionary = animationDictionary[@"key_values"][index];
     NSUInteger startFrame = [keyFrameDictionary[@"start_frame"] unsignedIntegerValue];
@@ -54,7 +58,7 @@ static KFVectorAnimation *_buildAnimationModelFromDictionary(NSDictionary *anima
       [keyValues addObject:[[KFVectorAnimationKeyValue alloc]
                             initWithKeyValue:keyFrameDictionary[@"data"]
                             startFrame:startFrame - fromFrame]];
-      if (index > 0 && keyValues.count > 1) {
+      if (index > 0 && keyValues.count > 1 && animationDictionary[@"timing_curves"]) {
         NSArray *points = animationDictionary[@"timing_curves"][index - 1];
         [timingCurves addObject:_buildControlPoints(points)];
       }
@@ -86,7 +90,24 @@ static KFVectorGradientEffect *_buildGradientEffectsArrayFromArray(NSDictionary 
   return [[KFVectorGradientEffect alloc]
           initWithGradientTypeString:gradientEffectDictionary[@"gradient_type"]
           colorStart:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_start"], fromFrame, toFrame, canvasSize)
-          colorEnd:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_end"], fromFrame, toFrame, canvasSize)];
+          colorEnd:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"color_end"], fromFrame, toFrame, canvasSize)
+          rampStart:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"ramp_start"], fromFrame, toFrame, canvasSize)
+          rampEnd:_buildAnimationModelFromDictionary(gradientEffectDictionary[@"ramp_end"], fromFrame, toFrame, canvasSize)];
+}
+
+static KFVectorPathTrim *_buildPathTrimModelFromDictionary(NSDictionary *pathTrimDictionary,
+                                                           NSUInteger fromFrame,
+                                                           NSUInteger toFrame,
+                                                           CGSize canvasSize)
+{
+  if (!pathTrimDictionary) {
+    return nil;
+  }
+
+  return [[KFVectorPathTrim alloc]
+          initWithPathTrimStart:_buildAnimationModelFromDictionary(pathTrimDictionary[@"path_trim_start"], fromFrame, toFrame, canvasSize)
+          pathTrimEnd:_buildAnimationModelFromDictionary(pathTrimDictionary[@"path_trim_end"], fromFrame, toFrame, canvasSize)
+          pathTrimOffset:_buildAnimationModelFromDictionary(pathTrimDictionary[@"path_trim_offset"], fromFrame, toFrame, canvasSize)];
 }
 
 static KFVectorFeature *_buildFeatureModelFromDictionary(NSDictionary *featureDictionary,
@@ -94,6 +115,9 @@ static KFVectorFeature *_buildFeatureModelFromDictionary(NSDictionary *featureDi
                                                          NSUInteger toFrame,
                                                          CGSize canvasSize)
 {
+  if (!featureDictionary) {
+    return nil;
+  }
   NSUInteger featureFromFrame = (featureDictionary[@"from_frame"] ? [featureDictionary[@"from_frame"] unsignedIntegerValue] : fromFrame);
   NSUInteger featureToFrame = (featureDictionary[@"to_frame"] ? [featureDictionary[@"to_frame"] unsignedIntegerValue] : toFrame);
   if (featureFromFrame > toFrame || featureToFrame < fromFrame) {
@@ -129,19 +153,22 @@ static KFVectorFeature *_buildFeatureModelFromDictionary(NSDictionary *featureDi
 
   return [[KFVectorFeature alloc]
           initWithName:featureDictionary[@"name"]
+          featureId:[featureDictionary[@"feature_id"] integerValue]
           featureSize:featureSize
           animationGroupId:featureDictionary[@"animation_group"] ? [featureDictionary[@"animation_group"] unsignedIntegerValue] : NSNotFound
           fromFrame:featureFromFrame < fromFrame ? 0 : featureFromFrame - fromFrame
           toFrame:featureToFrame - fromFrame
-          fillColor:featureDictionary[@"fill_color"] ? KFColorWithHexString(featureDictionary[@"fill_color"]) : nil
-          strokeColor:featureDictionary[@"stroke_color"] ? KFColorWithHexString(featureDictionary[@"stroke_color"]) : nil
+          fillColor:featureDictionary[@"fill_color"] ? KFColorWithHexString(featureDictionary[@"fill_color"]) : [UIColor clearColor]
+          strokeColor:featureDictionary[@"stroke_color"] ? KFColorWithHexString(featureDictionary[@"stroke_color"]) : [UIColor clearColor]
           strokeWidth:[featureDictionary[@"stroke_width"] floatValue] / MIN(canvasSize.width, canvasSize.height)
           strokeLineCap:featureDictionary[@"stroke_line_cap"]
           keyFrames:keyFrames
           timingCurves:timingCurves
           featureAnimations:featureAnimations
           backedImage:featureDictionary[@"backed_image"]
-          gradientEffect:_buildGradientEffectsArrayFromArray(featureDictionary[@"effects"], fromFrame, toFrame, canvasSize)];
+          masking:_buildFeatureModelFromDictionary(featureDictionary[@"masking"], fromFrame, toFrame, canvasSize)
+          gradientEffect:_buildGradientEffectsArrayFromArray(featureDictionary[@"effects"], fromFrame, toFrame, canvasSize)
+          pathTrim:_buildPathTrimModelFromDictionary(featureDictionary[@"path_trim"], fromFrame, toFrame, canvasSize)];
 }
 
 static KFVectorAnimationGroup *_buildAnimationGroupModelFromDictionary(NSDictionary *animationGroupDictionary,
@@ -157,6 +184,20 @@ static KFVectorAnimationGroup *_buildAnimationGroupModelFromDictionary(NSDiction
    animations:KFMapArray(animationGroupDictionary[@"animations"], ^id(NSDictionary *animationDictionary) {
     return _buildAnimationModelFromDictionary(animationDictionary, fromFrame, toFrame, canvasSize);
   })];
+}
+
+static NSDictionary *_buildBitmapsFromDictionary(NSDictionary *bitmapsDictionary)
+{
+  if (!bitmapsDictionary) {
+    return nil;
+  }
+  NSMutableDictionary *bitmaps = [NSMutableDictionary new];
+  for (NSString *bitmapName in bitmapsDictionary) {
+    NSString *base64String = bitmapsDictionary[bitmapName];
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
+    bitmaps[bitmapName] = [UIImage imageWithData:data];
+  }
+  return bitmaps;
 }
 
 #pragma mark - Public method
@@ -197,5 +238,6 @@ KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger
    frameRate:frameRate
    animationFrameCount:toFrame - fromFrame
    features:featuresArray
-   animationGroups:animationGroups];
+   animationGroups:animationGroups
+   bitmaps:_buildBitmapsFromDictionary(faceDictionary[@"bitmaps"])];
 }

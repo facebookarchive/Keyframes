@@ -19,6 +19,7 @@
 #import "KFVectorFeature.h"
 
 static __unsafe_unretained NSString * const kNameKey = @"NAME";
+static __unsafe_unretained NSString * const kFeatureIdKey = @"FEATURE_ID";
 static __unsafe_unretained NSString * const kFeatureSizeKey = @"FEATURE_SIZE";
 static __unsafe_unretained NSString * const kAnimationGroupIdKey = @"ANIMATION_GROUP_ID";
 static __unsafe_unretained NSString * const kFromFrameKey = @"FROM_FRAME";
@@ -31,7 +32,9 @@ static __unsafe_unretained NSString * const kKeyFramesKey = @"KEY_FRAMES";
 static __unsafe_unretained NSString * const kTimingCurvesKey = @"TIMING_CURVES";
 static __unsafe_unretained NSString * const kFeatureAnimationsKey = @"FEATURE_ANIMATIONS";
 static __unsafe_unretained NSString * const kBackedImageKey = @"BACKED_IMAGE";
+static __unsafe_unretained NSString * const kMaskingKey = @"MASKING";
 static __unsafe_unretained NSString * const kGradientEffectKey = @"GRADIENT_EFFECT";
+static __unsafe_unretained NSString * const kPathTrimKey = @"PATH_TRIM";
 
 static NSUInteger HashFloat(float givenFloat) {
   union {
@@ -115,6 +118,7 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
 {
   if ((self = [super init])) {
     _name = [aDecoder decodeObjectForKey:kNameKey];
+    _featureId = [aDecoder decodeIntegerForKey:kFeatureIdKey];
     _featureSize = CGSizeFromString([aDecoder decodeObjectForKey:kFeatureSizeKey]);
     _animationGroupId = [aDecoder decodeIntegerForKey:kAnimationGroupIdKey];
     _fromFrame = [aDecoder decodeIntegerForKey:kFromFrameKey];
@@ -127,15 +131,18 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
     _timingCurves = [aDecoder decodeObjectForKey:kTimingCurvesKey];
     _featureAnimations = [aDecoder decodeObjectForKey:kFeatureAnimationsKey];
     _backedImage = [aDecoder decodeObjectForKey:kBackedImageKey];
+    _masking = [aDecoder decodeObjectForKey:kMaskingKey];
     _gradientEffect = [aDecoder decodeObjectForKey:kGradientEffectKey];
+    _pathTrim = [aDecoder decodeObjectForKey:kPathTrimKey];
   }
   return self;
 }
 
-- (instancetype)initWithName:(NSString *)name featureSize:(CGSize)featureSize animationGroupId:(NSInteger)animationGroupId fromFrame:(NSUInteger)fromFrame toFrame:(NSUInteger)toFrame fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor strokeWidth:(CGFloat)strokeWidth strokeLineCap:(NSString *)strokeLineCap keyFrames:(NSArray *)keyFrames timingCurves:(NSArray *)timingCurves featureAnimations:(NSArray *)featureAnimations backedImage:(NSString *)backedImage gradientEffect:(KFVectorGradientEffect *)gradientEffect
+- (instancetype)initWithName:(NSString *)name featureId:(NSInteger)featureId featureSize:(CGSize)featureSize animationGroupId:(NSInteger)animationGroupId fromFrame:(NSUInteger)fromFrame toFrame:(NSUInteger)toFrame fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor strokeWidth:(CGFloat)strokeWidth strokeLineCap:(NSString *)strokeLineCap keyFrames:(NSArray *)keyFrames timingCurves:(NSArray *)timingCurves featureAnimations:(NSArray *)featureAnimations backedImage:(NSString *)backedImage masking:(KFVectorFeature *)masking gradientEffect:(KFVectorGradientEffect *)gradientEffect pathTrim:(KFVectorPathTrim *)pathTrim
 {
   if ((self = [super init])) {
     _name = [name copy];
+    _featureId = featureId;
     _featureSize = featureSize;
     _animationGroupId = animationGroupId;
     _fromFrame = fromFrame;
@@ -148,7 +155,9 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
     _timingCurves = [timingCurves copy];
     _featureAnimations = [featureAnimations copy];
     _backedImage = [backedImage copy];
+    _masking = [masking copy];
     _gradientEffect = [gradientEffect copy];
+    _pathTrim = [pathTrim copy];
   }
 
   return self;
@@ -161,12 +170,13 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t name: %@; \n\t featureSize: %@; \n\t animationGroupId: %zd; \n\t fromFrame: %tu; \n\t toFrame: %tu; \n\t fillColor: %@; \n\t strokeColor: %@; \n\t strokeWidth: %f; \n\t strokeLineCap: %@; \n\t keyFrames: %@; \n\t timingCurves: %@; \n\t featureAnimations: %@; \n\t backedImage: %@; \n\t gradientEffect: %@; \n", [super description], _name, NSStringFromCGSize(_featureSize), _animationGroupId, _fromFrame, _toFrame, _fillColor, _strokeColor, _strokeWidth, _strokeLineCap, _keyFrames, _timingCurves, _featureAnimations, _backedImage, _gradientEffect];
+  return [NSString stringWithFormat:@"%@ - \n\t name: %@; \n\t featureId: %zd; \n\t featureSize: %@; \n\t animationGroupId: %zd; \n\t fromFrame: %tu; \n\t toFrame: %tu; \n\t fillColor: %@; \n\t strokeColor: %@; \n\t strokeWidth: %f; \n\t strokeLineCap: %@; \n\t keyFrames: %@; \n\t timingCurves: %@; \n\t featureAnimations: %@; \n\t backedImage: %@; \n\t masking: %@; \n\t gradientEffect: %@; \n\t pathTrim: %@; \n", [super description], _name, _featureId, NSStringFromCGSize(_featureSize), _animationGroupId, _fromFrame, _toFrame, _fillColor, _strokeColor, _strokeWidth, _strokeLineCap, _keyFrames, _timingCurves, _featureAnimations, _backedImage, _masking, _gradientEffect, _pathTrim];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
   [aCoder encodeObject:_name forKey:kNameKey];
+  [aCoder encodeInteger:_featureId forKey:kFeatureIdKey];
   [aCoder encodeObject:NSStringFromCGSize(_featureSize) forKey:kFeatureSizeKey];
   [aCoder encodeInteger:_animationGroupId forKey:kAnimationGroupIdKey];
   [aCoder encodeInteger:_fromFrame forKey:kFromFrameKey];
@@ -179,14 +189,16 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
   [aCoder encodeObject:_timingCurves forKey:kTimingCurvesKey];
   [aCoder encodeObject:_featureAnimations forKey:kFeatureAnimationsKey];
   [aCoder encodeObject:_backedImage forKey:kBackedImageKey];
+  [aCoder encodeObject:_masking forKey:kMaskingKey];
   [aCoder encodeObject:_gradientEffect forKey:kGradientEffectKey];
+  [aCoder encodeObject:_pathTrim forKey:kPathTrimKey];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_name hash], HashCGFloat(_featureSize.width), HashCGFloat(_featureSize.height), ABS(_animationGroupId), _fromFrame, _toFrame, [_fillColor hash], [_strokeColor hash], HashCGFloat(_strokeWidth), [_strokeLineCap hash], [_keyFrames hash], [_timingCurves hash], [_featureAnimations hash], [_backedImage hash], [_gradientEffect hash]};
+  NSUInteger subhashes[] = {[_name hash], ABS(_featureId), HashCGFloat(_featureSize.width), HashCGFloat(_featureSize.height), ABS(_animationGroupId), _fromFrame, _toFrame, [_fillColor hash], [_strokeColor hash], HashCGFloat(_strokeWidth), [_strokeLineCap hash], [_keyFrames hash], [_timingCurves hash], [_featureAnimations hash], [_backedImage hash], [_masking hash], [_gradientEffect hash], [_pathTrim hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 15; ++ii) {
+  for (int ii = 1; ii < 18; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -210,6 +222,7 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
     _animationGroupId == object->_animationGroupId &&
     _fromFrame == object->_fromFrame &&
     _toFrame == object->_toFrame &&
+    _featureId == object->_featureId &&
     CompareCGFloats(_strokeWidth, object->_strokeWidth) &&
     CGSizeEqualToSize(_featureSize, object->_featureSize) &&
     (_fillColor == object->_fillColor ? YES : [_fillColor isEqual:object->_fillColor]) &&
@@ -220,7 +233,9 @@ static BOOL CompareCGFloats(CGFloat givenCGFloat, CGFloat cgFloatToCompare) {
     (_timingCurves == object->_timingCurves ? YES : [_timingCurves isEqual:object->_timingCurves]) &&
     (_featureAnimations == object->_featureAnimations ? YES : [_featureAnimations isEqual:object->_featureAnimations]) &&
     (_backedImage == object->_backedImage ? YES : [_backedImage isEqual:object->_backedImage]) &&
-    (_gradientEffect == object->_gradientEffect ? YES : [_gradientEffect isEqual:object->_gradientEffect]);
+    (_masking == object->_masking ? YES : [_masking isEqual:object->_masking]) &&
+    (_gradientEffect == object->_gradientEffect ? YES : [_gradientEffect isEqual:object->_gradientEffect]) &&
+    (_pathTrim == object->_pathTrim ? YES : [_pathTrim isEqual:object->_pathTrim]);
 }
 
 @end
