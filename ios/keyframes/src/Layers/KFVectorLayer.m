@@ -215,6 +215,15 @@
   return mockAnimation;
 }
 
+- (void)setRepeatCount:(float)repeatCount
+{
+  super.repeatCount = repeatCount;
+  
+  for (KFVectorAnimationLayer *sublayer in _containerLayer.sublayers) {
+    sublayer.repeatCount = repeatCount;
+  }
+}
+
 - (void)_resetAnimations
 {
   self.speed = 0;

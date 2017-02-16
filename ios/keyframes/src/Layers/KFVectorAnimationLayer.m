@@ -128,6 +128,22 @@
   }
 }
 
+- (void)setRepeatCount:(float)repeatCount
+{
+  super.repeatCount = repeatCount;
+  
+  if (self.mask && [self.mask isKindOfClass:[KFVectorAnimationLayer class]]) {
+    self.mask.repeatCount = repeatCount;
+  }
+  for (CALayer *sublayer in self.sublayers) {
+    if ([sublayer isKindOfClass:[KFVectorAnimationLayer class]]) {
+      sublayer.repeatCount = repeatCount;
+    }
+  }
+  for (CAPropertyAnimation *animation in _animations) {
+    animation.repeatCount = repeatCount;
+  }
+}
 
 - (void)_applyScaleAnimation:(KFVectorAnimation *)scaleAnimation
 {

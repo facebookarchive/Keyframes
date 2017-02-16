@@ -105,6 +105,12 @@
   [self addAnimation:_pathAnimation forKey:_pathAnimation.keyPath];
 }
 
+- (void)setRepeatCount:(float)repeatCount
+{
+  super.repeatCount = repeatCount;
+  _pathAnimation.repeatCount = repeatCount;
+}
+
 - (void)_addAnimations
 {
   // Apply animations.

@@ -79,6 +79,17 @@
   }
 }
 
+- (void)setRepeatCount:(float)repeatCount
+{
+  super.repeatCount = repeatCount;
+  _gradientMaskLayer.repeatCount = repeatCount;
+  _gradientLayer.repeatCount = repeatCount;
+  
+  for (CAPropertyAnimation *animation in _animations) {
+    animation.repeatCount = repeatCount;
+  }
+}
+
 - (void)setAnimations:(NSArray<KFVectorAnimation *> *)animations scaleToCanvas:(CGPoint)scaleToCanvas scaleToLayer:(CGPoint)scaleToLayer
 {
   [_gradientMaskLayer setAnimations:animations scaleToCanvas:scaleToCanvas scaleToLayer:scaleToLayer];
