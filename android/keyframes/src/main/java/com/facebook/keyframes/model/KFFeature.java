@@ -129,11 +129,10 @@ public class KFFeature {
   private final KFFeatureEffect mEffect;
 
   /**
-   * EXPERIMENTAL optional "class" name used to reconfigure how this feature will render.
-   * WARNING: May not be available on other platforms.
+   * EXPERIMENTAL optional "backedImage" name used to refer the bitmap name backing the feature.
    */
-  public static final String CLASS_NAME_JSON_FIELD = "class";
-  private final String mClassName;
+  public static final String BACKED_IMAGE_NAME_JSON_FIELD = "backed_image";
+  private final String mBackedImageName;
 
   /**
    * A post-processed object containing cached information for this path, if keyframed.
@@ -155,7 +154,7 @@ public class KFFeature {
     public List<KFAnimation> featureAnimations;
     public float[] anchorPoint;
     public KFFeatureEffect effect;
-    public String className;
+    public String backedImageName;
 
     public KFFeature build() {
       return new KFFeature(
@@ -173,7 +172,7 @@ public class KFFeature {
           featureAnimations,
           anchorPoint,
           effect,
-          className);
+          backedImageName);
     }
   }
 
@@ -192,7 +191,7 @@ public class KFFeature {
       List<KFAnimation> featureAnimations,
       float[] anchorPoint,
       KFFeatureEffect effect,
-      String className) {
+      String backedImageName) {
     mName = name;
     mFillColor = fillColor;
     mStrokeColor = strokeColor;
@@ -220,7 +219,7 @@ public class KFFeature {
     ListHelper.sort(featureAnimations, KFAnimation.ANIMATION_PROPERTY_COMPARATOR);
     mFeatureMatrixAnimations = ListHelper.immutableOrEmpty(featureAnimations);
     mEffect = effect;
-    mClassName = className;
+    mBackedImageName = backedImageName;
 
     mKeyFramedPath = mKeyFrames.isEmpty() ? null : KeyFramedPath.fromFeature(this);
   }
@@ -311,7 +310,7 @@ public class KFFeature {
     return mEffect;
   }
 
-  public String getConfigClassName() {
-    return mClassName;
+  public String getBackedImageName() {
+    return mBackedImageName;
   }
 }

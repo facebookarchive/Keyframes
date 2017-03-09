@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -213,17 +214,12 @@ public class MainActivity extends Activity {
     clearImage();
     mKfImage = kfImage;
 
-    final Drawable logoDrawable = getResources().getDrawable(R.drawable.keyframes_launcher);
-    if (logoDrawable != null) {
-      logoDrawable.setBounds(0, 0, 80, 80);
-      mKeyFramesDrawable = new KeyframesDrawableBuilder()
-          .withImage(mKfImage)
-          .withMaxFrameRate(60)
-          .withExperimentalFeatures()
-          .withParticleFeatureConfigs(
-              Pair.create("keyframes", Pair.create(logoDrawable, new Matrix())))
-          .build();
-    }
+    mKeyFramesDrawable = new KeyframesDrawableBuilder()
+        .withImage(mKfImage)
+        .withMaxFrameRate(60)
+        .withExperimentalFeatures()
+        .withBitmaps()
+        .build();
     startAnimation();
 
     final ImageView imageView = (ImageView) findViewById(R.id.sample_image_view);

@@ -12,7 +12,12 @@ package com.facebook.keyframes.deserializers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.JsonReader;
 
 import com.facebook.keyframes.model.KFImage;
@@ -61,11 +66,27 @@ public class KFImageDeserializer {
         case KFImage.KEY_JSON_FIELD:
           builder.key = reader.nextInt();
           break;
+        case KFImage.BITMAPS_JSON_FIELD:
+          builder.bitmaps = readBitmaps(reader);
+          break;
         default:
           reader.skipValue();
       }
     }
     reader.endObject();
     return builder.build();
+  }
+
+  private static Map<String, Bitmap> readBitmaps(JsonReader reader) throws IOException {
+    reader.beginObject();
+    Map<String, Bitmap> bitmaps = new HashMap<>();
+    while (reader.hasNext()) {
+      String name = reader.nextName();
+      byte[] bytes = Base64.decode(reader.nextString(), Base64.DEFAULT);
+      Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+      bitmaps.put(name, bitmap);
+    }
+    reader.endObject();
+    return bitmaps;
   }
 }

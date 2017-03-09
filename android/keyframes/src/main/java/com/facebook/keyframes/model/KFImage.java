@@ -9,7 +9,9 @@
 package com.facebook.keyframes.model;
 
 import java.util.List;
+import java.util.Map;
 
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.SparseArray;
 
@@ -60,6 +62,12 @@ public class KFImage {
   public static final String KEY_JSON_FIELD = "key";
   private final int mKey;
 
+  /**
+   * An optional map of bitmaps for this image.
+   */
+  public static final String BITMAPS_JSON_FIELD = "bitmaps";
+  private final Map<String, Bitmap> mBitmaps;
+
   public static class Builder {
     public int frameRate;
     public int frameCount;
@@ -67,9 +75,10 @@ public class KFImage {
     public List<KFAnimationGroup> animationGroups;
     public float[] canvasSize;
     public int key;
+    public Map<String, Bitmap> bitmaps;
 
     public KFImage build() {
-      return new KFImage(frameRate, frameCount, features, animationGroups, canvasSize, key);
+      return new KFImage(frameRate, frameCount, features, animationGroups, canvasSize, key, bitmaps);
     }
   }
 
@@ -79,7 +88,8 @@ public class KFImage {
       List<KFFeature> features,
       List<KFAnimationGroup> animationGroups,
       float[] canvasSize,
-      int key) {
+      int key,
+      Map<String, Bitmap> bitmaps) {
     mFrameRate = ArgCheckUtil.checkArg(
         frameRate,
         frameRate > 0,
@@ -103,6 +113,7 @@ public class KFImage {
         canvasSize.length == 2 && canvasSize[0] > 0 && canvasSize[1] > 0,
         CANVAS_SIZE_JSON_FIELD);
     mKey = key;
+    mBitmaps = bitmaps;
   }
 
   public int getFrameRate() {
@@ -155,5 +166,9 @@ public class KFImage {
 
   public int getKey() {
     return mKey;
+  }
+
+  public Map<String, Bitmap> getBitmaps() {
+    return mBitmaps;
   }
 }

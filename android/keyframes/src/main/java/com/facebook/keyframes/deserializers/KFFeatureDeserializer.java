@@ -76,8 +76,8 @@ public class KFFeatureDeserializer {
         case KFFeature.STROKE_LINE_CAP_JSON_FIELD:
           builder.strokeLineCap = Paint.Cap.valueOf(reader.nextString().toUpperCase(Locale.US));
           break;
-        case KFFeature.CLASS_NAME_JSON_FIELD:
-          builder.className = reader.nextString();
+        case KFFeature.BACKED_IMAGE_NAME_JSON_FIELD:
+          builder.backedImageName = reader.nextString();
           break;
         case KFFeature.FEATURE_MASK_JSON_FIELD:
           builder.featureMask = KFFeatureDeserializer.readObject(reader);

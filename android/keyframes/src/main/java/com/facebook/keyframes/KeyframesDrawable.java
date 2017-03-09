@@ -9,6 +9,7 @@
 
 package com.facebook.keyframes;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -93,7 +94,7 @@ public class KeyframesDrawable extends Drawable
   private float mScale;
   private float mScaleFromCenter;
   private float mScaleFromEnd;
-  private final Map<String, FeatureConfig> mFeatureConfigs;
+  private final Map<String, Bitmap> mBitmaps;
   private boolean mClipToAECanvas;
 
   private boolean mHasInitialized = false;
@@ -104,9 +105,9 @@ public class KeyframesDrawable extends Drawable
    */
   KeyframesDrawable(KeyframesDrawableBuilder builder) {
     mKFImage = builder.getImage();
-    mFeatureConfigs = builder.getExperimentalFeatures().getParticleFeatureConfigs() == null ?
+    mBitmaps = builder.getExperimentalFeatures().getBitmaps() == null ?
         null :
-        Collections.unmodifiableMap(builder.getExperimentalFeatures().getParticleFeatureConfigs());
+        Collections.unmodifiableMap(builder.getExperimentalFeatures().getBitmaps());
 
     mRecyclableTransformMatrix = new Matrix();
     mScaleMatrix = new Matrix();
@@ -186,23 +187,13 @@ public class KeyframesDrawable extends Drawable
         continue;
       }
 
-      final FeatureConfig config = featureState.getConfig();
+      final Bitmap backedImage = featureState.getBackedImageBitmap();
       final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
-      if (config != null && config.drawable != null && uniqueFeatureMatrix != null) {
-        // This block is for the experimental particle effects.
+      if (backedImage != null && uniqueFeatureMatrix != null) {
+        // This block is for the experimental bitmap supporting
         canvas.save();
         canvas.concat(mScaleMatrix);
-        canvas.concat(uniqueFeatureMatrix);
-
-        final boolean shouldApplyMatrix = config.matrix != null && !config.matrix.isIdentity();
-        if (shouldApplyMatrix) {
-          canvas.save();
-          canvas.concat(config.matrix);
-        }
-        config.drawable.draw(canvas);
-        if (shouldApplyMatrix) {
-          canvas.restore();
-        }
+        canvas.drawBitmap(backedImage, uniqueFeatureMatrix, null);
 
         canvas.restore();
         continue;
@@ -581,14 +572,13 @@ public class KeyframesDrawable extends Drawable
       return mCachedShaders[shaderIndex];
     }
 
-    public final FeatureConfig getConfig() {
-      if (mFeatureConfigs == null) return null;
-      return mFeatureConfigs.get(mFeature.getConfigClassName());
+    public final Bitmap getBackedImageBitmap() {
+      if (mBitmaps == null) return null;
+      return mBitmaps.get(mFeature.getBackedImageName());
     }
 
     private boolean hasCustomDrawable() {
-      final FeatureConfig config = getConfig();
-      return config != null && config.drawable != null;
+      return getBackedImageBitmap() != null;
     }
 
     private float extractScaleFromMatrix(Matrix matrix) {
@@ -600,25 +590,5 @@ public class KeyframesDrawable extends Drawable
 
   public interface OnAnimationEnd {
     void onAnimationEnd();
-  }
-
-  /**
-   * Config options define runtime overrides for specific KFFeature behaviors
-   */
-  public static class FeatureConfig {
-    final Drawable drawable;
-    final Matrix matrix;
-
-    public FeatureConfig(Drawable drawable, Matrix matrix) {
-      this.matrix = matrix;
-      this.drawable = drawable;
-
-      if (BuildConfig.DEBUG && drawable != null) {
-        final Rect bounds = drawable.getBounds();
-        if (bounds.width() <= 0 || bounds.height() <= 0) {
-          throw new IllegalStateException("KeyframesDrawable FeatureConfig Drawable must have bounds set");
-        }
-      }
-    }
   }
 }
