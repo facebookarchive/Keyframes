@@ -162,7 +162,7 @@ layer,
 kfDoc)
 {
 var kfFeature=commonFeatureFromLayer(comp,layer,kfDoc);
-kfFeature.backed_image=layer['source$name'].substr(0,layer['source$name'].length-'.png'.length);
+kfFeature.backed_image=layer['source$name'];
 return kfFeature;
 }
 
