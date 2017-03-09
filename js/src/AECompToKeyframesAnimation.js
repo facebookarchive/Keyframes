@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- * 
+ *
  * @flow
  */
 'use strict';
@@ -26,8 +26,11 @@ import type {
   KfPropertyOpacity,
   KfPropertyStrokeWidth,
   KfTimingCurve,
-  KfGradientStop,
+  KfGradientColorStop,
+  KfGradientRampStop,
   KfGradient,
+  KfPathTrim,
+  KfPathTrimStop,
 } from '../KfTypes'
 
 import type {
@@ -51,16 +54,27 @@ import type {
   PropertyVectorStrokeWidth,
   PropertyVectorStrokeLineCap,
   PropertyGroupVectorTransformGroup,
+  PropertyGroupVectorFilterTrim,
   PropertyVectorAnchor,
   PropertyVectorPosition,
   PropertyVectorScale,
   PropertyVectorRotation,
   PropertyVectorGroupOpacity,
+  PropertyVectorTrimStart,
+  PropertyVectorTrimEnd,
+  PropertyVectorTrimOffset,
+  PropertyGroupEffectParade,
+  PropertyGroupRamp,
+  PropertyRamp0001,
+  PropertyRamp0002,
+  PropertyRamp0003,
+  PropertyRamp0004,
+  PropertyRamp0005,
 } from '../AfterEffectsTypes';
 
 function AECompToKeyframesAnimation(comp: CompItem): KfDocument {
   const kfDoc = {
-    formatVersion: '1.0',
+    formatVersion: '1.1',
     name: comp.name.replace(/[^a-z]/gi, '').toUpperCase(),
     key: Number(comp.name.replace(/[^0-9]/g, '')),
     frame_rate: comp.frameRate,
@@ -70,8 +84,10 @@ function AECompToKeyframesAnimation(comp: CompItem): KfDocument {
     animation_groups: [],
   };
 
+  let lastMasking: ?KfFeature = null;
+
   comp.layers
-  .filter((layer) => layer.enabled)
+  .filter((layer) => layer.enabled || layer.isTrackMatte)
   .forEach((layer) => {
     switch (layer.__type__) {
     case 'AVLayer':
@@ -91,7 +107,15 @@ function AECompToKeyframesAnimation(comp: CompItem): KfDocument {
     case 'ShapeLayer':
       const shape = KfFeatureFromShapeLayer(comp, layer, kfDoc);
       if (shape) {
-        kfDoc.features.unshift(shape);
+        if (layer.isTrackMatte) {
+          // is a masking layer
+          lastMasking = shape;
+        } else {
+          if (layer.hasTrackMatte && lastMasking) {
+            shape.masking = lastMasking;
+          }
+          kfDoc.features.unshift(shape);
+        }
       }
       break;
     default:
@@ -109,6 +133,7 @@ function commonFeatureFromLayer(
 ): KfFeature {
   const kfFeature: KfFeature = {
     name: layer.name,
+    feature_id: layer.index,
   };
   if (layer.height !== comp.height || layer.width !== comp.width) {
     kfFeature.size = [layer.width, layer.height];
@@ -163,6 +188,9 @@ function KfFeatureFromShapeLayer(
     vectorScale,
     vectorRotation,
     vectorOpacity,
+    vectorTrimStart,
+    vectorTrimEnd,
+    vectorTrimOffset,
   } = parseRootVectorsGroup(rootVectorsGroup);
 
   let shapeOffset = [0, 0];
@@ -217,15 +245,97 @@ function KfFeatureFromShapeLayer(
   if (vectorFillColor) {
     // set fill color
     kfFeature.fill_color = getHexColorStringFromRGB(vectorFillColor.value);
+    if (vectorFillColor.keyframes && vectorFillColor.keyframes.length > 1) {
+      if (!kfFeature.feature_animations) {
+        kfFeature.feature_animations = [];
+      }
+      kfFeature.feature_animations.push({
+        property: 'FILL_COLOR',
+        key_values: keyValuesFor(comp, vectorFillColor, (value: number[]) => getHexColorStringFromRGB(value)),
+        timing_curves: parseTimingFunctionsFromKeyframes(vectorFillColor.keyframes, parseTimingFunctions),
+      });
+    }
   }
   if (vectorStrokeColor) {
     // set stroke color
     kfFeature.stroke_color = getHexColorStringFromRGB(vectorStrokeColor.value);
+    if (vectorStrokeColor.keyframes && vectorStrokeColor.keyframes.length > 1) {
+      if (!kfFeature.feature_animations) {
+        kfFeature.feature_animations = [];
+      }
+      kfFeature.feature_animations.push({
+        property: 'STROKE_COLOR',
+        key_values: keyValuesFor(comp, vectorStrokeColor, (value: number[]) => getHexColorStringFromRGB(value)),
+        timing_curves: parseTimingFunctionsFromKeyframes(vectorStrokeColor.keyframes, parseTimingFunctions),
+      });
+    }
   }
   if (vectorStrokeWidth) {
     // set stroke width
     kfFeature.stroke_width = vectorStrokeWidth.value;
   }
+
+  // handle gradient ramp effects
+  const effects: ?PropertyGroupEffectParade = getPropertyChild(layer, 'ADBE Effect Parade');
+  if (effects) {
+    const rampEffect: ?PropertyGroupRamp = getPropertyChild(effects, 'ADBE Ramp');
+    if (rampEffect) {
+      const startPoint: ?PropertyRamp0001 = getPropertyChild(rampEffect, 'ADBE Ramp-0001');
+      const startColor: ?PropertyRamp0002 = getPropertyChild(rampEffect, 'ADBE Ramp-0002');
+      const endPoint: ?PropertyRamp0003 = getPropertyChild(rampEffect, 'ADBE Ramp-0003');
+      const endColor: ?PropertyRamp0004 = getPropertyChild(rampEffect, 'ADBE Ramp-0004');
+      const gradientType: ?PropertyRamp0005 = getPropertyChild(rampEffect, 'ADBE Ramp-0005');
+
+      if (startPoint && startColor && endPoint && endColor && gradientType) {
+
+        warnIfUsingMissingFeature(gradientType.value === 2, 'radial type gradient', rampEffect, effects, layer, comp);
+
+        const kfGradient: KfGradient = {
+          gradient_type: gradientType.value === 1 ? 'linear' : 'radial',
+          color_start: {
+            key_values: keyValuesFor(comp, startColor, (value: number[]) => getHexColorStringFromRGB(value)),
+            timing_curves: parseTimingFunctionsFromKeyframes(startColor.keyframes, parseTimingFunctions),
+          },
+          color_end: {
+            key_values: keyValuesFor(comp, endColor, (value: number[]) => getHexColorStringFromRGB(value)),
+            timing_curves: parseTimingFunctionsFromKeyframes(endColor.keyframes, parseTimingFunctions),
+          },
+          ramp_start: {
+            key_values: keyValuesFor(comp, startPoint, (value: number[]) => [value[0], value[1]]),
+            timing_curves: parseTimingFunctionsFromKeyframes(startPoint.keyframes, parseTimingFunctions),
+          },
+          ramp_end: {
+            key_values: keyValuesFor(comp, endPoint, (value: number[]) => [value[0], value[1]]),
+            timing_curves: parseTimingFunctionsFromKeyframes(endPoint.keyframes, parseTimingFunctions),
+          },
+        }
+        kfFeature.effects = {
+          gradient: kfGradient,
+        };
+      } else {
+        throw 'Gradient property missing, corrupted JSON.';
+      }
+
+    }
+
+    if (vectorTrimStart && vectorTrimEnd && vectorTrimOffset) {
+      kfFeature.path_trim = {
+        path_trim_start: {
+          key_values: keyValuesFor(comp, vectorTrimStart, (value: number) => [value]),
+          timing_curves: parseTimingFunctionsFromKeyframes(vectorTrimStart.keyframes, parseTimingFunctions),
+        },
+        path_trim_end: {
+          key_values: keyValuesFor(comp, vectorTrimEnd, (value: number) => [value]),
+          timing_curves: parseTimingFunctionsFromKeyframes(vectorTrimEnd.keyframes, parseTimingFunctions),
+        },
+        path_trim_offset: {
+          key_values: keyValuesFor(comp, vectorTrimOffset, (value: number) => [value]),
+          timing_curves: parseTimingFunctionsFromKeyframes(vectorTrimOffset.keyframes, parseTimingFunctions),
+        },
+      };
+    }
+  }
+
 
   return kfFeature;
 }
@@ -276,6 +386,9 @@ function parseRootVectorsGroup(
   vectorScale: ?PropertyVectorScale,
   vectorRotation: ?PropertyVectorRotation,
   vectorOpacity: ?PropertyVectorGroupOpacity,
+  vectorTrimStart: ?PropertyVectorTrimStart,
+  vectorTrimEnd: ?PropertyVectorTrimEnd,
+  vectorTrimOffset: ?PropertyVectorTrimOffset,
 } {
   const vectorGroup: ?PropertyGroupVectorGroup =
     getPropertyChild(rootGroup, 'ADBE Vector Group');
@@ -314,6 +427,18 @@ function parseRootVectorsGroup(
   const vectorOpacity: ?PropertyVectorGroupOpacity =
     getPropertyChild(transformGroup, 'ADBE Vector Group Opacity');
 
+  let groupVectorFilterTrim: ?PropertyGroupVectorFilterTrim =
+    getPropertyChild(rootGroup, 'ADBE Vector Filter - Trim');
+  if (!groupVectorFilterTrim) {
+    groupVectorFilterTrim = getPropertyChild(groupVectorsGroup, 'ADBE Vector Filter - Trim');
+  }
+  const vectorTrimStart: ?PropertyVectorTrimStart =
+    getPropertyChild(groupVectorFilterTrim, 'ADBE Vector Trim Start');
+  const vectorTrimEnd: ?PropertyVectorTrimEnd =
+    getPropertyChild(groupVectorFilterTrim, 'ADBE Vector Trim End');
+  const vectorTrimOffset: ?PropertyVectorTrimEnd =
+    getPropertyChild(groupVectorFilterTrim, 'ADBE Vector Trim Offset');
+
   return {
     vectorShape,
     vectorFillColor,
@@ -325,6 +450,9 @@ function parseRootVectorsGroup(
     vectorScale,
     vectorRotation,
     vectorOpacity,
+    vectorTrimStart,
+    vectorTrimEnd,
+    vectorTrimOffset,
   };
 }
 
@@ -635,10 +763,11 @@ const parseTimingFunctions = (keyframeA, keyframeB) => {
       [2.0 / 3.0, 2.0 / 3.0],
     ];
   }
-  warnIfUsingMissingFeature(keyframeA.outInterpolationType !== 'BEZIER',
-      'Unsupported interpolation method \'' + keyframeA.outInterpolationType + '\'');
-  warnIfUsingMissingFeature(keyframeB.inInterpolationType !== 'BEZIER',
-      'Unsupported interpolation method \'' + keyframeB.inInterpolationType + '\'');
+
+  if (keyframeA.outInterpolationType !== 'BEZIER' || keyframeB.inInterpolationType !== 'BEZIER') {
+    console.error('UNSUPPORTED out interpolation type: \'' + keyframeA.outInterpolationType
+      + '\' to in interpolation type: \'' + keyframeB.inInterpolationType + '\'');
+  }
 
   const keyframeAOut = keyframeA.outTemporalEase[0];
   const keyframeBIn = keyframeB.inTemporalEase[0];
@@ -693,7 +822,7 @@ function warnIfUsingMissingFeature(shouldWarn?: boolean, feature:string, ...obje
   }
   const keyPath = objects.map(({name}) => name).reverse().concat(feature);
   const comp = objects[objects.length - 1];
-  keyPath.unshift(comp && comp.parentFolder$name);
+  keyPath.unshift(comp.parentFolder$name);
   console.warn('UNSUPPORTED: %s', keyPath.join(' → '));
 }
 

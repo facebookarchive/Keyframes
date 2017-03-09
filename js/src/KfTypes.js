@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- * 
+ *
  * @flow
  */
 'use strict';
@@ -29,6 +29,8 @@ export type KfAnimationGroup = {
 
 export type KfFeature = {
   name: string,
+  feature_id: number,
+  masking?: KfFeature,
   backed_image?: string,
   from_frame?: number,
   to_frame?: number,
@@ -40,6 +42,7 @@ export type KfFeature = {
   effects?: {
     gradient?: KfGradient,
   },
+  path_trim?: KfPathTrim,
   animation_group?: number,
   feature_animations?: KfProperty[],
 
@@ -59,7 +62,7 @@ export type KfAnimatable<T> = {
 
 export type KfPoint = [number, number];
 
-export type KfProperty = KfPropertyAnchorPoint | KfPropertyXPosition | KfPropertyYPosition | KfPropertyRotation | KfPropertyScale | KfPropertyOpacity | KfPropertyStrokeWidth;
+export type KfProperty = KfPropertyAnchorPoint | KfPropertyXPosition | KfPropertyYPosition | KfPropertyRotation | KfPropertyScale | KfPropertyOpacity | KfPropertyStrokeWidth | KfPropertyStrokeColor | KfPropertyFillColor;
 
 export type KfPropertyAnchorPoint = KfAnimatable<KfPoint> & {
   property: 'ANCHOR_POINT',
@@ -82,15 +85,29 @@ export type KfPropertyOpacity = KfAnimatable<[number]> & {
 export type KfPropertyStrokeWidth = KfAnimatable<[number]> & {
   property: 'STROKE_WIDTH',
 };
+export type KfPropertyStrokeColor = KfAnimatable<string> & {
+  property: 'STROKE_COLOR',
+};
+export type KfPropertyFillColor = KfAnimatable<string> & {
+  property: 'FILL_COLOR',
+};
 
 export type KfTimingCurve = [KfPoint, KfPoint];
 
-export type KfGradientStop = KfAnimatable<string>;
+export type KfGradientColorStop = KfAnimatable<string>;
+export type KfGradientRampStop = KfAnimatable<[number]>;
 
 export type KfGradient = {
   gradient_type: 'linear' | 'radial',
-  color_start?: KfGradientStop,
-  color_end?: KfGradientStop,
-  ramp_start?: KfGradientStop,
-  ramp_end?: KfGradientStop,
+  color_start?: KfGradientColorStop,
+  color_end?: KfGradientColorStop,
+  ramp_start?: KfGradientRampStop,
+  ramp_end?: KfGradientRampStop,
+};
+
+export type KfPathTrimStop = KfAnimatable<[number]>;
+export type KfPathTrim = {
+  path_trim_start?: KfPathTrimStop,
+  path_trim_end?: KfPathTrimStop,
+  path_trim_offset?: KfPathTrimStop,
 };

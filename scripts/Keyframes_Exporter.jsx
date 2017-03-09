@@ -191,13 +191,9 @@ function exportActiveComp(props) {
     console.warn('KeyframesPreviewer is disabled');
   }
 
-  fs_writeFileSync(filePathRaw, activeItemJSON);
-  console.log('Raw JSON Exported:');
-  console.log(filePathRaw);
-
   $.global.MudBrickLayer.debug = undefined; // Disable verbose logging
   exportActiveComp.logFile.close();
-  
+
   return results;
 }
 

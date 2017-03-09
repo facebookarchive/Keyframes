@@ -1,6 +1,6 @@
 {
   "name": "keyframes-cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Keyframes Exporter CLI",
   "main": "keyfames-cli.js",
   "bin": "./keyframes-cli.js",

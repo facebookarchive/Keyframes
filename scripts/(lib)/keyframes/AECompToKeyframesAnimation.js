@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * 
  */
 'use strict';var _slicedToArray=function(){function sliceIterator(arr,i){var _arr=[];var _n=true;var _d=false;var _e=undefined;try{for(var _i=arr[typeof Symbol==='function'?Symbol.iterator:'@@iterator'](),_s;!(_n=(_s=_i.next()).done);_n=true){_arr.push(_s.value);if(i&&_arr.length===i)break;}}catch(err){_d=true;_e=err;}finally{try{if(!_n&&_i["return"])_i["return"]();}finally{if(_d)throw _e;}}return _arr;}return function(arr,i){if(Array.isArray(arr)){return arr;}else if((typeof Symbol==='function'?Symbol.iterator:'@@iterator')in Object(arr)){return sliceIterator(arr,i);}else{throw new TypeError("Invalid attempt to destructure non-iterable instance");}};}();
 
@@ -56,9 +58,23 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function AECompToKeyframesAnimation(comp){
 var kfDoc={
-formatVersion:'1.0',
+formatVersion:'1.1',
 name:comp.name.replace(/[^a-z]/gi,'').toUpperCase(),
 key:Number(comp.name.replace(/[^0-9]/g,'')),
 frame_rate:comp.frameRate,
@@ -68,8 +84,10 @@ features:[],
 animation_groups:[]};
 
 
+var lastMasking=null;
+
 comp.layers.
-filter(function(layer){return layer.enabled;}).
+filter(function(layer){return layer.enabled||layer.isTrackMatte;}).
 forEach(function(layer){
 switch(layer.__type__){
 case'AVLayer':
@@ -89,7 +107,15 @@ break;
 case'ShapeLayer':
 var shape=KfFeatureFromShapeLayer(comp,layer,kfDoc);
 if(shape){
+if(layer.isTrackMatte){
+// is a masking layer
+lastMasking=shape;
+}else{
+if(layer.hasTrackMatte&&lastMasking){
+shape.masking=lastMasking;
+}
 kfDoc.features.unshift(shape);
+}
 }
 break;
 default:
@@ -106,7 +132,8 @@ layer,
 kfDoc)
 {
 var kfFeature={
-name:layer.name};
+name:layer.name,
+feature_id:layer.index};
 
 if(layer.height!==comp.height||layer.width!==comp.width){
 kfFeature.size=[layer.width,layer.height];
@@ -161,7 +188,10 @@ throw'Root Vectors Group missing, corrupted input JSON';
 
 
 
-parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;
+
+
+
+parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
 
 var shapeOffset=[0,0];
 
@@ -215,15 +245,97 @@ data:parseShape(vectorShape.value,shapeOffset)}];
 if(vectorFillColor){
 // set fill color
 kfFeature.fill_color=getHexColorStringFromRGB(vectorFillColor.value);
+if(vectorFillColor.keyframes&&vectorFillColor.keyframes.length>1){
+if(!kfFeature.feature_animations){
+kfFeature.feature_animations=[];
+}
+kfFeature.feature_animations.push({
+property:'FILL_COLOR',
+key_values:keyValuesFor(comp,vectorFillColor,function(value){return getHexColorStringFromRGB(value);}),
+timing_curves:parseTimingFunctionsFromKeyframes(vectorFillColor.keyframes,parseTimingFunctions)});
+
+}
 }
 if(vectorStrokeColor){
 // set stroke color
 kfFeature.stroke_color=getHexColorStringFromRGB(vectorStrokeColor.value);
+if(vectorStrokeColor.keyframes&&vectorStrokeColor.keyframes.length>1){
+if(!kfFeature.feature_animations){
+kfFeature.feature_animations=[];
+}
+kfFeature.feature_animations.push({
+property:'STROKE_COLOR',
+key_values:keyValuesFor(comp,vectorStrokeColor,function(value){return getHexColorStringFromRGB(value);}),
+timing_curves:parseTimingFunctionsFromKeyframes(vectorStrokeColor.keyframes,parseTimingFunctions)});
+
+}
 }
 if(vectorStrokeWidth){
 // set stroke width
 kfFeature.stroke_width=vectorStrokeWidth.value;
 }
+
+// handle gradient ramp effects
+var effects=getPropertyChild(layer,'ADBE Effect Parade');
+if(effects){
+var rampEffect=getPropertyChild(effects,'ADBE Ramp');
+if(rampEffect){
+var startPoint=getPropertyChild(rampEffect,'ADBE Ramp-0001');
+var startColor=getPropertyChild(rampEffect,'ADBE Ramp-0002');
+var endPoint=getPropertyChild(rampEffect,'ADBE Ramp-0003');
+var endColor=getPropertyChild(rampEffect,'ADBE Ramp-0004');
+var gradientType=getPropertyChild(rampEffect,'ADBE Ramp-0005');
+
+if(startPoint&&startColor&&endPoint&&endColor&&gradientType){
+
+warnIfUsingMissingFeature(gradientType.value===2,'radial type gradient',rampEffect,effects,layer,comp);
+
+var kfGradient={
+gradient_type:gradientType.value===1?'linear':'radial',
+color_start:{
+key_values:keyValuesFor(comp,startColor,function(value){return getHexColorStringFromRGB(value);}),
+timing_curves:parseTimingFunctionsFromKeyframes(startColor.keyframes,parseTimingFunctions)},
+
+color_end:{
+key_values:keyValuesFor(comp,endColor,function(value){return getHexColorStringFromRGB(value);}),
+timing_curves:parseTimingFunctionsFromKeyframes(endColor.keyframes,parseTimingFunctions)},
+
+ramp_start:{
+key_values:keyValuesFor(comp,startPoint,function(value){return[value[0],value[1]];}),
+timing_curves:parseTimingFunctionsFromKeyframes(startPoint.keyframes,parseTimingFunctions)},
+
+ramp_end:{
+key_values:keyValuesFor(comp,endPoint,function(value){return[value[0],value[1]];}),
+timing_curves:parseTimingFunctionsFromKeyframes(endPoint.keyframes,parseTimingFunctions)}};
+
+
+kfFeature.effects={
+gradient:kfGradient};
+
+}else{
+throw'Gradient property missing, corrupted JSON.';
+}
+
+}
+
+if(vectorTrimStart&&vectorTrimEnd&&vectorTrimOffset){
+kfFeature.path_trim={
+path_trim_start:{
+key_values:keyValuesFor(comp,vectorTrimStart,function(value){return[value];}),
+timing_curves:parseTimingFunctionsFromKeyframes(vectorTrimStart.keyframes,parseTimingFunctions)},
+
+path_trim_end:{
+key_values:keyValuesFor(comp,vectorTrimEnd,function(value){return[value];}),
+timing_curves:parseTimingFunctionsFromKeyframes(vectorTrimEnd.keyframes,parseTimingFunctions)},
+
+path_trim_offset:{
+key_values:keyValuesFor(comp,vectorTrimOffset,function(value){return[value];}),
+timing_curves:parseTimingFunctionsFromKeyframes(vectorTrimOffset.keyframes,parseTimingFunctions)}};
+
+
+}
+}
+
 
 return kfFeature;
 }
@@ -274,6 +386,9 @@ rootGroup)
 
 
 
+
+
+
 {
 var vectorGroup=
 getPropertyChild(rootGroup,'ADBE Vector Group');
@@ -312,6 +427,18 @@ getPropertyChild(transformGroup,'ADBE Vector Rotation');
 var vectorOpacity=
 getPropertyChild(transformGroup,'ADBE Vector Group Opacity');
 
+var groupVectorFilterTrim=
+getPropertyChild(rootGroup,'ADBE Vector Filter - Trim');
+if(!groupVectorFilterTrim){
+groupVectorFilterTrim=getPropertyChild(groupVectorsGroup,'ADBE Vector Filter - Trim');
+}
+var vectorTrimStart=
+getPropertyChild(groupVectorFilterTrim,'ADBE Vector Trim Start');
+var vectorTrimEnd=
+getPropertyChild(groupVectorFilterTrim,'ADBE Vector Trim End');
+var vectorTrimOffset=
+getPropertyChild(groupVectorFilterTrim,'ADBE Vector Trim Offset');
+
 return{
 vectorShape:vectorShape,
 vectorFillColor:vectorFillColor,
@@ -322,7 +449,10 @@ vectorAnchor:vectorAnchor,
 vectorPosition:vectorPosition,
 vectorScale:vectorScale,
 vectorRotation:vectorRotation,
-vectorOpacity:vectorOpacity};
+vectorOpacity:vectorOpacity,
+vectorTrimStart:vectorTrimStart,
+vectorTrimEnd:vectorTrimEnd,
+vectorTrimOffset:vectorTrimOffset};
 
 }
 
@@ -633,10 +763,11 @@ return[
 [2.0/3.0,2.0/3.0]];
 
 }
-warnIfUsingMissingFeature(keyframeA.outInterpolationType!=='BEZIER',
-'Unsupported interpolation method \''+keyframeA.outInterpolationType+'\'');
-warnIfUsingMissingFeature(keyframeB.inInterpolationType!=='BEZIER',
-'Unsupported interpolation method \''+keyframeB.inInterpolationType+'\'');
+
+if(keyframeA.outInterpolationType!=='BEZIER'||keyframeB.inInterpolationType!=='BEZIER'){
+console.error('UNSUPPORTED out interpolation type: \''+keyframeA.outInterpolationType+
+'\' to in interpolation type: \''+keyframeB.inInterpolationType+'\'');
+}
 
 var keyframeAOut=keyframeA.outTemporalEase[0];
 var keyframeBIn=keyframeB.inTemporalEase[0];
@@ -691,7 +822,7 @@ return;
 }for(var _len=arguments.length,objects=Array(_len>2?_len-2:0),_key=2;_key<_len;_key++){objects[_key-2]=arguments[_key];}
 var keyPath=objects.map(function(_ref15){var name=_ref15.name;return name;}).reverse().concat(feature);
 var comp=objects[objects.length-1];
-keyPath.unshift(comp&&comp.parentFolder$name);
+keyPath.unshift(comp.parentFolder$name);
 console.warn('UNSUPPORTED: %s',keyPath.join(' → '));
 }
 
