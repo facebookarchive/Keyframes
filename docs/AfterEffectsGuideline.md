@@ -29,6 +29,9 @@
 - Please DO NOT scale, skew, rotate or set opacity under the shape's transformation. DO IT in layers Transform Section
 ![Layer Transform](/docs/images/doc-ae-layer-transform.png)
 
+- With 3D shape layers, you can alter the rotation of the object in the (x,y,z) coordinate space
+![Layer Rotation](/docs/images/doc-ae-rotation-example.png)
+
 - Path trim is NOT supported
 - Polystar is NOT supported
 - Rectangles and Ellipses are NOT supported

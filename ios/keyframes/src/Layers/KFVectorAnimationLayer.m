@@ -22,6 +22,12 @@
   BOOL _hasHiddenAnimation;
 }
 
+typedef enum {
+  X,
+  Y,
+  Z
+} KFAxis;
+
 - (instancetype)init
 {
   self = [super init];
@@ -60,7 +66,11 @@
     } else if ([animation.property isEqualToString:@"SCALE"]) {
       [self _applyScaleAnimation:animation];
     } else if ([animation.property isEqualToString:@"ROTATION"]) {
-      [self _applyRotationAnimation:animation];
+      [self _applyRotationAnimation:animation onAxis: Z];
+    } else if ([animation.property isEqualToString:@"X_ROTATION"]) {
+      [self _applyRotationAnimation:animation onAxis: X];
+    } else if ([animation.property isEqualToString:@"Y_ROTATION"]) {
+      [self _applyRotationAnimation:animation onAxis: Y];
     } else if ([animation.property isEqualToString:@"POSITION"] && KFVersionLessThan(self.formatVersion, @"1.0")) {
       // TO DO: for backward capability, should be deprecated
       [self _applyPositionAnimation:animation];
@@ -287,18 +297,35 @@
   self.anchorPoint = [[anchorPointValues firstObject] CGPointValue];
 }
 
-- (void)_applyRotationAnimation:(KFVectorAnimation *)rotationAnimation
-{
-  NSArray *rotationValues = KFMapArray(rotationAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyValue) {
+- (void)_applyRotationAnimation:(KFVectorAnimation *)rotationAnimation onAxis:(KFAxis)axis {
+  NSArray *rotationValues = KFMapArray(rotationAnimation.keyValues,
+                                       ^id(KFVectorAnimationKeyValue *keyValue) {
     return @([[keyValue.keyValue firstObject] floatValue] * M_PI / 180);
   });
   if (rotationValues.count > 1) {
+    NSString *axisString;
+    switch (axis) {
+      case X: {
+        axisString = @"x";
+        break;
+      }
+      case Y: {
+        axisString = @"y";
+        break;
+      }
+      case Z: {
+        axisString = @"z";
+        break;
+      }
+    }
+    NSString *animationKeypath = [NSString stringWithFormat:@"transform.rotation.%@", axisString];
     // Rotate along the key value, for our custom CGFloat property.
-    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation"];
+    CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:animationKeypath];
     anim.duration = self.frameCount * 1.0 / self.frameRate;
     anim.values = rotationValues;
     anim.repeatCount = self.repeatCount;
-    anim.keyTimes = KFMapArray(rotationAnimation.keyValues, ^id(KFVectorAnimationKeyValue *keyFrame) {
+    anim.keyTimes = KFMapArray(rotationAnimation.keyValues,
+                               ^id(KFVectorAnimationKeyValue *keyFrame) {
       return @(keyFrame.startFrame * 1.0 / self.frameCount);
     });
     anim.timingFunctions = KFVectorLayerMediaTimingFunction(rotationAnimation.timingCurves);
@@ -306,13 +333,13 @@
     anim.removedOnCompletion = NO;
     [_animations addObject:anim];
   }
-
+  
   // When layer is initialized, and unanimated, layer renders without the first animation applied. This fixes it.
-  self.transform = CATransform3DConcat(self.transform,
-                                       CATransform3DMakeRotation([[rotationValues firstObject] floatValue],
-                                                                 0.0,
-                                                                 0.0,
-                                                                 1.0));
+  self.transform = CATransform3DRotate(self.transform,
+                                       [[rotationValues firstObject] floatValue],
+                                       axis == X ? 1.0 : 0.0,
+                                       axis == Y ? 1.0 : 0.0,
+                                       axis == Z ? 1.0 : 0.0);
 }
 
 - (void)_applyOpacityAnimation:(KFVectorAnimation *)opacityAnimation
