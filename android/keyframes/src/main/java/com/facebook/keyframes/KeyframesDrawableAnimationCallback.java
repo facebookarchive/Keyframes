@@ -99,7 +99,7 @@ public abstract class KeyframesDrawableAnimationCallback {
   public void start() {
     mStopAtLoopEnd = false;
     mStartTimeMillis = 0;
-    mCurrentLoopNumber = -1;
+    mCurrentLoopNumber = 0;
     cancelCallback();
     postCallback();
   }
