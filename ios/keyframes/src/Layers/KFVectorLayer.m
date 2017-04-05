@@ -201,7 +201,7 @@
   // 6) Add a mock animation for invoking stop callback.
   _mockAnimation = [self _createMockAnimation];
 
-  [self _resetAnimations];
+  [self resetAnimations];
 }
 
 - (CABasicAnimation *)_createMockAnimation
@@ -218,13 +218,13 @@
 - (void)setRepeatCount:(float)repeatCount
 {
   super.repeatCount = repeatCount;
-  
+
   for (KFVectorAnimationLayer *sublayer in _containerLayer.sublayers) {
     sublayer.repeatCount = repeatCount;
   }
 }
 
-- (void)_resetAnimations
+- (void)resetAnimations
 {
   self.speed = 0;
   [self removeAllAnimations];
@@ -236,7 +236,7 @@
 
 - (void)startAnimation
 {
-  [self _resetAnimations];
+  [self resetAnimations];
 
   self.speed = 1.0;
   self.timeOffset = 0.0;

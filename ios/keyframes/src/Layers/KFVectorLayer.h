@@ -30,6 +30,11 @@
 @property (copy, nonatomic) void (^animationDidStopBlock)(BOOL finished);
 
 /**
+ * Call this method to reset the vector animation.
+ */
+- (void)resetAnimations;
+
+/**
  * Path based face view initially starts off with frame stuck at 0.
  * Call this method to kick off animation.
  */
