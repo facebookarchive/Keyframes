@@ -46,9 +46,12 @@ public class ModelTests {
     KFFeature.Builder builder = new KFFeature.Builder();
     KFAnimation dummyStrokeWidth =
         createDummyAnimationOfType(KFAnimation.PropertyType.STROKE_WIDTH);
+    KFAnimation dummyStrokeColor =
+            createDummyAnimationOfType(KFAnimation.PropertyType.STROKE_COLOR);
     builder.featureAnimations = new ArrayList<>(Arrays.asList(
         createDummyAnimationOfType(KFAnimation.PropertyType.ROTATION),
         dummyStrokeWidth,
+        dummyStrokeColor,
         createDummyAnimationOfType(KFAnimation.PropertyType.X_POSITION),
         createDummyAnimationOfType(KFAnimation.PropertyType.SCALE)));
     KFFeature feature = builder.build();
@@ -66,6 +69,9 @@ public class ModelTests {
     Assert.assertEquals(
         dummyStrokeWidth,
         feature.mStrokeWidthAnimation);
+    Assert.assertEquals(
+        dummyStrokeColor,
+        feature.mStrokeColorAnimation);
   }
 
   private KFAnimation createDummyAnimationOfType(KFAnimation.PropertyType type) {

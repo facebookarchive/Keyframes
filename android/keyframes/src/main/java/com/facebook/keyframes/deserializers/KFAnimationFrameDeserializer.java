@@ -11,7 +11,9 @@ package com.facebook.keyframes.deserializers;
 
 import java.io.IOException;
 
+import android.graphics.Color;
 import android.util.JsonReader;
+import android.util.JsonToken;
 
 import com.facebook.keyframes.model.KFAnimationFrame;
 
@@ -40,7 +42,17 @@ public class KFAnimationFrameDeserializer {
           builder.startFrame = reader.nextInt();
           break;
         case KFAnimationFrame.DATA_JSON_FIELD:
-          builder.data = CommonDeserializerHelper.readFloatArray(reader);
+          if (reader.peek() == JsonToken.STRING) {
+            String value = reader.nextString();
+            if (value.startsWith("#")) {
+              builder.data = new float[] { (float)Color.parseColor(value) };
+            } else {
+              throw new IOException("Invalid string representation of a color value. String must " +
+                      "be in the format of #AARRGGBB or #RRGGBB.");
+            }
+          } else {
+            builder.data = CommonDeserializerHelper.readFloatArray(reader);
+          }
           break;
         default:
           reader.skipValue();

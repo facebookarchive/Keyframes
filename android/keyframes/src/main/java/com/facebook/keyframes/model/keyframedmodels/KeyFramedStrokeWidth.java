@@ -16,7 +16,7 @@ import com.facebook.keyframes.model.KFAnimationFrame;
 
 
 /**
- * This is a special cased KFAnimation, since it is the only animation which is not applied
+ * This is a special cased KFAnimation, since it is an animation which is not applied
  * via a matrix.  The information for this Modifiable is packed into a single length array.
  * A {@link KeyFramedObject} which houses information about a stroke width animation.  This includes
  * float values for stroke width at any given key frame.  This is a post-process object used for

@@ -17,6 +17,7 @@ import java.util.List;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.AnimationHelper;
 import com.facebook.keyframes.util.ArgCheckUtil;
@@ -120,6 +121,10 @@ public class KFFeature {
    * The opacity for this feature.
    */
   private final KFAnimation mOpacityAnimation;
+  /**
+   * A KFAnimation just for the special cased stroke color animation. Package private for testing.
+   */
+  final KFAnimation mStrokeColorAnimation;
 
   /**
    * An optional effect that this feature layer can have.
@@ -210,6 +215,9 @@ public class KFFeature {
     mStrokeWidthAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.STROKE_WIDTH);
+    mStrokeColorAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.STROKE_COLOR);
     mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.ANCHOR_POINT);
@@ -279,6 +287,15 @@ public class KFFeature {
       return;
     }
     mStrokeWidthAnimation.getAnimation().apply(frameProgress, strokeWidth);
+  }
+
+  public void setStrokeColor(
+          KeyFramedStrokeColor.StrokeColor strokeColor,
+          float frameProgress) {
+    if (strokeColor == null || mStrokeColorAnimation == null) {
+      return;
+    }
+    mStrokeColorAnimation.getAnimation().apply(frameProgress, strokeColor);
   }
 
   public void setOpacity(

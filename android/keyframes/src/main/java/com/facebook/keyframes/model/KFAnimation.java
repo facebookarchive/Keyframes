@@ -16,6 +16,7 @@ import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedMatrixAnimation;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 import com.facebook.keyframes.util.ArgCheckUtil;
 import com.facebook.keyframes.util.ListHelper;
@@ -47,6 +48,7 @@ public class KFAnimation {
     Y_POSITION (true),
     ANCHOR_POINT (false),
     STROKE_WIDTH (false),
+    STROKE_COLOR (false),
     OPACITY (false);
 
     /**
@@ -139,6 +141,8 @@ public class KFAnimation {
       mKeyFramedAnimation = KeyFramedMatrixAnimation.fromAnimation(this);
     } else if (mPropertyType == PropertyType.STROKE_WIDTH){
       mKeyFramedAnimation = KeyFramedStrokeWidth.fromAnimation(this);
+    } else if (mPropertyType == PropertyType.STROKE_COLOR){
+      mKeyFramedAnimation = KeyFramedStrokeColor.fromAnimation(this);
     } else if (mPropertyType == PropertyType.ANCHOR_POINT) {
       mKeyFramedAnimation = KeyFramedAnchorPoint.fromAnchorPoint(this);
     } else if (mPropertyType == PropertyType.OPACITY) {

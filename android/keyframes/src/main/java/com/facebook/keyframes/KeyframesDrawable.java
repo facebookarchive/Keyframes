@@ -30,6 +30,7 @@ import com.facebook.keyframes.model.KFImage;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeWidth;
 
 import java.lang.ref.WeakReference;
@@ -415,6 +416,7 @@ public class KeyframesDrawable extends Drawable
     private final KFPath mPath;
     private final KFPath mFeatureMaskPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
+    private final KeyFramedStrokeColor.StrokeColor mStrokeColor;
     private final KeyFramedOpacity.Opacity mOpacity;
     private final Matrix mFeatureMatrix;
     private final float[] mMatrixValueRecyclableArray = new float[9];
@@ -439,12 +441,14 @@ public class KeyframesDrawable extends Drawable
       if (hasCustomDrawable()) {
         mPath = null;
         mStrokeWidth = null;
+        mStrokeColor = null;
         // Bitmap features use the matrix later in draw()
         // so there's no way to reuse a globally cached matrix
         mFeatureMatrix = new Matrix();
       } else {
         mPath = new KFPath();
         mStrokeWidth = new KeyFramedStrokeWidth.StrokeWidth();
+        mStrokeColor = new KeyFramedStrokeColor.StrokeColor();
         // Path features use the matrix immediately
         // so there's no need to waste memory with a unique copy
         mFeatureMatrix = mRecyclableTransformMatrix;
@@ -481,6 +485,7 @@ public class KeyframesDrawable extends Drawable
       mPath.transform(mFeatureMatrix);
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
+      mFeature.setStrokeColor(mStrokeColor, frameProgress);
       mStrokeWidth.adjustScale(extractScaleFromMatrix(mFeatureMatrix));
       mFeature.setOpacity(mOpacity, frameProgress);
       if (mFeature.getEffect() != null) {
@@ -521,6 +526,9 @@ public class KeyframesDrawable extends Drawable
     }
 
     public int getStrokeColor() {
+      if (mStrokeColor != null && mStrokeColor.hasStrokeColor()) {
+        return (int)mStrokeColor.getStrokeColor();
+      }
       return mFeature.getStrokeColor();
     }
 

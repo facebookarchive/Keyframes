@@ -17,7 +17,7 @@ import com.facebook.keyframes.model.KFColorFrame;
 import com.facebook.keyframes.model.KFGradientColor;
 
 /**
- * A {link KeyFramedObject} which houses information for a gradient animation.  This includes just
+ * A {@link KeyFramedObject} which houses information for a gradient animation.  This includes just
  * start and end colors.  The modifiable class is a simple container object that wraps a start and
  * end color that can be modified and passed around.  This is a post-process object used for
  * KFGradientColor.
