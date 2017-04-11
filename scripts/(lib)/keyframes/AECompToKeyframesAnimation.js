@@ -191,7 +191,8 @@ throw'Root Vectors Group missing, corrupted input JSON';
 
 
 
-parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
+
+parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorShapeEllipse=_parseRootVectorsGrou.vectorShapeEllipse;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
 
 var shapeOffset=[0,0];
 
@@ -239,6 +240,59 @@ kfFeature.key_frames=[{
 start_frame:0,
 data:parseShape(vectorShape.value,shapeOffset)}];
 
+}
+}else if(vectorShapeEllipse){
+var ellipseSize=
+getPropertyChild(vectorShapeEllipse,'ADBE Vector Ellipse Size');
+var ellipsePosition=
+getPropertyChild(vectorShapeEllipse,'ADBE Vector Ellipse Position');
+
+if(ellipseSize&&ellipsePosition){
+var keyframes=parseEllipseKeyframes(ellipseSize,ellipsePosition);
+
+if(keyframes.length>0){
+kfFeature.key_frames=keyframes.map(function(keyframe){
+return{
+start_frame:Math.round(keyframe.time*comp.frameRate),
+data:makeEllipse(
+keyframe.size,
+[
+shapeOffset[0]+keyframe.position[0],
+shapeOffset[1]+keyframe.position[1]])};
+
+
+
+});
+// Attempt to export the timing functions from the keyframes.
+// Only a single set of timing curves is supported for shape animation.
+// Check the ellipse size property first since it is more likely to be
+// used and the position can also be animated at the shape layer level.
+if(ellipseSize['numKeys']===keyframes.length){
+kfFeature.timing_curves=parseTimingFunctionsFromKeyframes(
+ellipseSize['keyframes'],
+parseTimingFunctions);
+
+}else if(ellipsePosition['numKeys']===keyframes.length){
+kfFeature.timing_curves=parseTimingFunctionsFromKeyframes(
+ellipsePosition['keyframes'],
+parseTimingFunctions);
+
+}else{
+console.warn('Timing functions were not exported for ellipse shape, defaulting to linear timing.\n',
+'To use custom timing functions, ensure keyframes match for all ellipse properties.');
+}
+}else{
+var dimensions=ellipseSize['value'];
+var localOffset=ellipsePosition['value'];
+
+kfFeature.key_frames=[{
+start_frame:0,
+data:makeEllipse(
+[dimensions[0],dimensions[1]],
+[shapeOffset[0]+localOffset[0],shapeOffset[1]+localOffset[1]])}];
+
+
+}
 }
 }
 
@@ -389,6 +443,7 @@ rootGroup)
 
 
 
+
 {
 var vectorGroup=
 getPropertyChild(rootGroup,'ADBE Vector Group');
@@ -401,6 +456,8 @@ var groupVectorShapeGroup=
 getPropertyChild(groupVectorsGroup,'ADBE Vector Shape - Group');
 var vectorShape=
 getPropertyChild(groupVectorShapeGroup,'ADBE Vector Shape');
+var vectorShapeEllipse=
+getPropertyChild(groupVectorsGroup,'ADBE Vector Shape - Ellipse');
 
 var vectorGraphicFill=
 getPropertyChild(groupVectorsGroup,'ADBE Vector Graphic - Fill');
@@ -441,6 +498,7 @@ getPropertyChild(groupVectorFilterTrim,'ADBE Vector Trim Offset');
 
 return{
 vectorShape:vectorShape,
+vectorShapeEllipse:vectorShapeEllipse,
 vectorFillColor:vectorFillColor,
 vectorStrokeColor:vectorStrokeColor,
 vectorStrokeWidth:vectorStrokeWidth,
@@ -584,6 +642,277 @@ currVertex]});
 
 return commands.map(function(command){return(
 command.command+command.vertices.map(function(v){return[v[0].toFixed(2),v[1].toFixed(2)];}).join(','));});
+
+}
+
+/** Attempts to find a valid set of keyframes from ellipse size and position
+    objects. */
+function parseEllipseKeyframes(
+ellipseSize,
+ellipsePosition)
+
+
+
+
+{
+
+var keyframes=
+
+
+
+[];
+
+var sizeKeyframes=ellipseSize['keyframes'];
+var positionKeyframes=ellipsePosition['keyframes'];
+
+if(sizeKeyframes||positionKeyframes){(function(){
+var keyframeMap={};
+
+if(sizeKeyframes){
+sizeKeyframes.forEach(function(sizeKeyframe){
+var time=sizeKeyframe['time'];
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframe.size=sizeKeyframe['value'];
+}else{
+keyframeMap[time]={size:sizeKeyframe['value']};
+}
+});
+}
+
+if(positionKeyframes){
+positionKeyframes.forEach(function(positionKeyframe){
+var time=positionKeyframe['time'];
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframe.position=positionKeyframe['value'];
+}else{
+keyframeMap[time]={position:positionKeyframe['value']};
+}
+});
+}
+
+var timeVals=Object.keys(keyframeMap).map(function(key){
+return Number(key);
+});
+timeVals.sort();
+timeVals.forEach(function(time){
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframes.push({
+time:time,
+size:keyframe.size,
+position:keyframe.position});
+
+}
+});
+
+var size=
+sizeKeyframes?
+sizeKeyframes[0]['value']:
+ellipseSize['value'];
+var sizeIndex=-1;
+
+var position=
+positionKeyframes?
+positionKeyframes[0]['value']:
+ellipsePosition['value'];
+var positionIndex=-1;
+
+// All properties must be specified for all keyframes. Iterate over the
+// keyframe array and fill in missing values using either the constant value
+// of the property or an interpolated value if keyframes are present.
+keyframes.forEach(function(keyframe,index){
+if(keyframe.size){
+sizeIndex=index;
+size=keyframe.size;
+}else{
+if(sizeKeyframes&&sizeIndex>=0){
+var nextSizeIndex=sizeIndex+1;
+while(nextSizeIndex<keyframes.length){
+if(keyframes[nextSizeIndex].size&&
+keyframes[sizeIndex].size){
+// Use linear interpolation
+var ratio=
+(keyframe.time-keyframes[sizeIndex].time)/(
+keyframes[nextSizeIndex].time-keyframes[sizeIndex].time);
+size=
+[
+keyframes[sizeIndex].size[0]+
+ratio*(keyframes[nextSizeIndex].size[0]-
+keyframes[sizeIndex].size[0]),
+keyframes[sizeIndex].size[1]+
+ratio*(keyframes[nextSizeIndex].size[1]-
+keyframes[sizeIndex].size[1])];
+
+console.warn('Linear interpolating ellipse size:',size,'at time:',keyframe.time);
+break;
+}
+++nextSizeIndex;
+}
+}
+
+keyframe.size=size;
+}
+
+if(keyframe.position){
+positionIndex=index;
+position=keyframe.position;
+}else{
+if(positionKeyframes&&positionIndex>=0){
+var nextPositionIndex=positionIndex+1;
+while(nextPositionIndex<keyframes.length){
+if(keyframes[nextPositionIndex].position&&
+keyframes[positionIndex].position){
+// Use linear interpolation
+var _ratio=
+(keyframe.time-keyframes[positionIndex].time)/(
+keyframes[nextPositionIndex].time-keyframes[positionIndex].time);
+position=
+[
+keyframes[positionIndex].position[0]+
+_ratio*(keyframes[nextPositionIndex].position[0]-
+keyframes[positionIndex].position[0]),
+keyframes[positionIndex].position[1]+
+_ratio*(keyframes[nextPositionIndex].position[1]-
+keyframes[positionIndex].position[1])];
+
+console.warn('Linear interpolating ellipse position:',position,'at time:',keyframe.time);
+break;
+}
+++nextPositionIndex;
+}
+}
+
+keyframe.position=position;
+}
+});})();
+}
+
+return keyframes.map(function(keyframe){
+return{
+time:keyframe.time,
+size:keyframe.size?keyframe.size:ellipseSize['value'],
+position:keyframe.position?keyframe.position:ellipsePosition['value']};
+
+});
+}
+
+/** Creates an SVG-style command string for an ellipse defined by major- and
+    minor-axis dimensions and center location. */
+function makeEllipse(
+dimensions,
+center)
+{
+
+// Draw the ellipse with four cubic bezier segments.
+// For an ellipse with semi-major axis 'a' and semi-minor axis 'b', the
+// segments are (in local coordinates):
+// (a, 0) -> (0, b)
+// (0, b) -> (-a, 0)
+// (-a, 0) -> (0, -b)
+// (0, -b) -> (a, 0)
+// The optimal length of the handle points to approximate a circle of radius
+// 1 with four cubic bezier segments is h = 0.551915024494.
+
+
+var major=0.5*dimensions[0];
+var minor=0.5*dimensions[1];
+var centerX=center[0];
+var centerY=center[1];
+
+var handle=0.551915024494;
+var majorHandle=major*handle;
+var minorHandle=minor*handle;
+
+var commands=[];
+
+// Move to (a, 0)
+commands.push({
+command:'M',
+vertices:[[centerX+major,centerY]]});
+
+
+// Draw to (0, b)
+commands.push({
+command:'C',
+vertices:[
+[
+centerX+major,
+centerY+minorHandle],
+
+[
+centerX+majorHandle,
+centerY+minor],
+
+[
+centerX,
+centerY+minor]]});
+
+
+
+
+// Draw to (-a, 0)
+commands.push({
+command:'C',
+vertices:[
+[
+centerX-majorHandle,
+centerY+minor],
+
+[
+centerX-major,
+centerY+minorHandle],
+
+[
+centerX-major,
+centerY]]});
+
+
+
+
+// Draw to (0, -b)
+commands.push({
+command:'C',
+vertices:[
+[
+centerX-major,
+centerY-minorHandle],
+
+[
+centerX-majorHandle,
+centerY-minor],
+
+[
+centerX,
+centerY-minor]]});
+
+
+
+
+// Draw to (a, 0)
+commands.push({
+command:'C',
+vertices:[
+[
+centerX+majorHandle,
+centerY-minor],
+
+[
+centerX+major,
+centerY-minorHandle],
+
+[
+centerX+major,
+centerY]]});
+
+
+
+
+return commands.map(function(command){return(
+command.command+command.vertices.map(
+function(v){return[v[0].toFixed(2),v[1].toFixed(2)];}).
+join(','));});
 
 }
 

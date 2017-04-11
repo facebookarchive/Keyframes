@@ -180,6 +180,7 @@ function KfFeatureFromShapeLayer(
   }
   const {
     vectorShape,
+    vectorShapeEllipse,
     vectorFillColor,
     vectorStrokeColor,
     vectorStrokeWidth,
@@ -239,6 +240,59 @@ function KfFeatureFromShapeLayer(
         start_frame: 0,
         data: parseShape(vectorShape.value, shapeOffset),
       }];
+    }
+  } else if (vectorShapeEllipse) {
+    const ellipseSize: ?Object =
+      getPropertyChild(vectorShapeEllipse, 'ADBE Vector Ellipse Size');
+    const ellipsePosition: ?Object =
+      getPropertyChild(vectorShapeEllipse, 'ADBE Vector Ellipse Position');
+
+    if (ellipseSize && ellipsePosition) {
+      const keyframes = parseEllipseKeyframes(ellipseSize, ellipsePosition);
+
+      if (keyframes.length > 0) {
+        kfFeature.key_frames = keyframes.map(keyframe => {
+          return {
+            start_frame: Math.round(keyframe.time * comp.frameRate),
+            data: makeEllipse(
+              keyframe.size,
+              [
+                shapeOffset[0] + keyframe.position[0],
+                shapeOffset[1] + keyframe.position[1]
+              ],
+            ),
+          };
+        });
+        // Attempt to export the timing functions from the keyframes.
+        // Only a single set of timing curves is supported for shape animation.
+        // Check the ellipse size property first since it is more likely to be
+        // used and the position can also be animated at the shape layer level.
+        if (ellipseSize['numKeys'] === keyframes.length) {
+          kfFeature.timing_curves = parseTimingFunctionsFromKeyframes(
+            ellipseSize['keyframes'],
+            parseTimingFunctions
+          );
+        } else if (ellipsePosition['numKeys'] === keyframes.length) {
+          kfFeature.timing_curves = parseTimingFunctionsFromKeyframes(
+            ellipsePosition['keyframes'],
+            parseTimingFunctions
+          );
+        } else {
+          console.warn('Timing functions were not exported for ellipse shape, defaulting to linear timing.\n',
+                       'To use custom timing functions, ensure keyframes match for all ellipse properties.');
+        }
+      } else {
+        const dimensions: number[] = ellipseSize['value'];
+        const localOffset: number[] = ellipsePosition['value'];
+
+        kfFeature.key_frames = [{
+          start_frame: 0,
+          data: makeEllipse(
+            [dimensions[0], dimensions[1]],
+            [shapeOffset[0] + localOffset[0], shapeOffset[1] + localOffset[1]],
+          ),
+        }];
+      }
     }
   }
 
@@ -377,6 +431,7 @@ function parseRootVectorsGroup(
   rootGroup: ?PropertyGroupRootVectorsGroup,
 ): {
   vectorShape: ?PropertyVectorShape,
+  vectorShapeEllipse: ?Object,
   vectorFillColor: ?PropertyVectorFillColor,
   vectorStrokeColor: ?PropertyVectorStrokeColor,
   vectorStrokeWidth: ?PropertyVectorStrokeWidth,
@@ -401,6 +456,8 @@ function parseRootVectorsGroup(
     getPropertyChild(groupVectorsGroup, 'ADBE Vector Shape - Group');
   const vectorShape: ?PropertyVectorShape =
     getPropertyChild(groupVectorShapeGroup, 'ADBE Vector Shape');
+  const vectorShapeEllipse: ?Object =
+    getPropertyChild(groupVectorsGroup, 'ADBE Vector Shape - Ellipse');
 
   const vectorGraphicFill: ?PropertyGroupVectorGraphicFill =
     getPropertyChild(groupVectorsGroup, 'ADBE Vector Graphic - Fill');
@@ -441,6 +498,7 @@ function parseRootVectorsGroup(
 
   return {
     vectorShape,
+    vectorShapeEllipse,
     vectorFillColor,
     vectorStrokeColor,
     vectorStrokeWidth,
@@ -584,6 +642,277 @@ function parseShape(
 
   return commands.map(command =>
     command.command + command.vertices.map(v => [v[0].toFixed(2), v[1].toFixed(2)]).join(',')
+  );
+}
+
+/** Attempts to find a valid set of keyframes from ellipse size and position
+    objects. */
+function parseEllipseKeyframes(
+  ellipseSize: Object,
+  ellipsePosition: Object
+): Array<{
+    time: number,
+    size: [number, number],
+    position: [number, number]
+  }> {
+
+  const keyframes: Array<{
+    time: number,
+    size: ?[number, number],
+    position: ?[number, number],
+  }> = [];
+
+  const sizeKeyframes: ?[Object] = ellipseSize['keyframes'];
+  const positionKeyframes: ?[Object] = ellipsePosition['keyframes'];
+
+  if (sizeKeyframes || positionKeyframes) {
+    const keyframeMap: Object = {};
+
+    if (sizeKeyframes) {
+      sizeKeyframes.forEach(function (sizeKeyframe) {
+        const time: number = sizeKeyframe['time'];
+        const keyframe = keyframeMap[time];
+        if (keyframe) {
+          keyframe.size = sizeKeyframe['value'];
+        } else {
+          keyframeMap[time] = {size: sizeKeyframe['value']};
+        }
+      });
+    }
+
+    if (positionKeyframes) {
+      positionKeyframes.forEach(function (positionKeyframe) {
+        const time: number = positionKeyframe['time'];
+        const keyframe = keyframeMap[time];
+        if (keyframe) {
+          keyframe.position = positionKeyframe['value'];
+        } else {
+          keyframeMap[time] = {position: positionKeyframe['value']};
+        }
+      });
+    }
+
+    const timeVals: Array<number> = Object.keys(keyframeMap).map(function (key) {
+      return Number(key);
+    });
+    timeVals.sort();
+    timeVals.forEach(function (time) {
+      const keyframe = keyframeMap[time];
+      if (keyframe) {
+        keyframes.push({
+          time: time,
+          size: keyframe.size,
+          position: keyframe.position,
+        });
+      }
+    });
+
+    let size: [number, number] =
+      sizeKeyframes
+      ? sizeKeyframes[0]['value']
+      : ellipseSize['value'];
+    let sizeIndex = -1;
+
+    let position: [number, number] =
+      positionKeyframes
+      ? positionKeyframes[0]['value']
+      : ellipsePosition['value'];
+    let positionIndex = -1;
+
+    // All properties must be specified for all keyframes. Iterate over the
+    // keyframe array and fill in missing values using either the constant value
+    // of the property or an interpolated value if keyframes are present.
+    keyframes.forEach(function (keyframe, index) {
+      if (keyframe.size) {
+        sizeIndex = index;
+        size = keyframe.size;
+      } else {
+        if (sizeKeyframes && sizeIndex  >= 0) {
+          let nextSizeIndex: number = sizeIndex + 1;
+          while (nextSizeIndex < keyframes.length) {
+            if (keyframes[nextSizeIndex].size
+                && keyframes[sizeIndex].size) {
+              // Use linear interpolation
+              const ratio: number =
+                (keyframe.time - keyframes[sizeIndex].time)
+                / (keyframes[nextSizeIndex].time - keyframes[sizeIndex].time);
+              size =
+                [
+                  keyframes[sizeIndex].size[0]
+                    + ratio * (keyframes[nextSizeIndex].size[0]
+                                - keyframes[sizeIndex].size[0]),
+                  keyframes[sizeIndex].size[1]
+                    + ratio * (keyframes[nextSizeIndex].size[1]
+                                - keyframes[sizeIndex].size[1]),
+                ];
+              console.warn('Linear interpolating ellipse size:', size, 'at time:', keyframe.time);
+              break;
+            }
+            ++nextSizeIndex;
+          }
+        }
+
+        keyframe.size = size;
+      }
+
+      if (keyframe.position) {
+        positionIndex = index;
+        position = keyframe.position;
+      } else {
+        if (positionKeyframes && positionIndex  >= 0) {
+          let nextPositionIndex: number = positionIndex + 1;
+          while (nextPositionIndex < keyframes.length) {
+            if (keyframes[nextPositionIndex].position
+                && keyframes[positionIndex].position) {
+              // Use linear interpolation
+              const ratio: number =
+                (keyframe.time - keyframes[positionIndex].time)
+                / (keyframes[nextPositionIndex].time - keyframes[positionIndex].time);
+              position =
+              [
+                keyframes[positionIndex].position[0]
+                  + ratio * (keyframes[nextPositionIndex].position[0]
+                              - keyframes[positionIndex].position[0]),
+                keyframes[positionIndex].position[1]
+                  + ratio * (keyframes[nextPositionIndex].position[1]
+                              - keyframes[positionIndex].position[1]),
+              ];
+              console.warn('Linear interpolating ellipse position:', position, 'at time:', keyframe.time);
+              break;
+            }
+            ++nextPositionIndex;
+          }
+        }
+
+        keyframe.position = position;
+      }
+    });
+  }
+
+  return keyframes.map(keyframe => {
+    return {
+      time: keyframe.time,
+      size: keyframe.size ? keyframe.size : ellipseSize['value'],
+      position: keyframe.position ? keyframe.position : ellipsePosition['value']
+    }
+  });
+}
+
+/** Creates an SVG-style command string for an ellipse defined by major- and
+    minor-axis dimensions and center location. */
+function makeEllipse(
+  dimensions: [number, number],
+  center: [number, number],
+): string[] {
+
+  // Draw the ellipse with four cubic bezier segments.
+  // For an ellipse with semi-major axis 'a' and semi-minor axis 'b', the
+  // segments are (in local coordinates):
+  // (a, 0) -> (0, b)
+  // (0, b) -> (-a, 0)
+  // (-a, 0) -> (0, -b)
+  // (0, -b) -> (a, 0)
+  // The optimal length of the handle points to approximate a circle of radius
+  // 1 with four cubic bezier segments is h = 0.551915024494.
+  // Ref: http://spencermortensen.com/articles/bezier-circle/
+
+  const major: number = 0.5 * dimensions[0];
+  const minor: number = 0.5 * dimensions[1];
+  const centerX: number = center[0];
+  const centerY: number = center[1];
+
+  const handle: number = 0.551915024494;
+  const majorHandle: number = major * handle;
+  const minorHandle: number = minor * handle;
+
+  const commands: SVGCommand[] = [];
+
+  // Move to (a, 0)
+  commands.push({
+    command: 'M',
+    vertices: [[centerX + major, centerY]],
+  });
+
+  // Draw to (0, b)
+  commands.push({
+    command: 'C',
+    vertices: [
+      [
+        centerX + major,
+        centerY + minorHandle
+      ],
+      [
+        centerX + majorHandle,
+        centerY + minor
+      ],
+      [
+        centerX,
+        centerY + minor
+      ],
+    ],
+  });
+
+  // Draw to (-a, 0)
+  commands.push({
+    command: 'C',
+    vertices: [
+      [
+        centerX - majorHandle,
+        centerY + minor
+      ],
+      [
+        centerX - major,
+        centerY + minorHandle
+      ],
+      [
+        centerX - major,
+        centerY
+      ],
+    ],
+  });
+
+  // Draw to (0, -b)
+  commands.push({
+    command: 'C',
+    vertices: [
+      [
+        centerX - major,
+        centerY - minorHandle
+      ],
+      [
+        centerX - majorHandle,
+        centerY - minor
+      ],
+      [
+        centerX,
+        centerY - minor
+      ],
+    ],
+  });
+
+  // Draw to (a, 0)
+  commands.push({
+    command: 'C',
+    vertices: [
+      [
+        centerX + majorHandle,
+        centerY - minor
+      ],
+      [
+        centerX + major,
+        centerY - minorHandle
+      ],
+      [
+        centerX + major,
+        centerY
+      ],
+    ],
+  });
+
+  return commands.map(command =>
+    command.command + command.vertices.map(
+      v => [v[0].toFixed(2), v[1].toFixed(2)]
+    ).join(',')
   );
 }
 
