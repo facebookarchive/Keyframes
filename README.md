@@ -27,7 +27,7 @@ For detailed steps on running the ExtendScript script on your AE comp, please re
 Keyframes is available on CocoaPods. Add the following to your Podfile:
 ```
 target 'MyApp' do
-  pod "Keyframes"
+  pod "keyframes"
 end
 ```
 
