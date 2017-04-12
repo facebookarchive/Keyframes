@@ -41,11 +41,11 @@ KeyframesPreviewer.previewJSONAtPath = function(path) {
   if (!File(path).exists) {
     throw Error('File not found: ' + String(path));
   }
-  
+
   if (macOS.isTheCurrentOS) {
     var macOSPlayerApp = File(__dirname + '/bin-android/Keyframes Player.app');
     if (!macOSPlayerApp.exists) macOSPlayerApp = File('/Applications/Keyframes Player.app');
-    if (!macOSPlayerApp.exists) macOSPlayerApp = File('~/Downdloads/Keyframes Player.app');
+    if (!macOSPlayerApp.exists) macOSPlayerApp = File('~/Downloads/Keyframes Player.app');
     if (!macOSPlayerApp.exists) {
       console.warn('"Keyframes Player.app" not found. Install it in /Applications');
     } else {

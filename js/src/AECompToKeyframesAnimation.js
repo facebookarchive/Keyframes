@@ -181,6 +181,7 @@ function KfFeatureFromShapeLayer(
   const {
     vectorShape,
     vectorShapeEllipse,
+    vectorShapeRectangle,
     vectorFillColor,
     vectorStrokeColor,
     vectorStrokeWidth,
@@ -290,6 +291,76 @@ function KfFeatureFromShapeLayer(
           data: makeEllipse(
             [dimensions[0], dimensions[1]],
             [shapeOffset[0] + localOffset[0], shapeOffset[1] + localOffset[1]],
+          ),
+        }];
+      }
+    }
+  } else if (vectorShapeRectangle) {
+    const rectSize: ?Object =
+      getPropertyChild(vectorShapeRectangle, 'ADBE Vector Rect Size');
+    const rectPosition: ?Object =
+      getPropertyChild(vectorShapeRectangle, 'ADBE Vector Rect Position');
+    const rectRoundness: ?Object =
+      getPropertyChild(vectorShapeRectangle, 'ADBE Vector Rect Roundness');
+    if (rectSize && rectPosition && rectRoundness) {
+      const keyframes = parseRectangleKeyframes(
+        rectSize,
+        rectPosition,
+        rectRoundness
+      );
+
+      if (keyframes.length > 0) {
+        kfFeature.key_frames = keyframes.map(keyframe => {
+          return {
+            start_frame: Math.round(keyframe.time * comp.frameRate),
+            data: makeRectangle(
+              keyframe.size,
+              [
+                shapeOffset[0] + keyframe.position[0],
+                shapeOffset[1] + keyframe.position[1]
+              ],
+              keyframe.roundness
+            ),
+          };
+        });
+        // Attempt to export the timing functions from the keyframes.
+        // Only a single set of timing curves is supported for shape animation.
+        // Check the rect size property first since it's probably the most
+        // likely to be animated. Check position last since this can also be
+        // animated at the shape layer level.
+        if (rectSize['numKeys'] === keyframes.length) {
+          kfFeature.timing_curves = parseTimingFunctionsFromKeyframes(
+            rectSize['keyframes'],
+            parseTimingFunctions
+          );
+        } else if (rectRoundness['numKeys'] === keyframes.length) {
+          kfFeature.timing_curves = parseTimingFunctionsFromKeyframes(
+            rectRoundness['keyframes'],
+            parseTimingFunctions
+          );
+        } else if (rectPosition['numKeys'] === keyframes.length) {
+          kfFeature.timing_curves = parseTimingFunctionsFromKeyframes(
+            rectPosition['keyframes'],
+            parseTimingFunctions
+          );
+        } else {
+          console.warn('Timing functions were not exported for rect shape, defaulting to linear timing.\n',
+                       'To use custom timing functions, ensure keyframes match for all rect properties.');
+        }
+
+      } else {
+        const dimensions: number[] = rectSize['value'];
+        const localOffset: number[] = rectPosition['value'];
+        const roundness: ?number = rectRoundness['value'] > 0
+          ? rectRoundness['value']
+          : null;
+
+        kfFeature.key_frames = [{
+          start_frame: 0,
+          data: makeRectangle(
+            [dimensions[0], dimensions[1]],
+            [shapeOffset[0] + localOffset[0], shapeOffset[1] + localOffset[1]],
+            roundness,
           ),
         }];
       }
@@ -432,6 +503,7 @@ function parseRootVectorsGroup(
 ): {
   vectorShape: ?PropertyVectorShape,
   vectorShapeEllipse: ?Object,
+  vectorShapeRectangle: ?Object,
   vectorFillColor: ?PropertyVectorFillColor,
   vectorStrokeColor: ?PropertyVectorStrokeColor,
   vectorStrokeWidth: ?PropertyVectorStrokeWidth,
@@ -458,6 +530,8 @@ function parseRootVectorsGroup(
     getPropertyChild(groupVectorShapeGroup, 'ADBE Vector Shape');
   const vectorShapeEllipse: ?Object =
     getPropertyChild(groupVectorsGroup, 'ADBE Vector Shape - Ellipse');
+  const vectorShapeRectangle: ?Object =
+    getPropertyChild(groupVectorsGroup, 'ADBE Vector Shape - Rect');
 
   const vectorGraphicFill: ?PropertyGroupVectorGraphicFill =
     getPropertyChild(groupVectorsGroup, 'ADBE Vector Graphic - Fill');
@@ -499,6 +573,7 @@ function parseRootVectorsGroup(
   return {
     vectorShape,
     vectorShapeEllipse,
+    vectorShapeRectangle,
     vectorFillColor,
     vectorStrokeColor,
     vectorStrokeWidth,
@@ -916,6 +991,394 @@ function makeEllipse(
   );
 }
 
+/** Attempts to find a valid set of keyframes from rectangle size, position
+    and roundness objects. */
+function parseRectangleKeyframes(
+  rectSize: Object,
+  rectPosition: Object,
+  rectRoundness: Object,
+): Array<{
+    time: number,
+    size: [number, number],
+    position: [number, number],
+    roundness: ?number
+  }> {
+
+  const keyframes: Array<{
+    time: number,
+    size: ?[number, number],
+    position: ?[number, number],
+    roundness: ?number
+  }> = [];
+
+  const sizeKeyframes: ?[Object] = rectSize['keyframes'];
+  const positionKeyframes: ?[Object] = rectPosition['keyframes'];
+  const roundnessKeyframes: ?[Object] = rectRoundness['keyframes'];
+
+  if (sizeKeyframes || positionKeyframes || roundnessKeyframes) {
+    const keyframeMap: Object = {};
+
+    if (sizeKeyframes) {
+      sizeKeyframes.forEach(function (sizeKeyframe) {
+        const time: number = sizeKeyframe['time'];
+        const keyframe = keyframeMap[time];
+        if (keyframe) {
+          keyframe.size = sizeKeyframe['value'];
+        } else {
+          keyframeMap[time] = {size: sizeKeyframe['value']};
+        }
+      });
+    }
+
+    if (positionKeyframes) {
+      positionKeyframes.forEach(function (positionKeyframe) {
+        const time: number = positionKeyframe['time'];
+        const keyframe = keyframeMap[time];
+        if (keyframe) {
+          keyframe.position = positionKeyframe['value'];
+        } else {
+          keyframeMap[time] = {position: positionKeyframe['value']};
+        }
+      });
+    }
+
+    if (roundnessKeyframes) {
+      roundnessKeyframes.forEach(function (roundnessKeyframe) {
+        const time: number = roundnessKeyframe['time'];
+        const keyframe = keyframeMap[time];
+        if (keyframe) {
+          keyframe.roundness = roundnessKeyframe['value'];
+        } else {
+          keyframeMap[time] = {roundness: roundnessKeyframe['value']};
+        }
+      });
+    }
+
+    const timeVals: Array<number> = Object.keys(keyframeMap).map(function (key) {
+      return Number(key);
+    });
+    timeVals.sort();
+    timeVals.forEach(function (time) {
+      const keyframe = keyframeMap[time];
+      if (keyframe) {
+        keyframes.push({
+          time: time,
+          size: keyframe.size,
+          position: keyframe.position,
+          roundness: keyframe.roundness,
+        });
+      }
+    });
+
+    let size: [number, number] =
+      sizeKeyframes
+      ? sizeKeyframes[0]['value']
+      : rectSize['value'];
+    let sizeIndex = -1;
+
+    let position: [number, number] =
+      positionKeyframes
+      ? positionKeyframes[0]['value']
+      : rectPosition['value'];
+    let positionIndex = -1;
+
+    let roundness: ?number =
+      roundnessKeyframes
+      ? roundnessKeyframes[0]['value']
+      : (rectRoundness['value'] > 0 ? rectRoundness['value'] : null);
+    let roundnessIndex: number = -1;
+
+    // All properties must be specified for all keyframes. Iterate over the
+    // keyframe array and fill in missing values using either the constant value
+    // of the property or an interpolated value if keyframes are present.
+    keyframes.forEach(function (keyframe, index) {
+      if (keyframe.size) {
+        sizeIndex = index;
+        size = keyframe.size;
+      } else {
+        if (sizeKeyframes && sizeIndex  >= 0) {
+          let nextSizeIndex: number = sizeIndex + 1;
+          while (nextSizeIndex < keyframes.length) {
+            if (keyframes[nextSizeIndex].size
+                && keyframes[sizeIndex].size) {
+              // Use linear interpolation
+              const ratio: number =
+                (keyframe.time - keyframes[sizeIndex].time)
+                / (keyframes[nextSizeIndex].time - keyframes[sizeIndex].time);
+              size =
+                [
+                  keyframes[sizeIndex].size[0]
+                    + ratio * (keyframes[nextSizeIndex].size[0]
+                                - keyframes[sizeIndex].size[0]),
+                  keyframes[sizeIndex].size[1]
+                    + ratio * (keyframes[nextSizeIndex].size[1]
+                                - keyframes[sizeIndex].size[1]),
+                ];
+              console.warn('Linear interpolating rect size:', size, 'at time:', keyframe.time);
+              break;
+            }
+            ++nextSizeIndex;
+          }
+        }
+
+        keyframe.size = size;
+      }
+
+      if (keyframe.position) {
+        positionIndex = index;
+        position = keyframe.position;
+      } else {
+        if (positionKeyframes && positionIndex  >= 0) {
+          let nextPositionIndex: number = positionIndex + 1;
+          while (nextPositionIndex < keyframes.length) {
+            if (keyframes[nextPositionIndex].position
+                && keyframes[positionIndex].position) {
+              // Use linear interpolation
+              const ratio: number =
+                (keyframe.time - keyframes[positionIndex].time)
+                / (keyframes[nextPositionIndex].time - keyframes[positionIndex].time);
+              position =
+              [
+                keyframes[positionIndex].position[0]
+                  + ratio * (keyframes[nextPositionIndex].position[0]
+                              - keyframes[positionIndex].position[0]),
+                keyframes[positionIndex].position[1]
+                  + ratio * (keyframes[nextPositionIndex].position[1]
+                              - keyframes[positionIndex].position[1]),
+              ];
+              console.warn('Linear interpolating rect position:', position, 'at time:', keyframe.time);
+              break;
+            }
+            ++nextPositionIndex;
+          }
+        }
+
+        keyframe.position = position;
+      }
+
+      if (keyframe.roundness != null) {
+        roundnessIndex = index;
+        roundness = keyframe.roundness;
+      } else {
+        if (roundnessKeyframes && roundnessIndex  >= 0) {
+          let nextRoundnessIndex: number = roundnessIndex + 1;
+          while (nextRoundnessIndex < keyframes.length) {
+            if (keyframes[nextRoundnessIndex].roundness != null
+                && keyframes[roundnessIndex].roundness != null) {
+              // Use linear interpolation
+              const ratio: number =
+                (keyframe.time - keyframes[roundnessIndex].time)
+                / (keyframes[nextRoundnessIndex].time - keyframes[roundnessIndex].time);
+              roundness =
+                keyframes[roundnessIndex].roundness
+                  + ratio * (keyframes[nextRoundnessIndex].roundness
+                              - keyframes[roundnessIndex].roundness);
+              console.warn('Linear interpolating rect roundness:', roundness, 'at time:', keyframe.time);
+              break;
+            }
+            ++nextRoundnessIndex;
+          }
+        }
+
+        keyframe.roundness = roundness;
+      }
+    });
+  }
+
+  return keyframes.map(keyframe => {
+    return {
+      time: keyframe.time,
+      size: keyframe.size ? keyframe.size : rectSize['value'],
+      position: keyframe.position ? keyframe.position : rectPosition['value'],
+      roundness: keyframe.roundness != null ? keyframe.roundness : rectRoundness['value']
+    }
+  });
+}
+
+/** Creates an SVG-style command string for a rectangle defined by x and y
+    dimensions, center location, and corner roundness. */
+function makeRectangle(
+  dimensions: [number, number],
+  center: [number, number],
+  roundness: ?number,
+): string[] {
+
+  const centerX: number = center[0];
+  const centerY: number = center[1];
+  const halfXDim: number = 0.5 * dimensions[0];
+  const halfYDim: number = 0.5 * dimensions[1];
+
+  // After Effects allows arbitrarily large roundness values, so we have to cap
+  // it at the smaller half-side length of the rectangle.
+  const minHalfSideLength: number = halfXDim < halfYDim ? halfXDim : halfYDim;
+  let clippedRoundness: number = 0;
+  if (roundness != null) {
+    clippedRoundness = roundness > minHalfSideLength
+      ? minHalfSideLength
+      : roundness;
+  }
+
+  const commands: SVGCommand[] = [];
+
+  // A rounded rectangle is drawn as 8 bezier segments; four quarter-circle
+  // segments represented by cubic bezier curves for the corners, and four
+  // straight-line linear segments for the edges. If roundess is not specified,
+  // omit the corner segments.
+
+  // Used to approximate a quarter-circle with a cubic bezier segment.
+  // See the makeEllipse method for more info.
+  const handle: number = 0.551915024494;
+
+  // If roundness is zero, the corner segments will have zero length. This will
+  // produce unpredictable results if the roundness is later animated to > 0.
+  // To get around this, create non-zero length bezier handles facing the
+  // correct direction This can happen for example when rectangle corner
+  // roundness is animated from zero to non-zero.
+  const handleToEdge: number =
+    clippedRoundness > 0
+    ? (1 - handle) * clippedRoundness
+    : -1;
+
+  // Move to upper right
+  commands.push({
+    command: 'M',
+    vertices: [[centerX + halfXDim, centerY + halfYDim - clippedRoundness]],
+  });
+
+  if (roundness != null) {
+    // Draw upper right corner
+    commands.push({
+      command: 'C',
+      vertices: [
+        [
+          centerX + halfXDim,
+          centerY + halfYDim - handleToEdge,
+        ],
+        [
+          centerX + halfXDim - handleToEdge,
+          centerY + halfYDim,
+        ],
+        [
+          centerX + halfXDim - clippedRoundness,
+          centerY + halfYDim
+        ],
+      ]
+    });
+  }
+
+  // Draw upper edge
+  commands.push({
+    command: 'L',
+    vertices: [
+      [
+        centerX - halfXDim + clippedRoundness,
+        centerY + halfYDim
+      ]
+    ],
+  });
+
+  if (roundness != null) {
+    // Draw upper left corner
+    commands.push({
+      command: 'C',
+      vertices: [
+        [
+          centerX - halfXDim + handleToEdge,
+          centerY + halfYDim,
+        ],
+        [
+          centerX - halfXDim,
+          centerY + halfYDim - handleToEdge,
+        ],
+        [
+          centerX - halfXDim,
+          centerY + halfYDim - clippedRoundness
+        ],
+      ]
+    });
+  }
+
+  // Draw left egde
+  commands.push({
+    command: 'L',
+    vertices: [
+      [
+        centerX - halfXDim,
+        centerY - halfYDim + clippedRoundness
+      ]
+    ],
+  });
+
+  if (roundness != null) {
+    // Draw lower left corner
+    commands.push({
+      command: 'C',
+      vertices: [
+        [
+          centerX - halfXDim,
+          centerY - halfYDim + handleToEdge,
+        ],
+        [
+          centerX - halfXDim + handleToEdge,
+          centerY - halfYDim,
+        ],
+        [
+          centerX - halfXDim + clippedRoundness,
+          centerY - halfYDim
+        ],
+      ]
+    });
+  }
+
+  // Draw lower edge
+  commands.push({
+    command: 'L',
+    vertices: [
+      [
+        centerX + halfXDim - clippedRoundness,
+        centerY - halfYDim
+      ]
+    ],
+  });
+
+  if (roundness != null) {
+    // Draw lower right corner
+    commands.push({
+      command: 'C',
+      vertices: [
+        [
+          centerX + halfXDim - handleToEdge,
+          centerY - halfYDim,
+        ],
+        [
+          centerX + halfXDim,
+          centerY - halfYDim + handleToEdge,
+        ],
+        [
+          centerX + halfXDim,
+          centerY - halfYDim + clippedRoundness
+        ],
+      ]
+    });
+  }
+
+  // Draw right edge
+  commands.push({
+    command: 'L',
+    vertices: [
+      [
+        centerX + halfXDim,
+        centerY + halfYDim - clippedRoundness
+      ]
+    ],
+  });
+
+  return commands.map(command =>
+    command.command + command.vertices.map(
+      v => [v[0].toFixed(2), v[1].toFixed(2)]
+    ).join(',')
+  );
+}
 
 function parseTransformGroup(
   transformGroup: PropertyGroupTransformGroup,

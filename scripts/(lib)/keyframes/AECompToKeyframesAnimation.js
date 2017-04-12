@@ -192,7 +192,8 @@ throw'Root Vectors Group missing, corrupted input JSON';
 
 
 
-parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorShapeEllipse=_parseRootVectorsGrou.vectorShapeEllipse;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
+
+parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorShapeEllipse=_parseRootVectorsGrou.vectorShapeEllipse;var vectorShapeRectangle=_parseRootVectorsGrou.vectorShapeRectangle;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
 
 var shapeOffset=[0,0];
 
@@ -290,6 +291,76 @@ start_frame:0,
 data:makeEllipse(
 [dimensions[0],dimensions[1]],
 [shapeOffset[0]+localOffset[0],shapeOffset[1]+localOffset[1]])}];
+
+
+}
+}
+}else if(vectorShapeRectangle){
+var rectSize=
+getPropertyChild(vectorShapeRectangle,'ADBE Vector Rect Size');
+var rectPosition=
+getPropertyChild(vectorShapeRectangle,'ADBE Vector Rect Position');
+var rectRoundness=
+getPropertyChild(vectorShapeRectangle,'ADBE Vector Rect Roundness');
+if(rectSize&&rectPosition&&rectRoundness){
+var _keyframes=parseRectangleKeyframes(
+rectSize,
+rectPosition,
+rectRoundness);
+
+
+if(_keyframes.length>0){
+kfFeature.key_frames=_keyframes.map(function(keyframe){
+return{
+start_frame:Math.round(keyframe.time*comp.frameRate),
+data:makeRectangle(
+keyframe.size,
+[
+shapeOffset[0]+keyframe.position[0],
+shapeOffset[1]+keyframe.position[1]],
+
+keyframe.roundness)};
+
+
+});
+// Attempt to export the timing functions from the keyframes.
+// Only a single set of timing curves is supported for shape animation.
+// Check the rect size property first since it's probably the most
+// likely to be animated. Check position last since this can also be
+// animated at the shape layer level.
+if(rectSize['numKeys']===_keyframes.length){
+kfFeature.timing_curves=parseTimingFunctionsFromKeyframes(
+rectSize['keyframes'],
+parseTimingFunctions);
+
+}else if(rectRoundness['numKeys']===_keyframes.length){
+kfFeature.timing_curves=parseTimingFunctionsFromKeyframes(
+rectRoundness['keyframes'],
+parseTimingFunctions);
+
+}else if(rectPosition['numKeys']===_keyframes.length){
+kfFeature.timing_curves=parseTimingFunctionsFromKeyframes(
+rectPosition['keyframes'],
+parseTimingFunctions);
+
+}else{
+console.warn('Timing functions were not exported for rect shape, defaulting to linear timing.\n',
+'To use custom timing functions, ensure keyframes match for all rect properties.');
+}
+
+}else{
+var _dimensions=rectSize['value'];
+var _localOffset=rectPosition['value'];
+var _roundness=rectRoundness['value']>0?
+rectRoundness['value']:
+null;
+
+kfFeature.key_frames=[{
+start_frame:0,
+data:makeRectangle(
+[_dimensions[0],_dimensions[1]],
+[shapeOffset[0]+_localOffset[0],shapeOffset[1]+_localOffset[1]],
+_roundness)}];
 
 
 }
@@ -444,6 +515,7 @@ rootGroup)
 
 
 
+
 {
 var vectorGroup=
 getPropertyChild(rootGroup,'ADBE Vector Group');
@@ -458,6 +530,8 @@ var vectorShape=
 getPropertyChild(groupVectorShapeGroup,'ADBE Vector Shape');
 var vectorShapeEllipse=
 getPropertyChild(groupVectorsGroup,'ADBE Vector Shape - Ellipse');
+var vectorShapeRectangle=
+getPropertyChild(groupVectorsGroup,'ADBE Vector Shape - Rect');
 
 var vectorGraphicFill=
 getPropertyChild(groupVectorsGroup,'ADBE Vector Graphic - Fill');
@@ -499,6 +573,7 @@ getPropertyChild(groupVectorFilterTrim,'ADBE Vector Trim Offset');
 return{
 vectorShape:vectorShape,
 vectorShapeEllipse:vectorShapeEllipse,
+vectorShapeRectangle:vectorShapeRectangle,
 vectorFillColor:vectorFillColor,
 vectorStrokeColor:vectorStrokeColor,
 vectorStrokeWidth:vectorStrokeWidth,
@@ -916,6 +991,394 @@ join(','));});
 
 }
 
+/** Attempts to find a valid set of keyframes from rectangle size, position
+    and roundness objects. */
+function parseRectangleKeyframes(
+rectSize,
+rectPosition,
+rectRoundness)
+
+
+
+
+
+{
+
+var keyframes=
+
+
+
+
+[];
+
+var sizeKeyframes=rectSize['keyframes'];
+var positionKeyframes=rectPosition['keyframes'];
+var roundnessKeyframes=rectRoundness['keyframes'];
+
+if(sizeKeyframes||positionKeyframes||roundnessKeyframes){(function(){
+var keyframeMap={};
+
+if(sizeKeyframes){
+sizeKeyframes.forEach(function(sizeKeyframe){
+var time=sizeKeyframe['time'];
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframe.size=sizeKeyframe['value'];
+}else{
+keyframeMap[time]={size:sizeKeyframe['value']};
+}
+});
+}
+
+if(positionKeyframes){
+positionKeyframes.forEach(function(positionKeyframe){
+var time=positionKeyframe['time'];
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframe.position=positionKeyframe['value'];
+}else{
+keyframeMap[time]={position:positionKeyframe['value']};
+}
+});
+}
+
+if(roundnessKeyframes){
+roundnessKeyframes.forEach(function(roundnessKeyframe){
+var time=roundnessKeyframe['time'];
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframe.roundness=roundnessKeyframe['value'];
+}else{
+keyframeMap[time]={roundness:roundnessKeyframe['value']};
+}
+});
+}
+
+var timeVals=Object.keys(keyframeMap).map(function(key){
+return Number(key);
+});
+timeVals.sort();
+timeVals.forEach(function(time){
+var keyframe=keyframeMap[time];
+if(keyframe){
+keyframes.push({
+time:time,
+size:keyframe.size,
+position:keyframe.position,
+roundness:keyframe.roundness});
+
+}
+});
+
+var size=
+sizeKeyframes?
+sizeKeyframes[0]['value']:
+rectSize['value'];
+var sizeIndex=-1;
+
+var position=
+positionKeyframes?
+positionKeyframes[0]['value']:
+rectPosition['value'];
+var positionIndex=-1;
+
+var roundness=
+roundnessKeyframes?
+roundnessKeyframes[0]['value']:
+rectRoundness['value']>0?rectRoundness['value']:null;
+var roundnessIndex=-1;
+
+// All properties must be specified for all keyframes. Iterate over the
+// keyframe array and fill in missing values using either the constant value
+// of the property or an interpolated value if keyframes are present.
+keyframes.forEach(function(keyframe,index){
+if(keyframe.size){
+sizeIndex=index;
+size=keyframe.size;
+}else{
+if(sizeKeyframes&&sizeIndex>=0){
+var nextSizeIndex=sizeIndex+1;
+while(nextSizeIndex<keyframes.length){
+if(keyframes[nextSizeIndex].size&&
+keyframes[sizeIndex].size){
+// Use linear interpolation
+var ratio=
+(keyframe.time-keyframes[sizeIndex].time)/(
+keyframes[nextSizeIndex].time-keyframes[sizeIndex].time);
+size=
+[
+keyframes[sizeIndex].size[0]+
+ratio*(keyframes[nextSizeIndex].size[0]-
+keyframes[sizeIndex].size[0]),
+keyframes[sizeIndex].size[1]+
+ratio*(keyframes[nextSizeIndex].size[1]-
+keyframes[sizeIndex].size[1])];
+
+console.warn('Linear interpolating rect size:',size,'at time:',keyframe.time);
+break;
+}
+++nextSizeIndex;
+}
+}
+
+keyframe.size=size;
+}
+
+if(keyframe.position){
+positionIndex=index;
+position=keyframe.position;
+}else{
+if(positionKeyframes&&positionIndex>=0){
+var nextPositionIndex=positionIndex+1;
+while(nextPositionIndex<keyframes.length){
+if(keyframes[nextPositionIndex].position&&
+keyframes[positionIndex].position){
+// Use linear interpolation
+var _ratio2=
+(keyframe.time-keyframes[positionIndex].time)/(
+keyframes[nextPositionIndex].time-keyframes[positionIndex].time);
+position=
+[
+keyframes[positionIndex].position[0]+
+_ratio2*(keyframes[nextPositionIndex].position[0]-
+keyframes[positionIndex].position[0]),
+keyframes[positionIndex].position[1]+
+_ratio2*(keyframes[nextPositionIndex].position[1]-
+keyframes[positionIndex].position[1])];
+
+console.warn('Linear interpolating rect position:',position,'at time:',keyframe.time);
+break;
+}
+++nextPositionIndex;
+}
+}
+
+keyframe.position=position;
+}
+
+if(keyframe.roundness!=null){
+roundnessIndex=index;
+roundness=keyframe.roundness;
+}else{
+if(roundnessKeyframes&&roundnessIndex>=0){
+var nextRoundnessIndex=roundnessIndex+1;
+while(nextRoundnessIndex<keyframes.length){
+if(keyframes[nextRoundnessIndex].roundness!=null&&
+keyframes[roundnessIndex].roundness!=null){
+// Use linear interpolation
+var _ratio3=
+(keyframe.time-keyframes[roundnessIndex].time)/(
+keyframes[nextRoundnessIndex].time-keyframes[roundnessIndex].time);
+roundness=
+keyframes[roundnessIndex].roundness+
+_ratio3*(keyframes[nextRoundnessIndex].roundness-
+keyframes[roundnessIndex].roundness);
+console.warn('Linear interpolating rect roundness:',roundness,'at time:',keyframe.time);
+break;
+}
+++nextRoundnessIndex;
+}
+}
+
+keyframe.roundness=roundness;
+}
+});})();
+}
+
+return keyframes.map(function(keyframe){
+return{
+time:keyframe.time,
+size:keyframe.size?keyframe.size:rectSize['value'],
+position:keyframe.position?keyframe.position:rectPosition['value'],
+roundness:keyframe.roundness!=null?keyframe.roundness:rectRoundness['value']};
+
+});
+}
+
+/** Creates an SVG-style command string for a rectangle defined by x and y
+    dimensions, center location, and corner roundness. */
+function makeRectangle(
+dimensions,
+center,
+roundness)
+{
+
+var centerX=center[0];
+var centerY=center[1];
+var halfXDim=0.5*dimensions[0];
+var halfYDim=0.5*dimensions[1];
+
+// After Effects allows arbitrarily large roundness values, so we have to cap
+// it at the smaller half-side length of the rectangle.
+var minHalfSideLength=halfXDim<halfYDim?halfXDim:halfYDim;
+var clippedRoundness=0;
+if(roundness!=null){
+clippedRoundness=roundness>minHalfSideLength?
+minHalfSideLength:
+roundness;
+}
+
+var commands=[];
+
+// A rounded rectangle is drawn as 8 bezier segments; four quarter-circle
+// segments represented by cubic bezier curves for the corners, and four
+// straight-line linear segments for the edges. If roundess is not specified,
+// omit the corner segments.
+
+// Used to approximate a quarter-circle with a cubic bezier segment.
+// See the makeEllipse method for more info.
+var handle=0.551915024494;
+
+// If roundness is zero, the corner segments will have zero length. This will
+// produce unpredictable results if the roundness is later animated to > 0.
+// To get around this, create non-zero length bezier handles facing the
+// correct direction This can happen for example when rectangle corner
+// roundness is animated from zero to non-zero.
+var handleToEdge=
+clippedRoundness>0?
+(1-handle)*clippedRoundness:
+-1;
+
+// Move to upper right
+commands.push({
+command:'M',
+vertices:[[centerX+halfXDim,centerY+halfYDim-clippedRoundness]]});
+
+
+if(roundness!=null){
+// Draw upper right corner
+commands.push({
+command:'C',
+vertices:[
+[
+centerX+halfXDim,
+centerY+halfYDim-handleToEdge],
+
+[
+centerX+halfXDim-handleToEdge,
+centerY+halfYDim],
+
+[
+centerX+halfXDim-clippedRoundness,
+centerY+halfYDim]]});
+
+
+
+}
+
+// Draw upper edge
+commands.push({
+command:'L',
+vertices:[
+[
+centerX-halfXDim+clippedRoundness,
+centerY+halfYDim]]});
+
+
+
+
+if(roundness!=null){
+// Draw upper left corner
+commands.push({
+command:'C',
+vertices:[
+[
+centerX-halfXDim+handleToEdge,
+centerY+halfYDim],
+
+[
+centerX-halfXDim,
+centerY+halfYDim-handleToEdge],
+
+[
+centerX-halfXDim,
+centerY+halfYDim-clippedRoundness]]});
+
+
+
+}
+
+// Draw left egde
+commands.push({
+command:'L',
+vertices:[
+[
+centerX-halfXDim,
+centerY-halfYDim+clippedRoundness]]});
+
+
+
+
+if(roundness!=null){
+// Draw lower left corner
+commands.push({
+command:'C',
+vertices:[
+[
+centerX-halfXDim,
+centerY-halfYDim+handleToEdge],
+
+[
+centerX-halfXDim+handleToEdge,
+centerY-halfYDim],
+
+[
+centerX-halfXDim+clippedRoundness,
+centerY-halfYDim]]});
+
+
+
+}
+
+// Draw lower edge
+commands.push({
+command:'L',
+vertices:[
+[
+centerX+halfXDim-clippedRoundness,
+centerY-halfYDim]]});
+
+
+
+
+if(roundness!=null){
+// Draw lower right corner
+commands.push({
+command:'C',
+vertices:[
+[
+centerX+halfXDim-handleToEdge,
+centerY-halfYDim],
+
+[
+centerX+halfXDim,
+centerY-halfYDim+handleToEdge],
+
+[
+centerX+halfXDim,
+centerY-halfYDim+clippedRoundness]]});
+
+
+
+}
+
+// Draw right edge
+commands.push({
+command:'L',
+vertices:[
+[
+centerX+halfXDim,
+centerY+halfYDim-clippedRoundness]]});
+
+
+
+
+return commands.map(function(command){return(
+command.command+command.vertices.map(
+function(v){return[v[0].toFixed(2),v[1].toFixed(2)];}).
+join(','));});
+
+}
 
 function parseTransformGroup(
 transformGroup,
