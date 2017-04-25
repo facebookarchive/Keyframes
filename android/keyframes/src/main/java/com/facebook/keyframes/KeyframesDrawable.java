@@ -410,6 +410,10 @@ public class KeyframesDrawable extends Drawable
     mKeyframesDrawableAnimationCallback.setMaxFrameRate(maxFrameRate);
   }
 
+  public KFImage getKFImage() {
+    return mKFImage;
+  }
+
   private class FeatureState {
     private final KFFeature mFeature;
 
