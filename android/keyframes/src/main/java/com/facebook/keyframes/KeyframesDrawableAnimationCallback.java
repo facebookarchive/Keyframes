@@ -154,7 +154,9 @@ public abstract class KeyframesDrawableAnimationCallback {
   }
 
   protected void advanceAnimation(final long frameTimeMillis) {
-    if (mListener.get() == null) {
+    // hold a strong reference to the listener to prevent getting a null during this method.
+    FrameListener listener = mListener.get();
+    if (listener == null) {
       cancelCallback();
       mStartTimeMillis = 0;
       mPreviousProgressMillis = 0;
@@ -172,7 +174,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     int currentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
     final boolean loopHasEnded = currentLoopNumber > mCurrentLoopNumber;
     if (mStopAtLoopEnd && loopHasEnded) {
-      mListener.get().onProgressUpdate(mFrameCount);
+      listener.onProgressUpdate(mFrameCount);
       stop();
       return;
     }
@@ -186,7 +188,7 @@ public abstract class KeyframesDrawableAnimationCallback {
     }
 
     if (shouldUpdateProgress) {
-      mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
+      listener.onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
     }
     mCurrentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
     postCallback();
