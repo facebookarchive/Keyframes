@@ -27,6 +27,7 @@ import com.facebook.keyframes.model.KFAnimationGroup;
 import com.facebook.keyframes.model.KFFeature;
 import com.facebook.keyframes.model.KFGradient;
 import com.facebook.keyframes.model.KFImage;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedFillColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedGradient;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
@@ -417,6 +418,7 @@ public class KeyframesDrawable extends Drawable
     private final KFPath mFeatureMaskPath;
     private final KeyFramedStrokeWidth.StrokeWidth mStrokeWidth;
     private final KeyFramedStrokeColor.StrokeColor mStrokeColor;
+    private final KeyFramedFillColor.FillColor mFillColor;
     private final KeyFramedOpacity.Opacity mOpacity;
     private final Matrix mFeatureMatrix;
     private final float[] mMatrixValueRecyclableArray = new float[9];
@@ -442,6 +444,7 @@ public class KeyframesDrawable extends Drawable
         mPath = null;
         mStrokeWidth = null;
         mStrokeColor = null;
+        mFillColor = null;
         // Bitmap features use the matrix later in draw()
         // so there's no way to reuse a globally cached matrix
         mFeatureMatrix = new Matrix();
@@ -449,6 +452,7 @@ public class KeyframesDrawable extends Drawable
         mPath = new KFPath();
         mStrokeWidth = new KeyFramedStrokeWidth.StrokeWidth();
         mStrokeColor = new KeyFramedStrokeColor.StrokeColor();
+        mFillColor = new KeyFramedFillColor.FillColor();
         // Path features use the matrix immediately
         // so there's no need to waste memory with a unique copy
         mFeatureMatrix = mRecyclableTransformMatrix;
@@ -533,6 +537,9 @@ public class KeyframesDrawable extends Drawable
     }
 
     public int getFillColor() {
+      if (mFillColor != null && mFillColor.hasFillColor()) {
+        return (int)mFillColor.getFillColor();
+      }
       return mFeature.getFillColor();
     }
 

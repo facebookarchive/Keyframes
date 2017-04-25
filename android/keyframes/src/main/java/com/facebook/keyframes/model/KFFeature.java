@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedFillColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedPath;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedStrokeColor;
@@ -125,6 +126,10 @@ public class KFFeature {
    * A KFAnimation just for the special cased stroke color animation. Package private for testing.
    */
   final KFAnimation mStrokeColorAnimation;
+  /**
+   * A KFAnimation just for the special cased fill color animation. Package private for testing.
+   */
+  final KFAnimation mFillColorAnimation;
 
   /**
    * An optional effect that this feature layer can have.
@@ -218,6 +223,9 @@ public class KFFeature {
     mStrokeColorAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.STROKE_COLOR);
+    mFillColorAnimation = AnimationHelper.extractSpecialAnimationAnimationSet(
+        featureAnimations,
+        KFAnimation.PropertyType.FILL_COLOR);
     mAnchorPoint = AnimationHelper.extractSpecialAnimationAnimationSet(
         featureAnimations,
         KFAnimation.PropertyType.ANCHOR_POINT);
@@ -296,6 +304,15 @@ public class KFFeature {
       return;
     }
     mStrokeColorAnimation.getAnimation().apply(frameProgress, strokeColor);
+  }
+
+  public void setFillColor(
+          KeyFramedFillColor.FillColor fillColor,
+          float frameProgress) {
+    if (fillColor == null || mFillColorAnimation == null) {
+      return;
+    }
+    mFillColorAnimation.getAnimation().apply(frameProgress, fillColor);
   }
 
   public void setOpacity(

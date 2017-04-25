@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedAnchorPoint;
+import com.facebook.keyframes.model.keyframedmodels.KeyFramedFillColor;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedMatrixAnimation;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedObject;
 import com.facebook.keyframes.model.keyframedmodels.KeyFramedOpacity;
@@ -49,6 +50,7 @@ public class KFAnimation {
     ANCHOR_POINT (false),
     STROKE_WIDTH (false),
     STROKE_COLOR (false),
+    FILL_COLOR (false),
     OPACITY (false);
 
     /**
@@ -143,6 +145,8 @@ public class KFAnimation {
       mKeyFramedAnimation = KeyFramedStrokeWidth.fromAnimation(this);
     } else if (mPropertyType == PropertyType.STROKE_COLOR){
       mKeyFramedAnimation = KeyFramedStrokeColor.fromAnimation(this);
+    } else if (mPropertyType == PropertyType.FILL_COLOR){
+      mKeyFramedAnimation = KeyFramedFillColor.fromAnimation(this);
     } else if (mPropertyType == PropertyType.ANCHOR_POINT) {
       mKeyFramedAnimation = KeyFramedAnchorPoint.fromAnchorPoint(this);
     } else if (mPropertyType == PropertyType.OPACITY) {
