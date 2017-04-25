@@ -41,6 +41,8 @@ public abstract class KeyframesDrawableAnimationCallback {
 
   private long mStartTimeMillis;
   private boolean mStopAtLoopEnd;
+  // This flag is used to prevent posting callbacks after the animation is stopped.
+  private boolean mStopped;
   private int mCurrentLoopNumber;
 
   private long mMinimumMillisBetweenProgressUpdates = -1;
@@ -97,6 +99,7 @@ public abstract class KeyframesDrawableAnimationCallback {
    * or #pause() when no longer in use!
    */
   public void start() {
+    mStopped = false;
     mStopAtLoopEnd = false;
     mStartTimeMillis = 0;
     mCurrentLoopNumber = 0;
@@ -108,6 +111,7 @@ public abstract class KeyframesDrawableAnimationCallback {
    * Starts the animation and plays it once
    */
   public void playOnce() {
+    mStopped = false;
     mStopAtLoopEnd = true;
     mStartTimeMillis = 0;
     mCurrentLoopNumber = 0;
@@ -119,6 +123,7 @@ public abstract class KeyframesDrawableAnimationCallback {
    * Stops the callbacks animation and resets the start time.
    */
   public void stop() {
+    mStopped = true;
     cancelCallback();
     mStartTimeMillis = 0;
     mCurrentLoopNumber = -1;
@@ -189,7 +194,9 @@ public abstract class KeyframesDrawableAnimationCallback {
       mListener.get().onProgressUpdate((float) currentProgressMillis / mMillisPerLoop * mFrameCount);
     }
     mCurrentLoopNumber = (int) (frameTimeMillis - mStartTimeMillis) / mMillisPerLoop;
-    postCallback();
+    if (!mStopped) {
+      postCallback();
+    }
   }
 
   @TargetApi(16)
