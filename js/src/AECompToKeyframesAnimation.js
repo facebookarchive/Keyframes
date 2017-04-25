@@ -91,7 +91,7 @@ function AECompToKeyframesAnimation(comp: CompItem): KfDocument {
   .forEach((layer) => {
     switch (layer.__type__) {
     case 'AVLayer':
-      if (layer['source$__type__'] === 'FootageItem' && layer['source$name'].endsWith('.png')) {
+      if (isBitmapLayer(layer)) {
         // a image backed layer
         const image = KFBitmapFeatureFromAVLayer(comp, layer, kfDoc);
         if (image) {
@@ -124,6 +124,10 @@ function AECompToKeyframesAnimation(comp: CompItem): KfDocument {
   });
 
   return kfDoc;
+}
+
+function isBitmapLayer(layer: AVLayer | ShapeLayer): bool {
+  return layer['source$__type__'] === 'FootageItem' && layer['source$name'].endsWith('.png');
 }
 
 function commonFeatureFromLayer(
@@ -1464,7 +1468,7 @@ function parseTransformGroup(
     } break;
 
     case 'ADBE Opacity': {
-      if (layer.matchName === 'ADBE Vector Layer') {
+      if (layer.matchName === 'ADBE Vector Layer' || isBitmapLayer(layer)) {
         const timing_curves = parseTimingFunctionsFromKeyframes(tfProp.keyframes, parseTimingFunctions);
         const key_values = keyValuesFor(comp, tfProp, (value: number) => [value]);
         if (key_values.filter(({data:[value]}) => value !== 100).length > 0) {

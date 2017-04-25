@@ -91,7 +91,7 @@ filter(function(layer){return layer.enabled||layer.isTrackMatte;}).
 forEach(function(layer){
 switch(layer.__type__){
 case'AVLayer':
-if(layer['source$__type__']==='FootageItem'&&layer['source$name'].endsWith('.png')){
+if(isBitmapLayer(layer)){
 // a image backed layer
 var image=KFBitmapFeatureFromAVLayer(comp,layer,kfDoc);
 if(image){
@@ -124,6 +124,10 @@ console.warn('Skipped unsupported layer type \''+layer.__type__+'\'');}
 });
 
 return kfDoc;
+}
+
+function isBitmapLayer(layer){
+return layer['source$__type__']==='FootageItem'&&layer['source$name'].endsWith('.png');
 }
 
 function commonFeatureFromLayer(
@@ -193,7 +197,7 @@ throw'Root Vectors Group missing, corrupted input JSON';
 
 
 
-parseRootVectorsGroup(rootVectorsGroup);var vectorShape=_parseRootVectorsGrou.vectorShape;var vectorShapeEllipse=_parseRootVectorsGrou.vectorShapeEllipse;var vectorShapeRectangle=_parseRootVectorsGrou.vectorShapeRectangle;var vectorFillColor=_parseRootVectorsGrou.vectorFillColor;var vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor;var vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth;var vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap;var vectorPosition=_parseRootVectorsGrou.vectorPosition;var vectorScale=_parseRootVectorsGrou.vectorScale;var vectorRotation=_parseRootVectorsGrou.vectorRotation;var vectorOpacity=_parseRootVectorsGrou.vectorOpacity;var vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart;var vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd;var vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
+parseRootVectorsGroup(rootVectorsGroup),vectorShape=_parseRootVectorsGrou.vectorShape,vectorShapeEllipse=_parseRootVectorsGrou.vectorShapeEllipse,vectorShapeRectangle=_parseRootVectorsGrou.vectorShapeRectangle,vectorFillColor=_parseRootVectorsGrou.vectorFillColor,vectorStrokeColor=_parseRootVectorsGrou.vectorStrokeColor,vectorStrokeWidth=_parseRootVectorsGrou.vectorStrokeWidth,vectorStrokeLineCap=_parseRootVectorsGrou.vectorStrokeLineCap,vectorPosition=_parseRootVectorsGrou.vectorPosition,vectorScale=_parseRootVectorsGrou.vectorScale,vectorRotation=_parseRootVectorsGrou.vectorRotation,vectorOpacity=_parseRootVectorsGrou.vectorOpacity,vectorTrimStart=_parseRootVectorsGrou.vectorTrimStart,vectorTrimEnd=_parseRootVectorsGrou.vectorTrimEnd,vectorTrimOffset=_parseRootVectorsGrou.vectorTrimOffset;
 
 var shapeOffset=[0,0];
 
@@ -205,11 +209,11 @@ shapeOffset=[vectorPosition.value[0],vectorPosition.value[1]];
 }
 if(vectorScale){
 var key_values=keyValuesFor(comp,vectorScale,function(value){return[value[0],value[1]];});
-warnIfUsingMissingFeature(key_values.filter(function(_ref){var _ref$data=_slicedToArray(_ref.data,2);var x=_ref$data[0];var y=_ref$data[1];return x!==100||y!==100;}).length>0,'Scale on vector',vectorScale,rootVectorsGroup,layer,comp);
+warnIfUsingMissingFeature(key_values.filter(function(_ref){var _ref$data=_slicedToArray(_ref.data,2),x=_ref$data[0],y=_ref$data[1];return x!==100||y!==100;}).length>0,'Scale on vector',vectorScale,rootVectorsGroup,layer,comp);
 }
 if(vectorRotation){
 var _key_values=keyValuesFor(comp,vectorRotation,function(value){return[value%360];});
-warnIfUsingMissingFeature(_key_values.filter(function(_ref2){var _ref2$data=_slicedToArray(_ref2.data,1);var value=_ref2$data[0];return value!==0;}).length>0,'Rotation on vector',vectorRotation,rootVectorsGroup,layer,comp);
+warnIfUsingMissingFeature(_key_values.filter(function(_ref2){var _ref2$data=_slicedToArray(_ref2.data,1),value=_ref2$data[0];return value!==0;}).length>0,'Rotation on vector',vectorRotation,rootVectorsGroup,layer,comp);
 }
 
 if(vectorStrokeLineCap){
@@ -479,7 +483,7 @@ function getHexColorStringFromRGB(_ref3)
 
 
 
-{var _ref4=_slicedToArray(_ref3,4);var r=_ref4[0];var g=_ref4[1];var b=_ref4[2];var a=_ref4[3];
+{var _ref4=_slicedToArray(_ref3,4),r=_ref4[0],g=_ref4[1],b=_ref4[2],a=_ref4[3];
 return"#"+componentToHex(a)+componentToHex(r)+componentToHex(g)+componentToHex(b);
 }
 
@@ -599,7 +603,7 @@ function hasTangent(_ref5)
 
 
 
-{var _ref6=_slicedToArray(_ref5,2);var x=_ref6[0];var y=_ref6[1];
+{var _ref6=_slicedToArray(_ref5,2),x=_ref6[0],y=_ref6[1];
 return!!x||!!y;
 }
 
@@ -626,7 +630,7 @@ shapeOffset)
 inTangents=
 
 
-shape.inTangents;var outTangents=shape.outTangents;var closed=shape.closed;
+shape.inTangents,outTangents=shape.outTangents,closed=shape.closed;
 
 var vertices=
 shape.vertices.map(function(vertex){return[vertex[0]+shapeOffset[0],vertex[1]+shapeOffset[1]];});
@@ -740,7 +744,7 @@ var keyframes=
 var sizeKeyframes=ellipseSize['keyframes'];
 var positionKeyframes=ellipsePosition['keyframes'];
 
-if(sizeKeyframes||positionKeyframes){(function(){
+if(sizeKeyframes||positionKeyframes){
 var keyframeMap={};
 
 if(sizeKeyframes){
@@ -782,13 +786,13 @@ position:keyframe.position});
 }
 });
 
-var size=
+var _size=
 sizeKeyframes?
 sizeKeyframes[0]['value']:
 ellipseSize['value'];
 var sizeIndex=-1;
 
-var position=
+var _position=
 positionKeyframes?
 positionKeyframes[0]['value']:
 ellipsePosition['value'];
@@ -800,7 +804,7 @@ var positionIndex=-1;
 keyframes.forEach(function(keyframe,index){
 if(keyframe.size){
 sizeIndex=index;
-size=keyframe.size;
+_size=keyframe.size;
 }else{
 if(sizeKeyframes&&sizeIndex>=0){
 var nextSizeIndex=sizeIndex+1;
@@ -811,7 +815,7 @@ keyframes[sizeIndex].size){
 var ratio=
 (keyframe.time-keyframes[sizeIndex].time)/(
 keyframes[nextSizeIndex].time-keyframes[sizeIndex].time);
-size=
+_size=
 [
 keyframes[sizeIndex].size[0]+
 ratio*(keyframes[nextSizeIndex].size[0]-
@@ -820,19 +824,19 @@ keyframes[sizeIndex].size[1]+
 ratio*(keyframes[nextSizeIndex].size[1]-
 keyframes[sizeIndex].size[1])];
 
-console.warn('Linear interpolating ellipse size:',size,'at time:',keyframe.time);
+console.warn('Linear interpolating ellipse size:',_size,'at time:',keyframe.time);
 break;
 }
 ++nextSizeIndex;
 }
 }
 
-keyframe.size=size;
+keyframe.size=_size;
 }
 
 if(keyframe.position){
 positionIndex=index;
-position=keyframe.position;
+_position=keyframe.position;
 }else{
 if(positionKeyframes&&positionIndex>=0){
 var nextPositionIndex=positionIndex+1;
@@ -843,7 +847,7 @@ keyframes[positionIndex].position){
 var _ratio=
 (keyframe.time-keyframes[positionIndex].time)/(
 keyframes[nextPositionIndex].time-keyframes[positionIndex].time);
-position=
+_position=
 [
 keyframes[positionIndex].position[0]+
 _ratio*(keyframes[nextPositionIndex].position[0]-
@@ -852,16 +856,16 @@ keyframes[positionIndex].position[1]+
 _ratio*(keyframes[nextPositionIndex].position[1]-
 keyframes[positionIndex].position[1])];
 
-console.warn('Linear interpolating ellipse position:',position,'at time:',keyframe.time);
+console.warn('Linear interpolating ellipse position:',_position,'at time:',keyframe.time);
 break;
 }
 ++nextPositionIndex;
 }
 }
 
-keyframe.position=position;
+keyframe.position=_position;
 }
-});})();
+});
 }
 
 return keyframes.map(function(keyframe){
@@ -1015,7 +1019,7 @@ var sizeKeyframes=rectSize['keyframes'];
 var positionKeyframes=rectPosition['keyframes'];
 var roundnessKeyframes=rectRoundness['keyframes'];
 
-if(sizeKeyframes||positionKeyframes||roundnessKeyframes){(function(){
+if(sizeKeyframes||positionKeyframes||roundnessKeyframes){
 var keyframeMap={};
 
 if(sizeKeyframes){
@@ -1070,19 +1074,19 @@ roundness:keyframe.roundness});
 }
 });
 
-var size=
+var _size2=
 sizeKeyframes?
 sizeKeyframes[0]['value']:
 rectSize['value'];
 var sizeIndex=-1;
 
-var position=
+var _position2=
 positionKeyframes?
 positionKeyframes[0]['value']:
 rectPosition['value'];
 var positionIndex=-1;
 
-var roundness=
+var _roundness2=
 roundnessKeyframes?
 roundnessKeyframes[0]['value']:
 rectRoundness['value']>0?rectRoundness['value']:null;
@@ -1094,7 +1098,7 @@ var roundnessIndex=-1;
 keyframes.forEach(function(keyframe,index){
 if(keyframe.size){
 sizeIndex=index;
-size=keyframe.size;
+_size2=keyframe.size;
 }else{
 if(sizeKeyframes&&sizeIndex>=0){
 var nextSizeIndex=sizeIndex+1;
@@ -1105,7 +1109,7 @@ keyframes[sizeIndex].size){
 var ratio=
 (keyframe.time-keyframes[sizeIndex].time)/(
 keyframes[nextSizeIndex].time-keyframes[sizeIndex].time);
-size=
+_size2=
 [
 keyframes[sizeIndex].size[0]+
 ratio*(keyframes[nextSizeIndex].size[0]-
@@ -1114,19 +1118,19 @@ keyframes[sizeIndex].size[1]+
 ratio*(keyframes[nextSizeIndex].size[1]-
 keyframes[sizeIndex].size[1])];
 
-console.warn('Linear interpolating rect size:',size,'at time:',keyframe.time);
+console.warn('Linear interpolating rect size:',_size2,'at time:',keyframe.time);
 break;
 }
 ++nextSizeIndex;
 }
 }
 
-keyframe.size=size;
+keyframe.size=_size2;
 }
 
 if(keyframe.position){
 positionIndex=index;
-position=keyframe.position;
+_position2=keyframe.position;
 }else{
 if(positionKeyframes&&positionIndex>=0){
 var nextPositionIndex=positionIndex+1;
@@ -1137,7 +1141,7 @@ keyframes[positionIndex].position){
 var _ratio2=
 (keyframe.time-keyframes[positionIndex].time)/(
 keyframes[nextPositionIndex].time-keyframes[positionIndex].time);
-position=
+_position2=
 [
 keyframes[positionIndex].position[0]+
 _ratio2*(keyframes[nextPositionIndex].position[0]-
@@ -1146,19 +1150,19 @@ keyframes[positionIndex].position[1]+
 _ratio2*(keyframes[nextPositionIndex].position[1]-
 keyframes[positionIndex].position[1])];
 
-console.warn('Linear interpolating rect position:',position,'at time:',keyframe.time);
+console.warn('Linear interpolating rect position:',_position2,'at time:',keyframe.time);
 break;
 }
 ++nextPositionIndex;
 }
 }
 
-keyframe.position=position;
+keyframe.position=_position2;
 }
 
 if(keyframe.roundness!=null){
 roundnessIndex=index;
-roundness=keyframe.roundness;
+_roundness2=keyframe.roundness;
 }else{
 if(roundnessKeyframes&&roundnessIndex>=0){
 var nextRoundnessIndex=roundnessIndex+1;
@@ -1169,20 +1173,20 @@ keyframes[roundnessIndex].roundness!=null){
 var _ratio3=
 (keyframe.time-keyframes[roundnessIndex].time)/(
 keyframes[nextRoundnessIndex].time-keyframes[roundnessIndex].time);
-roundness=
+_roundness2=
 keyframes[roundnessIndex].roundness+
 _ratio3*(keyframes[nextRoundnessIndex].roundness-
 keyframes[roundnessIndex].roundness);
-console.warn('Linear interpolating rect roundness:',roundness,'at time:',keyframe.time);
+console.warn('Linear interpolating rect roundness:',_roundness2,'at time:',keyframe.time);
 break;
 }
 ++nextRoundnessIndex;
 }
 }
 
-keyframe.roundness=roundness;
+keyframe.roundness=_roundness2;
 }
-});})();
+});
 }
 
 return keyframes.map(function(keyframe){
@@ -1431,10 +1435,10 @@ case'ADBE Position':{
 var _timing_curves=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var x_key_values=keyValuesFor(comp,tfProp,function(value){return[value[0]];});
 var y_key_values=keyValuesFor(comp,tfProp,function(value){return[value[1]];});
-if(x_key_values.filter(function(_ref7){var _ref7$data=_slicedToArray(_ref7.data,1);var value=_ref7$data[0];return value!==0;}).length>0){
+if(x_key_values.filter(function(_ref7){var _ref7$data=_slicedToArray(_ref7.data,1),value=_ref7$data[0];return value!==0;}).length>0){
 kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:x_key_values,timing_curves:_timing_curves};
 }
-if(y_key_values.filter(function(_ref8){var _ref8$data=_slicedToArray(_ref8.data,1);var value=_ref8$data[0];return value!==0;}).length>0){
+if(y_key_values.filter(function(_ref8){var _ref8$data=_slicedToArray(_ref8.data,1),value=_ref8$data[0];return value!==0;}).length>0){
 kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:y_key_values,timing_curves:_timing_curves};
 }
 }break;
@@ -1442,7 +1446,7 @@ kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:y_key_values,timi
 case'ADBE Position_0':{
 var _timing_curves2=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values2=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values2.filter(function(_ref9){var _ref9$data=_slicedToArray(_ref9.data,1);var value=_ref9$data[0];return value!==0;}).length>0){
+if(_key_values2.filter(function(_ref9){var _ref9$data=_slicedToArray(_ref9.data,1),value=_ref9$data[0];return value!==0;}).length>0){
 kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:_key_values2,timing_curves:_timing_curves2};
 }
 }break;
@@ -1450,7 +1454,7 @@ kfAnimGroupPropXPositionAnim={property:'X_POSITION',key_values:_key_values2,timi
 case'ADBE Position_1':{
 var _timing_curves3=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values3=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values3.filter(function(_ref10){var _ref10$data=_slicedToArray(_ref10.data,1);var value=_ref10$data[0];return value!==0;}).length>0){
+if(_key_values3.filter(function(_ref10){var _ref10$data=_slicedToArray(_ref10.data,1),value=_ref10$data[0];return value!==0;}).length>0){
 kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:_key_values3,timing_curves:_timing_curves3};
 }
 }break;
@@ -1458,16 +1462,16 @@ kfAnimGroupPropYPositionAnim={property:'Y_POSITION',key_values:_key_values3,timi
 case'ADBE Scale':{
 var _timing_curves4=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values4=keyValuesFor(comp,tfProp,function(value){return[value[0],value[1]];});
-if(_key_values4.filter(function(_ref11){var _ref11$data=_slicedToArray(_ref11.data,2);var x=_ref11$data[0];var y=_ref11$data[1];return x!==100||y!==100;}).length>0){
+if(_key_values4.filter(function(_ref11){var _ref11$data=_slicedToArray(_ref11.data,2),x=_ref11$data[0],y=_ref11$data[1];return x!==100||y!==100;}).length>0){
 kfAnimGroupPropScaleAnim={property:'SCALE',key_values:_key_values4,timing_curves:_timing_curves4};
 }
 }break;
 
 case'ADBE Opacity':{
-if(layer.matchName==='ADBE Vector Layer'){
+if(layer.matchName==='ADBE Vector Layer'||isBitmapLayer(layer)){
 var _timing_curves5=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values5=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values5.filter(function(_ref12){var _ref12$data=_slicedToArray(_ref12.data,1);var value=_ref12$data[0];return value!==100;}).length>0){
+if(_key_values5.filter(function(_ref12){var _ref12$data=_slicedToArray(_ref12.data,1),value=_ref12$data[0];return value!==100;}).length>0){
 kfAnimGroupPropOpacityAnim={property:'OPACITY',key_values:_key_values5,timing_curves:_timing_curves5};
 }
 }
@@ -1476,7 +1480,7 @@ kfAnimGroupPropOpacityAnim={property:'OPACITY',key_values:_key_values5,timing_cu
 case'ADBE Rotate Z':{
 var _timing_curves6=parseTimingFunctionsFromKeyframes(tfProp.keyframes,parseTimingFunctions);
 var _key_values6=keyValuesFor(comp,tfProp,function(value){return[value];});
-if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1);var value=_ref13$data[0];return value%360!==0;}).length>0){
+if(_key_values6.filter(function(_ref13){var _ref13$data=_slicedToArray(_ref13.data,1),value=_ref13$data[0];return value%360!==0;}).length>0){
 kfAnimGroupPropRotationAnim={property:'ROTATION',key_values:_key_values6,timing_curves:_timing_curves6};
 }
 }break;
@@ -1597,7 +1601,7 @@ tfProp,
 convert)
 {
 var keyValues=[];
-tfProp.keyframes&&tfProp.keyframes.forEach(function(_ref14){var time=_ref14.time;var value=_ref14.value;
+tfProp.keyframes&&tfProp.keyframes.forEach(function(_ref14){var time=_ref14.time,value=_ref14.value;
 var data=convert(value);
 keyValues.push({start_frame:Math.round(time*comp.frameRate),data:data});
 });
