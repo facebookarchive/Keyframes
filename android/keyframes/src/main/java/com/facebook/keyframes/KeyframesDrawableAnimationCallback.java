@@ -120,6 +120,17 @@ public abstract class KeyframesDrawableAnimationCallback {
   }
 
   /**
+   * Starts the animation and plays it once
+   */
+  public void playOnce() {
+    mStopAtLoopEnd = true;
+    mStartTimeMillis = 0;
+    mCurrentLoopNumber = 0;
+    cancelCallback();
+    postCallback();
+  }
+
+  /**
    * Stops the callbacks animation and resets the start time.
    */
   public void stop() {
