@@ -36,6 +36,11 @@
 - (void)startAnimation;
 
 /**
+ * Call this method to start animation from a given progress, progress is in range of [0, 1].
+ */
+- (void)startAnimationFromProgress:(CGFloat)progress;
+
+/**
  * Call this method to pause vector animation. To resume, call resumeAnimation.
  */
 - (void)pauseAnimation;

@@ -243,6 +243,13 @@
   self.beginTime = 0.0;
 }
 
+- (void)startAnimationFromProgress:(CGFloat)progress{
+    [self _resetAnimations];
+    self.speed = 1.0;
+    self.timeOffset = 0.0;
+    self.beginTime = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+}
+
 - (void)resumeAnimation
 {
   if (self.speed > 0) {
