@@ -159,6 +159,7 @@ Existing implementations for mobile frameworks:
 
 | Framework             | Platform    | Author          | Link                                                            |
 |-----------------------|-------------|-----------------|-----------------------------------------------------------------|
+| React Native (imperative api)          | Android/IOS | [Tomas Roos](https://github.com/ptomasroos)| https://github.com/ptomasroos/react-native-keyframes/
 | Appcelerator Titanium | iOS         | [Hans Knoechel](https://github.com/hansemannn/)   | https://github.com/hansemannn/ti.keyframes                      |
 | Appcelerator Titanium | Android     | [Michael Gangolf](https://github.com/m1ga/) | https://github.com/m1ga/ti.keyframes                            |
 | React Native          | Android/iOS | [Underscope](https://github.com/underscopeio/)      | https://github.com/underscopeio/react-native-facebook-keyframes |
