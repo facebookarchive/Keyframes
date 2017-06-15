@@ -39,7 +39,7 @@ public abstract class KeyFramedObject<T extends HasKeyFrame, M> {
     }
 
     mFirstDescribedFrame = mObjects.keyAt(0);
-    mLastDescribedFrame = mObjects.keyAt(listSize - 1);
+    mLastDescribedFrame = mObjects.keyAt(mObjects.size() - 1);
     mInterpolators = KeyFrameAnimationHelper.buildInterpolatorList(timingCurves);
   }
 
