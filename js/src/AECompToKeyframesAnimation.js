@@ -1543,8 +1543,8 @@ const parseTimingFunctionsFromKeyframes = (keyframes, mapping: Function) =>
 const parseShapeMorphTimingFunctions = (keyframeA, keyframeB) =>
   keyframeA && keyframeB &&
   [
-    [0 + keyframeA.outTemporalEase[0].influence / 200, 0],
-    [1 - keyframeB.inTemporalEase[0].influence / 200, 1],
+    [0 + keyframeA.outTemporalEase[0].influence / 100, 0],
+    [1 - keyframeB.inTemporalEase[0].influence / 100, 1],
   ]
 ;
 
