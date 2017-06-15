@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = 'keyframes'
-  spec.version          = '1.0.0'
+  spec.version          = '1.1.0'
   spec.license          = { :type => 'BSD', :file => 'LICENSE' }
   spec.homepage         = 'https://github.com/facebookincubator/Keyframes'
   spec.author           = { 'Sean Lee' => 'landasiastudio@gmail.com', 'Renyu Liu' => 'sd.qd.lry@gmail.com' }
