@@ -189,18 +189,23 @@ public class KeyframesDrawable extends Drawable
         continue;
       }
 
+      // We need paint for drawing (opacity animated) bitmaps and paths
+      mDrawingPaint.setShader(null);
+      mDrawingPaint.setAlpha(featureState.getAlpha());
+
+      // Drawing bitmap
       final Bitmap backedImage = featureState.getBackedImageBitmap();
       final Matrix uniqueFeatureMatrix = featureState.getUniqueFeatureMatrix();
       if (backedImage != null && uniqueFeatureMatrix != null) {
         // This block is for the experimental bitmap supporting
         canvas.save();
         canvas.concat(mScaleMatrix);
-        canvas.drawBitmap(backedImage, uniqueFeatureMatrix, null);
-
+        canvas.drawBitmap(backedImage, uniqueFeatureMatrix, mDrawingPaint);
         canvas.restore();
         continue;
       }
 
+      // Drawing path
       pathToDraw = featureState.getCurrentPathForDrawing();
       if (pathToDraw == null || pathToDraw.isEmpty()) {
         continue;
@@ -209,7 +214,6 @@ public class KeyframesDrawable extends Drawable
         canvas.save();
         applyScaleAndClipCanvas(canvas, featureState.getCurrentMaskPath(), Region.Op.INTERSECT);
       }
-      mDrawingPaint.setShader(null);
       mDrawingPaint.setStrokeCap(featureState.getStrokeLineCap());
       if (featureState.getFillColor() != Color.TRANSPARENT) {
         mDrawingPaint.setStyle(Paint.Style.FILL);
@@ -224,7 +228,6 @@ public class KeyframesDrawable extends Drawable
       }
       if (featureState.getStrokeColor() != Color.TRANSPARENT && featureState.getStrokeWidth() > 0) {
         mDrawingPaint.setColor(featureState.getStrokeColor());
-        mDrawingPaint.setAlpha(featureState.getAlpha());
         mDrawingPaint.setStyle(Paint.Style.STROKE);
         mDrawingPaint.setStrokeWidth(
                 featureState.getStrokeWidth() * mScale * mScaleFromCenter * mScaleFromEnd);
@@ -484,6 +487,7 @@ public class KeyframesDrawable extends Drawable
       if (layerTransformMatrix != null && !layerTransformMatrix.isIdentity()) {
         mFeatureMatrix.postConcat(layerTransformMatrix);
       }
+      mFeature.setOpacity(mOpacity, frameProgress);
       KeyFramedPath path = mFeature.getPath();
       if (hasCustomDrawable() || path == null) {
         return; // skip all the path stuff
@@ -494,8 +498,8 @@ public class KeyframesDrawable extends Drawable
 
       mFeature.setStrokeWidth(mStrokeWidth, frameProgress);
       mFeature.setStrokeColor(mStrokeColor, frameProgress);
+      mFeature.setFillColor(mFillColor, frameProgress);
       mStrokeWidth.adjustScale(extractScaleFromMatrix(mFeatureMatrix));
-      mFeature.setOpacity(mOpacity, frameProgress);
       if (mFeature.getEffect() != null) {
         prepareShadersForFeature(mFeature);
       }
