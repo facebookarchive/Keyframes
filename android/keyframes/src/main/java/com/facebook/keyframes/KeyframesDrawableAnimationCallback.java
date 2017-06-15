@@ -205,14 +205,13 @@ public abstract class KeyframesDrawableAnimationCallback {
   private static class FrameCallbackFaceAnimationCallback extends KeyframesDrawableAnimationCallback
       implements Choreographer.FrameCallback {
 
-    private final Choreographer mChoreographer;
+    private static Choreographer sUIChoreographer;
 
     private FrameCallbackFaceAnimationCallback(
         FrameListener listener,
         int frameRate,
         int frameCount) {
       super(listener, frameRate, frameCount);
-      mChoreographer = Choreographer.getInstance();
     }
 
     @Override
@@ -222,12 +221,18 @@ public abstract class KeyframesDrawableAnimationCallback {
 
     @Override
     protected void postCallback() {
-      mChoreographer.postFrameCallback(this);
+      if (sUIChoreographer == null) {
+        sUIChoreographer = Choreographer.getInstance();
+      }
+      sUIChoreographer.postFrameCallback(this);
     }
 
     @Override
     protected void cancelCallback() {
-      mChoreographer.removeFrameCallback(this);
+      if (sUIChoreographer == null) {
+        sUIChoreographer = Choreographer.getInstance();
+      }
+      sUIChoreographer.removeFrameCallback(this);
     }
   }
 
