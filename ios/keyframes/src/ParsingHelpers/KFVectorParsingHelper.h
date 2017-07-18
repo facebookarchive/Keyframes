@@ -10,10 +10,12 @@
 #import <keyframes/KFUtilities.h>
 
 @class KFVector;
+@class UIImage;
 
 KF_EXTERN_C_BEGIN
 
 KFVector *KFVectorFromDictionary(NSDictionary *faceDictionary);
 KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger fromFrame, NSUInteger toFrame);
+KFVector *KFVectorFromBitmapReplacement(KFVector *vector, NSString *key, UIImage *bitmap);
 
 KF_EXTERN_C_END

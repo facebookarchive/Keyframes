@@ -241,3 +241,21 @@ KFVector *KFVectorFromDictionaryInRange(NSDictionary *faceDictionary, NSUInteger
    animationGroups:animationGroups
    bitmaps:_buildBitmapsFromDictionary(faceDictionary[@"bitmaps"])];
 }
+
+KFVector *KFVectorFromBitmapReplacement(KFVector *vector, NSString *key, UIImage *bitmap)
+{
+  NSMutableDictionary *const bitmaps = vector.bitmaps.mutableCopy;
+  bitmaps[key] = bitmap;
+
+  return
+  [[KFVector alloc]
+   initWithCanvasSize:vector.canvasSize
+   name:vector.name
+   formatVersion:vector.formatVersion
+   key:vector.key
+   frameRate:vector.frameRate
+   animationFrameCount:vector.animationFrameCount
+   features:vector.features
+   animationGroups:vector.animationGroups
+   bitmaps:bitmaps];
+}
