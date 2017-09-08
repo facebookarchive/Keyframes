@@ -65,7 +65,7 @@
       [self _addRampEndPointAnimation:feature.gradientEffect.rampEnd];
     }
   } else {
-    NSAssert(@"Unknown gradient type passed in: %@", feature.gradientEffect.gradientTypeString);
+    NSLog(@"Unknown gradient type passed in: %@", feature.gradientEffect.gradientTypeString);
   }
 }
 
