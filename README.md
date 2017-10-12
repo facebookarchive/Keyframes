@@ -124,7 +124,7 @@ KFImage kfImage = KFImageDeserializer.deserialize(stream);
 ```
 A KeyframesDrawable object can be created now using this `KFImage`, and this drawable can be used as a normal drawable.  It is highly recommended to use the software layer on any views displaying Keyframes animations.
 ```java
-Drawable kfDrawable = new KeyframesDrawableBuilder().withImage(kfImage).build();
+KeyframesDrawable kfDrawable = new KeyframesDrawableBuilder().withImage(kfImage).build();
 
 ImageView imageView = (ImageView) findViewById(R.id.some_image_view);
 imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
