@@ -36,18 +36,23 @@
 - (void)startAnimation;
 
 /**
- * Call this method to pause vector animation. To resume, call resumeAnimation.
+ * Call this method to pause the vector animation. To resume, call resumeAnimation.
  */
 - (void)pauseAnimation;
 
 /**
- * Call this method to resume vector animation.
+ * Call this method to resume the vector animation.
  */
 - (void)resumeAnimation;
 
 /**
- * Call this method seek the animation to a given progress, progress is in range of [0, 1].
+ * Call this method to seek the animation to a given progress, progress is in range of [0, 1].
  */
 - (void)seekToProgress:(CGFloat)progress;
+
+/**
+ * Call this method to play the keyframe animation only once and stop it afterwards.
+ */
+- (void)playOnce;
 
 @end
