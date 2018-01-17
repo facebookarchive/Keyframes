@@ -135,8 +135,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		342484B21DFA143400A2471E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Framework/Info.plist; sourceTree = SOURCE_ROOT; };
-		342484B31DFA143400A2471E /* Keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keyframes.h; path = Framework/Keyframes.h; sourceTree = SOURCE_ROOT; };
+		342484B21DFA143400A2471E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		342484B31DFA143400A2471E /* Keyframes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyframes.h; sourceTree = "<group>"; };
 		493741AE1DE4FEB6002141D1 /* sample_logo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_logo.json; sourceTree = "<group>"; };
 		49A85F1B1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KFVectorBitmapFeatureLayer.h; sourceTree = "<group>"; };
 		49A85F1C1D90B94B00185B66 /* KFVectorBitmapFeatureLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KFVectorBitmapFeatureLayer.m; sourceTree = "<group>"; };
@@ -235,6 +235,7 @@
 				342484B31DFA143400A2471E /* Keyframes.h */,
 			);
 			name = "Supporting Files";
+			path = Framework;
 			sourceTree = "<group>";
 		};
 		AD46D2FC1D3041AD0008AF78 /* KeyframesTests */ = {
@@ -267,7 +268,7 @@
 				AD8E72751D2C3DB100E3BA9D /* Views */,
 			);
 			path = src;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
 		};
 		AD8E724A1D2C3DB100E3BA9D /* DataModel */ = {
 			isa = PBXGroup;
@@ -381,7 +382,6 @@
 				AD8E72491D2C3DB100E3BA9D /* src */,
 			);
 			name = Keyframes;
-			path = keyframes;
 			sourceTree = "<group>";
 		};
 		DD28B29F1DFF1836000DA813 /* Compatibility */ = {
