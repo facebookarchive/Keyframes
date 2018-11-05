@@ -1,4 +1,5 @@
 #!/usr/bin/env bash -l
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 set -x
 
 LocalFile="$1"
